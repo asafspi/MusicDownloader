@@ -52,13 +52,12 @@
             android:value="d5b726713bba81f15f5b663ce4a0b5a51c678b76" />
 
         <receiver android:name=".RemoteControlReceiver">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MEDIA_BUTTON" /> -->
-            <!-- </intent-filter> -->
+             <intent-filter>
+             <action android:name="android.intent.action.MEDIA_BUTTON" />
+             </intent-filter>
         </receiver>
 
-        <activity android:name=".PermissionsActivity"></activity>
+        <activity android:name=".PermissionsActivity"/>
     </application>
 
 </manifest>

@@ -4,13 +4,16 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.IBinder;
 import android.os.Process;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.media.session.MediaSessionCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -76,7 +79,6 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
             thread = new Thread(this);
             thread.start();
         }
-
     }
 
     private void registerReceiver() {
@@ -304,8 +306,8 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
         public void onReceive(Context context, Intent intent) {
             EventBus.getDefault().post(new EventToService(EventToService.KILL_NOTIFICATION, 0));
             context.stopService(new Intent(context, PlaySongService.class));
-            //Process.killProcess(Process.myPid());
             EventBus.getDefault().post(new MessageEvent("finish", 0, 0, null, null, null));
+            Process.killProcess(Process.myPid());
             Log.d("zaq", "from notification exit");
         }
     }

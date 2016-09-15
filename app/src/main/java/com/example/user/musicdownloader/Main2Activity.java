@@ -1,10 +1,18 @@
 package com.example.user.musicdownloader;
 
 import android.Manifest;
+import android.annotation.TargetApi;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.media.session.PlaybackState;
+import android.net.Uri;
+import android.os.Build;
+import android.os.SystemClock;
 import android.support.design.widget.TabLayout;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.MediaSessionCompat.Callback;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,33 +42,41 @@ import com.example.user.musicdownloader.EventBus.MessageEvent;
 import com.example.user.musicdownloader.EventBus.MessageFromBackPressed;
 import com.example.user.musicdownloader.adapters.ArtistsAdapter;
 import com.example.user.musicdownloader.adapters.SongsAdapter;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import static android.R.attr.tag;
 import static com.example.user.musicdownloader.GetMusicData.getAllSongs;
 import static com.example.user.musicdownloader.GetMusicData.songs;
 
 public class Main2Activity extends AppCompatActivity implements View.OnClickListener {
-
     private SectionsPagerAdapter mSectionsPagerAdapter;
     public ViewPager mViewPager;
-    private int currentPosition;
     private ImageButton nextSong, priviesSong, playPause;
     private TextView songNameTextView;
     private TextView artistNameTextView;
-    private ImageView thumbSongImageView;
     private SeekBar mainSeekBar;
-    private SearchView searchView;
     private Toolbar toolbar;
+    private AudioManager mAudioManager;
+    private ComponentName mRemoteControlResponder;
     public static int FROM_BACK_PRESSED = 1;
     public static int FROM_ADAPTER_ARTIST = 2;
     public static int FROM_ADAPTER_ALBUM = 3;
 
+    //http://android-developers.blogspot.co.il/2010/06/allowing-applications-to-play-nicer.html
+    private static Method mRegisterMediaButtonEventReceiver;
+    private static Method mUnregisterMediaButtonEventReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,11 +94,11 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
         ((MyApplication) getApplication()).setMainActivity(this);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        SearchView searchView = (SearchView)findViewById(R.id.searchView);
+        SearchView searchView = (SearchView) findViewById(R.id.searchView);
         searchView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                switch (motionEvent.getAction()){
+                switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         mViewPager.setCurrentItem(0);
                         break;
@@ -101,51 +117,14 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
         tabLayout.setupWithViewPager(mViewPager);
 
         setVies();
-        audioFocus();
+
+        mAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        mRemoteControlResponder = new ComponentName(getPackageName(),
+                RemoteControlReceiver.class.getName());
+        initializeRemoteControlRegistrationMethods();
+        GetMusicData.downloadFile("url download Test", "http://cc.stream.qqmusic.qq.com/C100000nb6qX0MA1Lm.m4a?fromtag=52");
     }
 
-    private void audioFocus() {
-        AudioManager am = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
-
-        am.getMode();
-
-        final AudioManager finalAm = am;
-        AudioManager.OnAudioFocusChangeListener afChangeListener = new AudioManager.OnAudioFocusChangeListener() {
-
-            public void onAudioFocusChange(int focusChange) {
-                Log.d("new", "focus: " + focusChange + " mode " + finalAm.getMode() + " is music " + finalAm.isMusicActive());
-
-
-                if (focusChange == AudioManager.AUDIOFOCUS_GAIN_TRANSIENT) {
-                    Log.d("new  ", "focus:started trans ");
-
-                } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK) {
-                    Log.d("new  ", "focus:started duck ");
-
-                } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
-                    Log.d("new", "focus:paused  ");
-                } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-                    Log.d("new", "focus:started ");
-                } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
-                    Log.d("new", "focus:stoped  ");
-                    // am.unregisterMediaButtonEventReceiver(RemoteControlReceiver);
-                    // am.abandonAudioFocus(afChangeListener);
-                    // Stop playback
-                }
-            }
-        };
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        Log.d("zaq == ", "onNewIntent");
-        songNameTextView.setText(ShPref.getString(R.string.song_name_for_service, ""));
-        artistNameTextView.setText(ShPref.getString(R.string.song_artist_for_service, ""));
-        super.onNewIntent(intent);
-    }
-
-
-    // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageEvent event) {
         switch (event.message) {
@@ -215,7 +194,23 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
         });
     }
 
-
+    private void changeSong(int i) {
+        int position = 2;
+        switch (i) {
+            case 1:
+                position = GetMusicData.getSongPosition(PlaySongService.songName) + 1;
+                break;
+            case -1:
+                position = GetMusicData.getSongPosition(PlaySongService.songName) - 1;
+                break;
+        }
+        ShPref.put(R.string.song_path_for_service, songs.get(position).getUri().toString());
+        ShPref.put(R.string.song_name_for_service, songs.get(position).getName());
+        ShPref.put(R.string.song_artist_for_service, songs.get(position).getArtist());
+        ShPref.put(R.string.song_thumb_for_service, songs.get(position).getImage().toString());
+        stopService(new Intent(this, PlaySongService.class));
+        startService(new Intent(this, PlaySongService.class));
+    }
 
     @Override
     public void onClick(View view) {
@@ -239,22 +234,71 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void changeSong(int i) {
-        int position = 2;
-        switch (i) {
-            case 1:
-                position = GetMusicData.getSongPosition(PlaySongService.songName) + 1;
-                break;
-            case -1:
-                position = GetMusicData.getSongPosition(PlaySongService.songName) - 1;
-                break;
+    private static void initializeRemoteControlRegistrationMethods() {
+        try {
+            if (mRegisterMediaButtonEventReceiver == null) {
+                mRegisterMediaButtonEventReceiver = AudioManager.class.getMethod(
+                        "registerMediaButtonEventReceiver",
+                        new Class[] { ComponentName.class } );
+            }
+            if (mUnregisterMediaButtonEventReceiver == null) {
+                mUnregisterMediaButtonEventReceiver = AudioManager.class.getMethod(
+                        "unregisterMediaButtonEventReceiver",
+                        new Class[] { ComponentName.class } );
+            }
+      /* success, this device will take advantage of better remote */
+      /* control event handling                                    */
+        } catch (NoSuchMethodException nsme) {
+      /* failure, still using the legacy behavior, but this app    */
+      /* is future-proof!                                          */
         }
-        ShPref.put(R.string.song_path_for_service, songs.get(position).getUri().toString());
-        ShPref.put(R.string.song_name_for_service, songs.get(position).getName());
-        ShPref.put(R.string.song_artist_for_service, songs.get(position).getArtist());
-        ShPref.put(R.string.song_thumb_for_service, songs.get(position).getImage().toString());
-        stopService(new Intent(this, PlaySongService.class));
-        startService(new Intent(this, PlaySongService.class));
+    }
+
+
+    private void registerRemoteControl() {
+        try {
+            if (mRegisterMediaButtonEventReceiver == null) {
+                return;
+            }
+            mRegisterMediaButtonEventReceiver.invoke(mAudioManager,
+                    mRemoteControlResponder);
+        } catch (InvocationTargetException ite) {
+            /* unpack original exception when possible */
+            Throwable cause = ite.getCause();
+            if (cause instanceof RuntimeException) {
+                throw (RuntimeException) cause;
+            } else if (cause instanceof Error) {
+                throw (Error) cause;
+            } else {
+                /* unexpected checked exception; wrap and re-throw */
+                throw new RuntimeException(ite);
+            }
+        } catch (IllegalAccessException ie) {
+            Log.e("zaq", "unexpected " + ie);
+        }
+    }
+
+    private void unregisterRemoteControl() {
+        try {
+            if (mUnregisterMediaButtonEventReceiver == null) {
+                return;
+            }
+            mUnregisterMediaButtonEventReceiver.invoke(mAudioManager,
+                    mRemoteControlResponder);
+        } catch (InvocationTargetException ite) {
+            /* unpack original exception when possible */
+            Throwable cause = ite.getCause();
+            if (cause instanceof RuntimeException) {
+                throw (RuntimeException) cause;
+            } else if (cause instanceof Error) {
+                throw (Error) cause;
+            } else {
+                /* unexpected checked exception; wrap and re-throw */
+                throw new RuntimeException(ite);
+            }
+        } catch (IllegalAccessException ie) {
+            System.err.println("unexpected " + ie);
+        }
     }
 
     @Override
@@ -275,56 +319,38 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-
-
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public static class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position);
-        }
-
-        @Override
-        public int getCount() {
-            // Show 3 total pages.
-            return 3;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "Songs";
-                case 1:
-                    return "Artists";
-                case 2:
-                    return "Albums";
-            }
-            return null;
-        }
-    }
-
     @Override
     public void onStart() {
         super.onStart();
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
-
     }
 
     @Override
     public void onStop() {
-        EventBus.getDefault().unregister(this);
         super.onStop();
+        EventBus.getDefault().unregister(this);
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        mAudioManager.registerMediaButtonEventReceiver(
+                mRemoteControlResponder);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mAudioManager.unregisterMediaButtonEventReceiver(
+                mRemoteControlResponder);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.d("zaq == ", "onNewIntent");
+        songNameTextView.setText(ShPref.getString(R.string.song_name_for_service, ""));
+        artistNameTextView.setText(ShPref.getString(R.string.song_artist_for_service, ""));
+        super.onNewIntent(intent);
+    }
+
 }

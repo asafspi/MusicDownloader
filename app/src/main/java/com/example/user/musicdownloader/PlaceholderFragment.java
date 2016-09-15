@@ -160,7 +160,7 @@ public class PlaceholderFragment extends Fragment implements SearchView.OnQueryT
     @Override
     public boolean onQueryTextChange(String query) {
         ViewPager mViewPager = (ViewPager) getActivity().findViewById(R.id.container);
-        Main2Activity.SectionsPagerAdapter sectionsPagerAdapter = new Main2Activity.SectionsPagerAdapter(getActivity().getSupportFragmentManager());
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getActivity().getSupportFragmentManager());
 
         mViewPager.setCurrentItem(0);
         position = getArguments().getInt(ARG_SECTION_NUMBER);
@@ -180,8 +180,6 @@ public class PlaceholderFragment extends Fragment implements SearchView.OnQueryT
             Log.d("zaq", "From Query2");
             mViewPager.setCurrentItem(0);
         }
-
         return true;
     }
-
 }
