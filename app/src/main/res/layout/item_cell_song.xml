@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:clickable="true"
+    android:background="?attr/selectableItemBackground"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/cellArtistTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cellSongTextView"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_toEndOf="@+id/cellImageView"
+        android:layout_toRightOf="@+id/cellImageView"
+        android:textSize="10sp"
+        tools:text="Artist" />
+
+    <ImageView
+        android:id="@+id/cellImageView"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:background="@android:drawable/ic_lock_silent_mode_off" />
+
+    <TextView
+        android:id="@+id/cellSongTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/cellArtistTextView"
+        android:layout_alignStart="@+id/cellArtistTextView"
+        android:layout_alignTop="@+id/cellImageView"
+        android:layout_marginTop="5dp"
+        android:textSize="15sp"
+        tools:text="Title" />
+</RelativeLayout>

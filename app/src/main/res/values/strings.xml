@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">MusicDownloader</string>
+    <string name="title_activity_main2">Music Downloader</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="song_path_for_service">songPath</string>
+    <string name="song_name_for_service">songName</string>
+    <string name="song_artist_for_service">songArtist</string>
+    <string name="song_thumb_for_service">songThumb</string>
+    <string name="current_song_duratoin">lengthPlayingSong</string>
+    <string name="song_position_in_array">song position in array</string>
+
+    <string name="alert_default_title">Permission</string>
+
+
+    <string name="alert_write_external_storage_permissions">Please allow Write permission to allow you download songs</string>
+    <string name="alert_read_external_storage_permissions">Please allow Read permission to get your songs</string>
+    <string name="alert_read_sms_permissions">Please allow read sms permission to enable badge counter for messages</string>
+    <string name="alert_read_contacts">Please allow read contact permission to enable smart search inside your contacts</string>
+
+    <string name="alert_default_permissions">Please allow missing permission</string>
+
+
+    <string name="alert_location_message_disabled">Please enable location!</string>
+    <string name="alert_internet_title">Internet</string>
+    <string name="alert_internet_message">Please enable Internet!</string>
+    <string name="alert_brightness_message">We need the write settings permission to change the brightness</string>
+    <string name="alert_rotation_message">We need the write settings permission to set rotation</string>
+    <string name="alert_location_title">We need the write settings permission to set rotation</string>
+
+</resources>

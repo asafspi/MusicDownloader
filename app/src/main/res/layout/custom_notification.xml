@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/custom_notification"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/notif_background"
+    android:baselineAligned="false"
+    android:orientation="horizontal">
+
+    <RelativeLayout
+        android:id="@+id/nextNotification"
+        android:layout_width="55dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/torch_image"
+            android:layout_width="55dp"
+            android:layout_height="65dp"
+            android:src="@android:drawable/ic_media_next" />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/playNotification"
+        android:layout_width="55dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/playNotificationImage"
+            android:layout_width="55dp"
+            android:layout_height="65dp"
+            android:src="@android:drawable/ic_media_play" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/previous_notification"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="65dp"
+            android:src="@android:drawable/ic_media_previous" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="41dp">
+
+        <Button
+            android:id="@+id/x_notification"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="5dp"
+            android:background="@android:drawable/btn_dialog" />
+
+        <TextView
+            android:id="@+id/textViewNotification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:maxLines="1"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:textColor="@android:color/white"
+            android:textSize="22sp"
+            android:layout_marginTop="10dp"
+            tools:text="Song Title"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/x_notification"
+            android:layout_toStartOf="@+id/x_notification" />
+    </RelativeLayout>
+
+</LinearLayout>
