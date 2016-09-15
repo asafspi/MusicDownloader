@@ -74,6 +74,7 @@ public class PlaceholderFragment extends Fragment implements SearchView.OnQueryT
             case 2:
                 ArtistsAdapter albumAdapter = new ArtistsAdapter(GetMusicData.albums, ArtistsAdapter.TYPE_ALBUM, getContext(), weak);
                 songsRecyclerView.setAdapter(albumAdapter);
+
                 break;
         }
         return rootView;
