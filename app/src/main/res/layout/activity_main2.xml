@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/background"
     android:fitsSystemWindows="true"
-    tools:context="com.example.user.musicdownloader.Main2Activity">
+    tools:context="com.example.user.musicdownloader.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -18,29 +18,59 @@
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
-
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
-
-            <android.support.v7.widget.SearchView
-                android:id="@+id/searchView"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorPrimary"
-                android:clickable="true"
-                android:focusable="false"
-                android:paddingBottom="10dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                app:iconifiedByDefault="false"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:queryBackground="@drawable/search_view_underline"
-                app:queryHint="Search"
-                app:searchIcon="@drawable/ic_icon_search_glass" />
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:onClick="showMenu"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/menu_btn" />
+
+                <TextView
+                    android:id="@+id/header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:text="MUSIC PLAYER"
+                    android:textColor="@android:color/white"
+                    android:textSize="23sp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"/>
+
+                <android.support.v7.widget.SearchView
+                    android:id="@+id/searchView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/colorPrimary"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    app:iconifiedByDefault="true"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                    app:queryBackground="@drawable/search_view_underline"
+                    app:queryHint="Search" />
+
+
+            </LinearLayout>
+
 
 
         </android.support.v7.widget.Toolbar>

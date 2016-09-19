@@ -4,22 +4,16 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.IBinder;
 import android.os.Process;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.media.session.MediaSessionCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.widget.EditText;
 import android.widget.RemoteViews;
 
 import com.example.user.musicdownloader.EventBus.EventToService;
@@ -245,7 +239,7 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
                 .setContentTitle(" ").setContentText(" ")
                 .setPriority(NotificationCompat.PRIORITY_MAX);
 
-        Intent notificationIntent = new Intent(this, Main2Activity.class);
+        Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), MAIN_REQUEST_ID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT); //123
         builder.setContentIntent(contentIntent);

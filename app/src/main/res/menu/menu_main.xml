@@ -1,0 +1,37 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.user.musicdownloader.MainActivity">
+
+    <item
+        android:id="@+id/action_player"
+        android:title="@string/action_player" />
+
+    <item
+        android:id="@+id/action_library"
+        android:title="@string/action_library" />
+
+    <item
+        android:id="@+id/action_directories"
+        android:title="@string/action_directories" />
+
+    <item
+        android:id="@+id/action_downloads"
+        android:title="@string/action_downloads" />
+
+    <item
+        android:id="@+id/action_equlaizer"
+        android:title="@string/action_equlizer" />
+
+
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/action_settings" />
+
+
+    <item
+        android:id="@+id/action_exit"
+        android:title="@string/action_exit" />
+
+
+</menu>
