@@ -10,15 +10,17 @@
         <item name="popupMenuStyle">@style/PopupMenu</item>
         <item name="android:dropDownListViewStyle">@style/PopupMenuListView</item>
         <item name="android:listPreferredItemHeightSmall">30dp</item>
-        <item name="listPreferredItemPaddingEnd">4dp</item>
 
         <item name="textAppearanceLargePopupMenu">@style/PopupMenu.MenuTextStyleBig</item>
         <item name="android:textAppearanceLargePopupMenu">@style/PopupMenu.MenuTextStyleBig</item>
 
         <item name="textAppearanceSmallPopupMenu">@style/PopupMenu.MenuTextStyle</item>
         <item name="android:textAppearanceSmallPopupMenu">@style/PopupMenu.MenuTextStyle</item>
+        <item name="android:editTextColor">@android:color/white</item>
+
 
     </style>
+
 
     <style name="PopupMenu" parent="Widget.AppCompat.PopupMenu">
         <item name="android:popupBackground">@color/colorPrimary</item>

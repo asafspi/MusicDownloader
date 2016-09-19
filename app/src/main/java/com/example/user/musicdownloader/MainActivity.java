@@ -34,6 +34,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
 import static com.example.user.musicdownloader.GetMusicData.songs;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView songNameTextView, artistNameTextView, songDuration, runningTime;
     private SeekBar mainSeekBar;
     private Toolbar toolbar;
+    private SearchView searchView;
     private AudioManager mAudioManager;
     private ComponentName mRemoteControlResponder;
     public static int FROM_BACK_PRESSED = 1;
@@ -69,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ((MyApplication) getApplication()).setMainActivity(this);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        SearchView searchView = (SearchView) findViewById(R.id.searchView);
+        searchView = (SearchView) findViewById(R.id.searchView);
         searchView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -315,6 +318,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed() {
+        if (!searchView.isIconified()){
+            searchView.setIconified(true);
+            return;
+        }
         int position = mViewPager.getCurrentItem();
         switch (position) {
             case 0:
@@ -379,5 +386,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         return false;
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 }
