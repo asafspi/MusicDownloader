@@ -145,7 +145,7 @@ public class PlaceholderFragment extends Fragment implements SearchView.OnQueryT
     public void onMessageEvent(MessageFromBackPressed event) {
         switch (event.action) {
             case 1: //MessageFromBackPressed.FROM_BACK_PRESSED
-                setRecyclerView("", Main2Activity.FROM_BACK_PRESSED);
+                setRecyclerView("", MainActivity.FROM_BACK_PRESSED);
                 break;
             case 2:  // MessageFromBackPressed.FROM_THREAD
                 setRecyclerView("", 4);

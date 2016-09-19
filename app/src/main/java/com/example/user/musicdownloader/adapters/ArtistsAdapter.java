@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.user.musicdownloader.GetMusicData;
-import com.example.user.musicdownloader.Main2Activity;
+import com.example.user.musicdownloader.MainActivity;
 import com.example.user.musicdownloader.PlaceholderFragment;
 import com.example.user.musicdownloader.R;
 import com.example.user.musicdownloader.Song;
@@ -84,10 +84,10 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
                 if (fragment != null) {
                     switch (itemType) {
                         case TYPE_ARTIST:
-                            fragment.setRecyclerView(artistsList.get(p), Main2Activity.FROM_ADAPTER_ARTIST);
+                            fragment.setRecyclerView(artistsList.get(p), MainActivity.FROM_ADAPTER_ARTIST);
                             break;
                         case TYPE_ALBUM:
-                            fragment.setRecyclerView(artistsList.get(p), Main2Activity.FROM_ADAPTER_ALBUM);
+                            fragment.setRecyclerView(artistsList.get(p), MainActivity.FROM_ADAPTER_ALBUM);
                             break;
                     }
                 }
