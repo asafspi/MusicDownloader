@@ -6,6 +6,41 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu</item>
+        <item name="popupMenuStyle">@style/PopupMenu</item>
+        <item name="android:dropDownListViewStyle">@style/PopupMenuListView</item>
+        <item name="android:listPreferredItemHeightSmall">30dp</item>
+        <item name="listPreferredItemPaddingEnd">4dp</item>
+
+        <item name="textAppearanceLargePopupMenu">@style/PopupMenu.MenuTextStyleBig</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/PopupMenu.MenuTextStyleBig</item>
+
+        <item name="textAppearanceSmallPopupMenu">@style/PopupMenu.MenuTextStyle</item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/PopupMenu.MenuTextStyle</item>
+
+    </style>
+
+    <style name="PopupMenu" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@color/colorPrimary</item>
+    </style>
+
+    <!-- Change Overflow Menu ListView Divider Property -->
+    <style name="PopupMenuListView" parent="Widget.AppCompat.ListView.DropDown">
+        <item name="android:dividerHeight">0dp</item>
+    </style>
+
+
+    <style name="PopupMenu.MenuTextStyle"
+        parent="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">18sp</item>
+
+    </style>
+
+    <style name="PopupMenu.MenuTextStyleBig"
+        parent="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Large">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
