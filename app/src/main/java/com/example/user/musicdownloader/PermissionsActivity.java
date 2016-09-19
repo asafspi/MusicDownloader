@@ -24,13 +24,13 @@ public class PermissionsActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 0;
     public static final int REQUEST_CODE_PERMISSION_LOCATION = 1;
     public static final int REQUEST_CODE_PERMISSION_READ_EXTERNAL_STORAGE = 2;
-    public static final int REQUEST_CODE_PERMISSION_CONTACT = 3;
+    public static final int REQUEST_CODE_PERMISSION_WRITE_SETTINGS = 3;
     public static final int REQUEST_CODE_PERMISSION_PHONE_LOGS = 4;
     public static final int REQUEST_CODE_PERMISSION_SMS = 5;
     private Dialog dialog;
 
 
-    private static final String EXTRA_PERMISSIONS = "com.belauncher.EXTRA_PERMISSIONS";
+    private static final String EXTRA_PERMISSIONS = Contextor.getInstance().getContext().getPackageName() + "EXTRA_PERMISSIONS";
 
     private boolean requiresCheck;
     //private String[] permissions;
@@ -165,6 +165,8 @@ public class PermissionsActivity extends AppCompatActivity {
                 return R.string.alert_write_external_storage_permissions;
             case Manifest.permission.READ_EXTERNAL_STORAGE:
                 return R.string.alert_read_external_storage_permissions;
+            case Manifest.permission.WRITE_SETTINGS:
+                return R.string.alert_read_write_settings_permissions;
         }
         return R.string.alert_default_permissions;
     }

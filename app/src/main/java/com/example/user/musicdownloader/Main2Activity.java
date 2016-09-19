@@ -36,6 +36,7 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.user.musicdownloader.EventBus.EventToService;
 import com.example.user.musicdownloader.EventBus.MessageEvent;
@@ -54,7 +55,10 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import static android.R.attr.tag;
 import static com.example.user.musicdownloader.GetMusicData.getAllSongs;
@@ -63,9 +67,8 @@ import static com.example.user.musicdownloader.GetMusicData.songs;
 public class Main2Activity extends AppCompatActivity implements View.OnClickListener {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     public ViewPager mViewPager;
-    private ImageButton nextSong, priviesSong, playPause;
-    private TextView songNameTextView;
-    private TextView artistNameTextView;
+    private ImageButton nextSong, priviesSong, playPause, shuffleButton, repeatButton;
+    private TextView songNameTextView, artistNameTextView, songDuration, runningTime;
     private SeekBar mainSeekBar;
     private Toolbar toolbar;
     private AudioManager mAudioManager;
@@ -89,7 +92,7 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
             GetMusicData.getAllSongs(this);
             Log.d("zaq", "Permissions granted");
         } else {
-            PermissionsActivity.startActivityForResult(this, PermissionsActivity.REQUEST_CODE_PERMISSION_READ_EXTERNAL_STORAGE, permissions);
+            PermissionsActivity.startActivityForResult(this, PermissionsActivity.REQUEST_CODE_PERMISSION_WRITE_SETTINGS, permissions);
         }
         ((MyApplication) getApplication()).setMainActivity(this);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -118,15 +121,17 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
 
         setVies();
 
-        mAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         mRemoteControlResponder = new ComponentName(getPackageName(),
                 RemoteControlReceiver.class.getName());
         initializeRemoteControlRegistrationMethods();
-        GetMusicData.downloadFile("url download Test", "http://cc.stream.qqmusic.qq.com/C100000nb6qX0MA1Lm.m4a?fromtag=52");
+        //GetMusicData.downloadFile("url download Test", "http://cc.stream.qqmusic.qq.com/C100000nb6qX0MA1Lm.m4a?fromtag=52");
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageEvent event) {
+        long timeInSeconds;
+        int sec, min;
         switch (event.message) {
             case "start song":
                 mainSeekBar.setProgress(0);
@@ -138,9 +143,27 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
                 songNameTextView.setSelected(true);
                 songNameTextView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                 songNameTextView.setSingleLine(true);
+
+                timeInSeconds = event.songDuration / 1000;
+                sec = (int) (timeInSeconds % 60);
+                min = (int) ((timeInSeconds / 60)) % 60;
+                if (sec < 10) {
+                    songDuration.setText(String.valueOf(min + ":" + "0" + sec));
+                } else {
+                    songDuration.setText(String.valueOf(min + ":" + sec));
+                }
+
                 break;
             case "from run":
+                timeInSeconds = event.currentDuration / 1000;
+                sec = (int) (timeInSeconds % 60);
+                min = (int) ((timeInSeconds / 60)) % 60;
                 mainSeekBar.setProgress(event.currentDuration);
+                if (sec < 10) {
+                    runningTime.setText(String.valueOf(min + ":" + "0" + sec));
+                } else {
+                    runningTime.setText(String.valueOf(min + ":" + sec));
+                }
                 break;
             case "song ends":
                 mainSeekBar.setProgress(0);
@@ -156,10 +179,10 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
                 finish();
                 break;
             case "changePlayPauseButtonToPause":
-                playPause.setImageResource(android.R.drawable.ic_media_pause);
+                playPause.setImageResource(R.drawable.pause_icon);
                 break;
             case "changePlayPauseButtonToPlay":
-                playPause.setImageResource(android.R.drawable.ic_media_play);
+                playPause.setImageResource(R.drawable.play_icon);
                 break;
         }
     }
@@ -171,10 +194,16 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
         priviesSong.setOnClickListener(this);
         playPause = (ImageButton) findViewById(R.id.playPauseButtonImageButton);
         playPause.setOnClickListener(this);
+        shuffleButton = (ImageButton) findViewById(R.id.shuffleButton);
+        shuffleButton.setOnClickListener(this);
+        repeatButton = (ImageButton) findViewById(R.id.repeatButton);
+        repeatButton.setOnClickListener(this);
         //thumbSongImageView = (ImageView) findViewById(R.id.playerImageView);
         mainSeekBar = (SeekBar) findViewById(R.id.seekBar);
         songNameTextView = (TextView) findViewById(R.id.songNameTextView);
         artistNameTextView = (TextView) findViewById(R.id.artistNameTextView);
+        songDuration = (TextView) findViewById(R.id.totalTime);
+        runningTime = (TextView) findViewById(R.id.runningTime);
         mainSeekBar = (SeekBar) findViewById(R.id.seekBar);
         mainSeekBar.setProgress(0);
         mainSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -216,7 +245,7 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.playPauseButtonImageButton:
-                playPause.setImageResource(android.R.drawable.ic_media_play);
+                playPause.setImageResource(R.drawable.play_icon);
                 songNameTextView.setSelected(true);
                 songNameTextView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                 songNameTextView.setSingleLine(true);
@@ -231,6 +260,17 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
             case R.id.searchView:
                 Log.d("zaq", "From search button");
                 break;
+            case R.id.shuffleButton:
+                break;
+            case R.id.repeatButton:
+                PlaySongService.repeatSong = !PlaySongService.repeatSong;
+                if(PlaySongService.repeatSong){
+                    Toast.makeText(this, "Repeat mode is on", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(this, "Repeat mode is off", Toast.LENGTH_SHORT).show();
+
+                }
+                break;
         }
     }
 
@@ -239,12 +279,12 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
             if (mRegisterMediaButtonEventReceiver == null) {
                 mRegisterMediaButtonEventReceiver = AudioManager.class.getMethod(
                         "registerMediaButtonEventReceiver",
-                        new Class[] { ComponentName.class } );
+                        new Class[]{ComponentName.class});
             }
             if (mUnregisterMediaButtonEventReceiver == null) {
                 mUnregisterMediaButtonEventReceiver = AudioManager.class.getMethod(
                         "unregisterMediaButtonEventReceiver",
-                        new Class[] { ComponentName.class } );
+                        new Class[]{ComponentName.class});
             }
       /* success, this device will take advantage of better remote */
       /* control event handling                                    */
@@ -331,6 +371,7 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
         super.onStop();
         EventBus.getDefault().unregister(this);
     }
+
     @Override
     public void onResume() {
         super.onResume();

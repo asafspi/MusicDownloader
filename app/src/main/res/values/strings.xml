@@ -15,6 +15,7 @@
 
     <string name="alert_write_external_storage_permissions">Please allow Write permission to allow you download songs</string>
     <string name="alert_read_external_storage_permissions">Please allow Read permission to get your songs</string>
+    <string name="alert_read_write_settings_permissions">Please allow Write Settings permission to set this dong as your ringtone</string>
     <string name="alert_read_sms_permissions">Please allow read sms permission to enable badge counter for messages</string>
     <string name="alert_read_contacts">Please allow read contact permission to enable smart search inside your contacts</string>
 
@@ -27,5 +28,9 @@
     <string name="alert_brightness_message">We need the write settings permission to change the brightness</string>
     <string name="alert_rotation_message">We need the write settings permission to set rotation</string>
     <string name="alert_location_title">We need the write settings permission to set rotation</string>
+    <string name="play">PLAY</string>
+    <string name="add_to_playlist">ADD TO PLAYLIST</string>
+    <string name="use_as_ringtone">USE AS RINGTONE</string>
+    <string name="delete">DELETE</string>
 
 </resources>

@@ -3,22 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:clickable="true"
+    android:layout_height="60dp"
     android:background="?attr/selectableItemBackground"
-    android:orientation="vertical">
+    android:clickable="true"
+    android:orientation="vertical"
+    tools:background="@color/colorPrimaryDark">
 
     <TextView
-        android:id="@+id/cellArtistTextView"
+        android:id="@+id/cellArtist_AlbumEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/cellSongTextView"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="5dp"
-        android:layout_toEndOf="@+id/cellImageView"
         android:layout_toRightOf="@+id/cellImageView"
         android:textSize="10sp"
-        tools:text="Artist" />
+        tools:text="Artist"
+        android:layout_toLeftOf="@+id/threeDotsItem"
+        android:layout_toStartOf="@+id/threeDotsItem" />
 
     <ImageView
         android:id="@+id/cellImageView"
@@ -29,16 +31,39 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        android:background="@android:drawable/ic_lock_silent_mode_off" />
+        android:background="@drawable/musicnote_icon" />
 
     <TextView
         android:id="@+id/cellSongTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/cellArtistTextView"
-        android:layout_alignStart="@+id/cellArtistTextView"
+        android:layout_alignLeft="@+id/cellArtist_AlbumEditText"
+        android:layout_alignStart="@+id/cellArtist_AlbumEditText"
         android:layout_alignTop="@+id/cellImageView"
         android:layout_marginTop="5dp"
         android:textSize="15sp"
-        tools:text="Title" />
+        tools:text="Title"
+        android:layout_toLeftOf="@+id/threeDotsItem"
+        android:layout_toStartOf="@+id/threeDotsItem" />
+
+    <ImageView
+        android:id="@+id/threeDotsItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:padding="10dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="10dp"
+        app:srcCompat="@drawable/dots_icon"
+        android:paddingRight="12dp" />
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@android:color/white"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

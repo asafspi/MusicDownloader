@@ -5,11 +5,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.user.musicdownloader.GetMusicData;
 import com.example.user.musicdownloader.Main2Activity;
 import com.example.user.musicdownloader.PlaceholderFragment;
 import com.example.user.musicdownloader.R;
+import com.example.user.musicdownloader.Song;
+import com.squareup.picasso.Picasso;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -21,11 +25,13 @@ import java.util.ArrayList;
 public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHolder> {
 
     private final ArrayList<String> artistsList;
+    private final ArrayList<Song> allSongsList = GetMusicData.songs;
     private Context mContext;
     private final int itemType;
     private WeakReference<PlaceholderFragment> week;
     public static final int TYPE_ARTIST = 1;
     public static final int TYPE_ALBUM = 2;
+    private int songType;
 
 
     @Override
@@ -62,6 +68,13 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
                 break;
             case TYPE_ALBUM:
                 holder.title.setText(artistsList.get(p));
+                for(int i = 0; i <allSongsList.size(); i++ ){
+                    if(allSongsList.get(i).getAlbum().equals(artistsList.get(p))){
+                        Picasso.with(mContext).load(allSongsList.get(i).getImage()).into(holder.albumImageView);
+                        holder.artistTextView.setText(allSongsList.get(i).getArtist());
+                        break;
+                    }
+                }
                 break;
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -87,11 +100,14 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView title;
+        private TextView title, artistTextView;
+        private ImageView albumImageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            title = (TextView) itemView.findViewById(R.id.cellArtistTextView);
+            title = (TextView) itemView.findViewById(R.id.cellArtist_AlbumEditText);
+            artistTextView = (TextView) itemView.findViewById(R.id.cellArtist_ArtistEditText);
+            albumImageView = (ImageView) itemView.findViewById(R.id.cellAlbumImageView);
         }
     }
 

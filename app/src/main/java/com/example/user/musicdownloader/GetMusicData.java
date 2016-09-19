@@ -34,10 +34,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-class GetMusicData {
-    static ArrayList<Song> songs = new ArrayList<>();
-    static ArrayList<String> artists = new ArrayList<>();
-    static ArrayList<String> albums = new ArrayList<>();
+public class GetMusicData {
+    public static ArrayList<Song> songs = new ArrayList<>();
+    public static ArrayList<String> artists = new ArrayList<>();
+    public static ArrayList<String> albums = new ArrayList<>();
 
     static void getAllSongs(final Context context) {
 

@@ -31,10 +31,11 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import static com.example.user.musicdownloader.GetMusicData.songs;
 
-public class PlaySongService extends Service implements Runnable, MediaPlayer.OnCompletionListener{
+public class PlaySongService extends Service implements Runnable, MediaPlayer.OnCompletionListener {
     private static final String TAG = null;
     private static final int MAIN_REQUEST_ID = 999;
     private static final int NOTIFICATION_ID = 1213;
+    public static boolean repeatSong;
     private MediaPlayer player;
     public static String songName;
     private Thread thread;
@@ -63,12 +64,15 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
             EventBus.getDefault().post(new MessageEvent("changePlayPauseButtonToPlay", 0, 0, null, null, null));
         }
         player = MediaPlayer.create(this, songUri);
-        player.setOnCompletionListener(this);
-        if (EventBus.getDefault().isRegistered(this)){
+        if(null != player) {
+            player.setOnCompletionListener(this);
+        }
+        if (EventBus.getDefault().isRegistered(this)) {
             try {
                 EventBus.getDefault().post(new MessageEvent("start song", player.getDuration(), 0, songName, songArtist, songPath));
-            }catch (Exception ignored){}
-        }else {
+            } catch (Exception ignored) {
+            }
+        } else {
             EventBus.getDefault().register(this);
             EventBus.getDefault().post(new MessageEvent("start song", player.getDuration(), 0, songName, songArtist, songPath));
         }
@@ -89,11 +93,11 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
                 if (state == TelephonyManager.CALL_STATE_RINGING) {
                     //Incoming call: Pause music
                     player.pause();
-                } else if(state == TelephonyManager.CALL_STATE_IDLE) {
+                } else if (state == TelephonyManager.CALL_STATE_IDLE) {
                     //Not in call: Play music
-                    player.start();
-                    EventBus.getDefault().post(new MessageEvent("changePlayPauseButtonToPause", 0, 0, null, null, null));
-                } else if(state == TelephonyManager.CALL_STATE_OFFHOOK) {
+                    //player.start();
+                    //EventBus.getDefault().post(new MessageEvent("changePlayPauseButtonToPause", 0, 0, null, null, null));
+                } else if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
                     //A call is dialing, active or on hold
                     player.pause();
                 }
@@ -101,7 +105,7 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
             }
         };
         TelephonyManager mgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-        if(mgr != null) {
+        if (mgr != null) {
             mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
         }
 
@@ -112,7 +116,7 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
             player.start();
             EventBus.getDefault().post(new MessageEvent("changePlayPauseButtonToPause", 0, 0, null, null, null));
         }
-        if(null == builder) {
+        if (null == builder) {
             addNotification(NOTIFICATION_ID);
         }
         return Service.START_NOT_STICKY;
@@ -130,7 +134,7 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
 
         manager.cancel(NOTIFICATION_ID);
         TelephonyManager mgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-        if(mgr != null) {
+        if (mgr != null) {
             mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
         }
     }
@@ -140,7 +144,7 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
     public void run() {
         int currentPosition = 0;
         int total = player.getDuration();
-        while (null != player && currentPosition < total ) {
+        while (null != player && currentPosition < total) {
             try {
                 Thread.sleep(100);
                 EventBus.getDefault().post(new MessageEvent("from run", 0, player.getCurrentPosition(), "", "", ""));
@@ -218,8 +222,13 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
-        EventBus.getDefault().post(new EventToService(EventToService.NEXT_BUTTON, 0));
-        addNotification(NOTIFICATION_ID);
+        if(!repeatSong){
+            EventBus.getDefault().post(new EventToService(EventToService.NEXT_BUTTON, 0));
+            addNotification(NOTIFICATION_ID);
+        }else {
+            player.seekTo(0);
+            player.start();
+        }
     }
 
     private void addNotification(int id) {
@@ -238,9 +247,9 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
 
         builder.setContent(contentView);
         contentView.setTextViewText(R.id.textViewNotification, songName);
-        if(player.isPlaying()) {
+        if (null!= player && player.isPlaying()) {
             contentView.setImageViewResource(R.id.playNotificationImage, android.R.drawable.ic_media_pause);
-        }else {
+        } else {
             contentView.setImageViewResource(R.id.playNotificationImage, android.R.drawable.ic_media_play);
         }
         setNextNotificationButton();
@@ -265,11 +274,13 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
         PendingIntent pendingPreviewsIntent = PendingIntent.getBroadcast(this, 0, previewsIntent, 0);
         contentView.setOnClickPendingIntent(R.id.previous_notification, pendingPreviewsIntent);
     }
+
     private void setPlayPauseNotificationButton() {
         Intent PlayPauseIntent = new Intent(this, PlayPauseButtonListener.class);
         PendingIntent pendingPlayPausesIntent = PendingIntent.getBroadcast(this, 0, PlayPauseIntent, 0);
         contentView.setOnClickPendingIntent(R.id.playNotification, pendingPlayPausesIntent);
     }
+
     private void setExitNotificationButton() {
         Intent ExitIntent = new Intent(this, ExitButtonListener.class);
         PendingIntent pendingExitIntent = PendingIntent.getBroadcast(this, 0, ExitIntent, 0);
@@ -285,6 +296,7 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
 
         }
     }
+
     public static class PreviewsButtonListener extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -301,6 +313,7 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
             Log.d("zaq", "from notification");
         }
     }
+
     public static class ExitButtonListener extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {

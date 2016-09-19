@@ -72,9 +72,9 @@ public class PlaceholderFragment extends Fragment implements SearchView.OnQueryT
                 songsRecyclerView.setAdapter(artistAdapter);
                 break;
             case 2:
+                songsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
                 ArtistsAdapter albumAdapter = new ArtistsAdapter(GetMusicData.albums, ArtistsAdapter.TYPE_ALBUM, getContext(), weak);
                 songsRecyclerView.setAdapter(albumAdapter);
-
                 break;
         }
         return rootView;
@@ -93,6 +93,7 @@ public class PlaceholderFragment extends Fragment implements SearchView.OnQueryT
                 }
                 if (position == 2) {
                     artistAdapter = new ArtistsAdapter(GetMusicData.albums, ArtistsAdapter.TYPE_ALBUM, getContext(), weak);
+                    songsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
                     songsRecyclerView.setAdapter(artistAdapter);
                 }
 
