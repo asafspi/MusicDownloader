@@ -261,6 +261,12 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
                 Log.d("zaq", "From search button");
                 break;
             case R.id.shuffleButton:
+                PlaySongService.shuffle = !PlaySongService.shuffle;
+                if(PlaySongService.shuffle){
+                    Toast.makeText(this, "Shuffle mode is on", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(this, "Shuffle mode is off", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.repeatButton:
                 PlaySongService.repeatSong = !PlaySongService.repeatSong;
@@ -393,5 +399,4 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
         artistNameTextView.setText(ShPref.getString(R.string.song_artist_for_service, ""));
         super.onNewIntent(intent);
     }
-
 }

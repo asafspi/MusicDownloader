@@ -39,15 +39,15 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
         switch (viewType) {
             case TYPE_ARTIST:
                 View v1 = LayoutInflater.from(parent.getContext()).
-                        inflate(R.layout.item_cell_artist, parent, false);
+                        inflate(R.layout.item_cell_album, parent, false);
                 return new ArtistsAdapter.ViewHolder(v1);
             case TYPE_ALBUM:
                 View v2 = LayoutInflater.from(parent.getContext()).
-                        inflate(R.layout.item_cell_artist, parent, false);
+                        inflate(R.layout.item_cell_album, parent, false);
                 return new ArtistsAdapter.ViewHolder(v2);
             default:
                 View v10 = LayoutInflater.from(parent.getContext()).
-                        inflate(R.layout.item_cell_artist, parent, false);
+                        inflate(R.layout.item_cell_album, parent, false);
                 return new ArtistsAdapter.ViewHolder(v10);
         }
     }

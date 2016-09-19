@@ -4,10 +4,12 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,10 +17,13 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.user.musicdownloader.Contextor;
+import com.example.user.musicdownloader.MainActivity;
 import com.example.user.musicdownloader.PermissionChecker;
 import com.example.user.musicdownloader.PermissionsActivity;
 import com.example.user.musicdownloader.PlaySongService;
@@ -97,7 +102,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder> 
                         playSong(p);
                         break;
                     case R.id.add_to_playlist:
-
+                        popUpForPlaylist();
                         break;
                     case R.id.use_as_ringtone:
 
@@ -145,6 +150,37 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder> 
         popupMenu.show();
     }
 
+    private void popUpForPlaylist() {
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+        alertDialog.setTitle("");
+        alertDialog.setMessage("Enter Password");
+
+        final EditText input = new EditText(mContext);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+        alertDialog.setView(input);
+        //alertDialog.setIcon(R.drawable.key);
+
+        alertDialog.setPositiveButton("Add",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+
+                    }
+                });
+
+        alertDialog.setNegativeButton("NO",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        alertDialog.show();
+}
+
     private void playSong(int p) {
         Context context = Contextor.getInstance().getContext();
         ShPref.put(R.string.song_path_for_service, songsList.get(p).getUri().toString());
@@ -157,23 +193,24 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder> 
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView title, artist;
-        private ImageView thumbImageView, dots;
+    private TextView title, artist;
+    private ImageView thumbImageView, dots;
 
-        public ViewHolder(View itemView) {
-            super(itemView);
-            switch (songType) {
-                case TYPE_ALL_SONGS:
-                    title = (TextView) itemView.findViewById(R.id.cellSongTextView);
-                    artist = (TextView) itemView.findViewById(R.id.cellArtist_AlbumEditText);
-                    thumbImageView = (ImageView) itemView.findViewById(R.id.cellImageView);
-                    dots = (ImageView) itemView.findViewById(R.id.threeDotsItem);
-                    break;
-            }
+    public ViewHolder(View itemView) {
+        super(itemView);
+        switch (songType) {
+            case TYPE_ALL_SONGS:
+                title = (TextView) itemView.findViewById(R.id.cellSongTextView);
+                artist = (TextView) itemView.findViewById(R.id.cellArtist_AlbumEditText);
+                thumbImageView = (ImageView) itemView.findViewById(R.id.cellImageView);
+                dots = (ImageView) itemView.findViewById(R.id.threeDotsItem);
+                break;
         }
     }
+
+}
 
 
     @Override
