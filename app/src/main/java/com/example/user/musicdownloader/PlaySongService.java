@@ -23,6 +23,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.Random;
+
 import static com.example.user.musicdownloader.GetMusicData.songs;
 
 public class PlaySongService extends Service implements Runnable, MediaPlayer.OnCompletionListener {
@@ -30,6 +32,7 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
     private static final int MAIN_REQUEST_ID = 999;
     private static final int NOTIFICATION_ID = 1213;
     public static boolean repeatSong;
+    public static boolean shuffle;
     private MediaPlayer player;
     public static String songName;
     private Thread thread;
@@ -168,7 +171,11 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
                     player.stop();
                     EventBus.getDefault().post(new MessageEvent("changePlayPauseButtonToPlay", 0, 0, null, null, null));
                 }
-                position = GetMusicData.getSongPosition(ShPref.getString(R.string.song_name_for_service, "")) + 1;
+                if(!shuffle){
+                    position = GetMusicData.getSongPosition(ShPref.getString(R.string.song_name_for_service, "")) + 1;
+                }else {
+                    position = new Random().nextInt(GetMusicData.songs.size());
+                }
                 player = MediaPlayer.create(this, songs.get(position).getUri());
                 player.setOnCompletionListener(this);
                 EventBus.getDefault().post(new MessageEvent("start song", player.getDuration(), 0, GetMusicData.songs.get(position).getName(), GetMusicData.songs.get(position).getArtist(), GetMusicData.songs.get(position).getUri().toString()));

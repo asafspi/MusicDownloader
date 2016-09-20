@@ -33,6 +33,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class GetMusicData {
     public static ArrayList<Song> songs = new ArrayList<>();
@@ -40,7 +42,6 @@ public class GetMusicData {
     public static ArrayList<String> albums = new ArrayList<>();
 
     static void getAllSongs(final Context context) {
-
         new Thread(new Runnable() {
             public void run() {
                 if(songs.size() > 0){
@@ -88,10 +89,9 @@ public class GetMusicData {
                 EventBus.getDefault().post(new MessageFromBackPressed(MessageFromBackPressed.FROM_THREAD));
             }
         }).start();
-
-
-
     }
+
+
 
     public static void getDataFromJson(String shortVideoId) {
 
@@ -157,13 +157,6 @@ public class GetMusicData {
         boolean b = file.exists();
         int file_size = Integer.parseInt(String.valueOf(file.length()/1024));
         Log.d("ZAQ file size === ", b + " " + String.valueOf(file_size));
-//        final Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//            }
-//        }, 10 * 1000);
     }
 
     static int getSongPosition(String currentSong) {

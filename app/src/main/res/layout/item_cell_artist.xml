@@ -1,65 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_centerInParent="true"
-    android:layout_gravity="center"
-    android:layout_margin="15dp">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        app:srcCompat="@drawable/album_logo"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/imageView" />
-
-    <ImageView
-        android:id="@+id/cellAlbumImageView"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <View
-        android:layout_width="150dp"
-        android:layout_height="45dp"
-        android:layout_alignBottom="@+id/cellAlbumImageView"
-        android:layout_alignEnd="@+id/cellAlbumImageView"
-        android:layout_alignLeft="@+id/cellAlbumImageView"
-        android:layout_alignRight="@+id/cellAlbumImageView"
-        android:layout_alignStart="@+id/cellAlbumImageView"
-        android:alpha="0.3"
-        android:background="@android:color/black" />
-
-    <TextView
-        android:id="@+id/cellArtist_ArtistEditText"
-        android:layout_width="140dp"
-        android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:textColor="@android:color/white"
-        android:textSize="12sp"
-        android:layout_marginLeft="5dp"
-        tools:text="TextView"
-        android:layout_alignBottom="@+id/cellAlbumImageView"
-        android:layout_alignLeft="@+id/cellAlbumImageView"
-        android:layout_alignStart="@+id/cellAlbumImageView" />
-
-    <TextView
-        android:id="@+id/cellArtist_AlbumEditText"
-        android:layout_width="140dp"
-        android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:layout_marginLeft="5dp"
-
-        android:textColor="@android:color/white"
-        android:textSize="17sp"
-        tools:text="Artist"
-        android:layout_above="@+id/cellArtist_ArtistEditText"
-        android:layout_alignLeft="@+id/cellAlbumImageView"
-        android:layout_alignStart="@+id/cellAlbumImageView" />
-
-</RelativeLayout>
+</LinearLayout>
