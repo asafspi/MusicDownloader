@@ -101,9 +101,6 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder> 
                     case R.id.play:
                         playSong(p);
                         break;
-                    case R.id.add_to_playlist:
-                        popUpForPlaylist();
-                        break;
                     case R.id.use_as_ringtone:
 
                         String[] permissions = new String[]{Manifest.permission.WRITE_SETTINGS};
@@ -137,8 +134,12 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder> 
 
                         break;
                     case R.id.delete:
-                        File k = new File(String.valueOf(songsList.get(p).getUri()));
-                        k.delete();
+
+                        new File(songsList.get(p).getUri().toString()).delete();
+                        File file = new File(songsList.get(p).getUri().toString());
+                        boolean deleted = file.delete();
+                        mContext.deleteFile(songsList.get(p).getName());
+                        songsList.remove(p);
                         notifyDataSetChanged();
                         break;
                     default:

@@ -23,8 +23,8 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        // Show 3 total pages.
-        return 5;
+        // Show 4 total pages.
+        return 4;
     }
 
     @Override
@@ -38,8 +38,8 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
                 return "Albums";
             case 3:
                 return "Folders";
-            case 4:
-                return "Playlist";
+//            case 4:
+//                return "Playlist";
         }
         return null;
     }
