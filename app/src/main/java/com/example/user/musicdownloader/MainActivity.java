@@ -16,7 +16,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
@@ -26,6 +25,7 @@ import android.widget.Toast;
 import com.example.user.musicdownloader.EventBus.EventToService;
 import com.example.user.musicdownloader.EventBus.MessageEvent;
 import com.example.user.musicdownloader.EventBus.MessageFromBackPressed;
+import com.example.user.musicdownloader.EventBus.MessageSearch;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -33,12 +33,13 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import static com.example.user.musicdownloader.GetMusicData.songs;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener, SearchView.OnQueryTextListener {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     public ViewPager mViewPager;
     private ImageButton nextSong, priviesSong, playPause, shuffleButton, repeatButton;
@@ -73,17 +74,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         searchView = (SearchView) findViewById(R.id.searchView);
-        searchView.setOnTouchListener(new View.OnTouchListener() {
+        searchView.setOnQueryTextListener(this);
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                switch (motionEvent.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        mViewPager.setCurrentItem(0);
-                        break;
+            public void onFocusChange(View view, boolean isFocused) {
+                if (isFocused){
+                    mViewPager.setCurrentItem(0);
                 }
-                return true;
             }
         });
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -391,5 +391,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
+
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String query) {
+        ArrayList<Song> querySongs = new ArrayList<>();
+        for (Song song : GetMusicData.songs){
+            if (song.getName().toLowerCase().contains(query.toLowerCase())
+                    || song.getArtist().toLowerCase().contains(query.toLowerCase())
+                    || song.getAlbum().toLowerCase().contains(query.toLowerCase())) {
+                querySongs.add(song);
+            }
+        }
+        EventBus.getDefault().post(new MessageSearch(querySongs));
+        //songsRecyclerView = (RecyclerView) getActivity().findViewById(R.id.songsRecyclerView);
+//        SongsAdapter songsAdapter = new SongsAdapter(querySongs, SongsAdapter.TYPE_ALL_SONGS, this);
+//        songsRecyclerView.setAdapter(songsAdapter);
+        return true;
     }
 }

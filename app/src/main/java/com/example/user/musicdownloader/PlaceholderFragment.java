@@ -3,16 +3,15 @@ package com.example.user.musicdownloader;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.user.musicdownloader.EventBus.MessageFromBackPressed;
+import com.example.user.musicdownloader.EventBus.MessageSearch;
 import com.example.user.musicdownloader.adapters.ArtistsAdapter;
 import com.example.user.musicdownloader.adapters.SongsAdapter;
 
@@ -23,7 +22,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-public class PlaceholderFragment extends Fragment implements SearchView.OnQueryTextListener {
+public class PlaceholderFragment extends Fragment  {
 
     private RecyclerView songsRecyclerView;
     private SongsAdapter songsAdapter;
@@ -59,8 +58,7 @@ public class PlaceholderFragment extends Fragment implements SearchView.OnQueryT
         songsRecyclerView.setHasFixedSize(true);
         songsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
         tabHost = (TabLayout) getActivity().findViewById(R.id.tabs);
-        SearchView searchView = (SearchView) getActivity().findViewById(R.id.searchView);
-        searchView.setOnQueryTextListener(this);
+
         position = getArguments().getInt(ARG_SECTION_NUMBER);
         switch (position) {
             case 0:
@@ -153,34 +151,11 @@ public class PlaceholderFragment extends Fragment implements SearchView.OnQueryT
         }
     }
 
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return true;
+    // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageSearch event) {
+        SongsAdapter songsAdapter = new SongsAdapter(event.getQuerySongs(), SongsAdapter.TYPE_ALL_SONGS, getActivity());
+        songsRecyclerView.setAdapter(songsAdapter);
     }
 
-    @Override
-    public boolean onQueryTextChange(String query) {
-        ViewPager mViewPager = (ViewPager) getActivity().findViewById(R.id.container);
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getActivity().getSupportFragmentManager());
-
-        mViewPager.setCurrentItem(0);
-        position = getArguments().getInt(ARG_SECTION_NUMBER);
-        if(position == 0){
-            Log.d("zaq", "From Query1");
-            ArrayList<Song> querySongs = new ArrayList<>();
-            ArrayList<Song> getSongs = GetMusicData.songs;
-            for (int i = 0; i < getSongs.size(); i++) {
-                if (getSongs.get(i).getName().toLowerCase().contains(query.toLowerCase()) || getSongs.get(i).getArtist().toLowerCase().contains(query.toLowerCase()) || getSongs.get(i).getAlbum().toLowerCase().contains(query.toLowerCase())) {
-                    querySongs.add(getSongs.get(i));
-                }
-            }
-            //songsRecyclerView = (RecyclerView) getActivity().findViewById(R.id.songsRecyclerView);
-            songsAdapter = new SongsAdapter(querySongs, SongsAdapter.TYPE_ALL_SONGS, getContext());
-            songsRecyclerView.setAdapter(songsAdapter);
-        }else {
-            Log.d("zaq", "From Query2");
-            mViewPager.setCurrentItem(0);
-        }
-        return true;
-    }
 }
