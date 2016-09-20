@@ -1,72 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_content"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/background"
-    android:fitsSystemWindows="true"
-    tools:context="com.example.user.musicdownloader.MainActivity">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/main_content"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:background="@drawable/background"
+              android:fitsSystemWindows="true"
+              tools:context="com.example.user.musicdownloader.MainActivity">
 
 
     <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:popupTheme="@style/AppTheme.PopupOverlay">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/AppTheme.PopupOverlay">
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <ImageView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
-                android:orientation="horizontal">
+                android:padding="4dp"
+                android:onClick="showMenu"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/menu_btn" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="4dp"
-                    android:onClick="showMenu"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/menu_btn" />
+            <TextView
+                android:id="@+id/header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text="MUSIC PLAYER"
+                android:textColor="@android:color/white"
+                android:textSize="23sp"
+                fontPath="fonts/MyriadPro-BoldCond.otf"
+                tools:ignore="MissingPrefix" />
 
-                <TextView
-                    android:id="@+id/header"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center"
-                    android:text="MUSIC PLAYER"
-                    android:textColor="@android:color/white"
-                    android:textSize="23sp"
-                    fontPath="fonts/MyriadPro-BoldCond.otf"
-                    tools:ignore="MissingPrefix" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"/>
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1"/>
-
-                <android.support.v7.widget.SearchView
-                    android:id="@+id/searchView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    app:iconifiedByDefault="true"
-                    app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                    app:queryBackground="@drawable/search_view_underline"
-                    app:queryHint="Search" />
+            <android.support.v7.widget.SearchView
+                android:id="@+id/searchView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                app:iconifiedByDefault="true"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:queryBackground="@drawable/search_view_underline"
+                app:queryHint="Search" />
 
 
-            </LinearLayout>
+        </LinearLayout>
 
 
 
-        </android.support.v7.widget.Toolbar>
+    </android.support.v7.widget.Toolbar>
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tabs"
@@ -106,6 +106,28 @@
             android:max="10"
             android:progress="0" />
 
+        <ImageButton
+            android:id="@+id/playPauseButtonImageButton"
+            android:layout_width="37dp"
+            android:layout_height="37dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@drawable/play_icon"
+            android:background="@android:color/transparent"/>
+
+        <ImageButton
+            android:id="@+id/previuseImageView"
+            android:layout_width="37dp"
+            android:layout_height="37dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="45dp"
+            android:layout_marginRight="45dp"
+            android:layout_toLeftOf="@+id/playPauseButtonImageButton"
+            android:layout_toStartOf="@+id/playPauseButtonImageButton"
+            app:srcCompat="@drawable/reward_icon"
+            android:background="@android:color/transparent"
+            />
+
         <TextView
             android:id="@+id/totalTime"
             android:layout_width="wrap_content"
@@ -117,6 +139,30 @@
             android:text="0:00" />
 
         <TextView
+            android:id="@+id/artistNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/previuseImageView"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@+id/previuseImageView"
+            android:maxLines="1"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            tools:text="Artist" />
+
+        <TextView
+            android:id="@+id/songNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            tools:text="Title"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@+id/nextButtonImageView"
+            android:layout_alignEnd="@+id/nextButtonImageView" />
+
+        <TextView
             android:id="@+id/runningTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -126,90 +172,38 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
 
-        <TextView
-            android:id="@+id/artistNameTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:maxLines="1"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
-            tools:text="Artist"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/playPauseButtonImageButton" />
-
-        <TextView
-            android:id="@+id/songNameTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:layout_marginRight="10dp"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
-            tools:text="Title"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/artistNameTextView"
-            android:layout_marginStart="20dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-
         <ImageButton
-            android:id="@+id/playPauseButtonImageButton"
             android:layout_width="37dp"
             android:layout_height="37dp"
-            app:srcCompat="@drawable/play_icon"
+            app:srcCompat="@drawable/repeat_icon"
             android:background="@android:color/transparent"
+            android:id="@+id/repeatButton"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true" />
-
-        <ImageButton
-            android:id="@+id/previuseImageView"
-            android:layout_width="37dp"
-            android:layout_height="37dp"
-            app:srcCompat="@drawable/reward_icon"
-            android:layout_marginRight="30dp"
-            android:background="@android:color/transparent"
-            android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@+id/playPauseButtonImageButton"
-            android:layout_toStartOf="@+id/playPauseButtonImageButton" />
+            android:layout_alignRight="@+id/seekBar"
+            android:layout_alignEnd="@+id/seekBar" />
 
         <ImageButton
             android:id="@+id/nextButtonImageView"
             android:layout_width="37dp"
             android:layout_height="37dp"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="38dp"
+            android:layout_marginStart="38dp"
             app:srcCompat="@drawable/forward_icon"
             android:background="@android:color/transparent"
             android:layout_alignParentBottom="true"
             android:layout_toRightOf="@+id/playPauseButtonImageButton"
             android:layout_toEndOf="@+id/playPauseButtonImageButton" />
+
+        <ImageButton
+            android:layout_width="37dp"
+            android:layout_height="37dp"
+            app:srcCompat="@drawable/shuffle_icon"
+            android:background="@android:color/transparent"
+            android:id="@+id/shuffleButton"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/runningTime"
+            android:layout_toEndOf="@+id/runningTime" />
     </RelativeLayout>
-
-    <ImageButton
-        android:layout_width="37dp"
-        android:layout_height="37dp"
-        app:srcCompat="@drawable/repeat_icon"
-        android:layout_marginRight="15dp"
-        android:background="@android:color/transparent"
-        android:id="@+id/repeatButton"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        tools:ignore="RtlHardcoded" />
-
-    <ImageButton
-        android:layout_width="37dp"
-        android:layout_height="37dp"
-        android:layout_marginLeft="15dp"
-        app:srcCompat="@drawable/shuffle_icon"
-        android:background="@android:color/transparent"
-        android:id="@+id/shuffleButton"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        tools:ignore="RtlHardcoded" />
 
 
 </LinearLayout>

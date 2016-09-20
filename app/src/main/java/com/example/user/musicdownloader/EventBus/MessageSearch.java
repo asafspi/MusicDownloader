@@ -10,12 +10,18 @@ import java.util.ArrayList;
 
 public class MessageSearch {
     private final ArrayList<Song> querySongs;
+    private final String query;
 
-    public MessageSearch(ArrayList<Song> querySongs) {
+    public MessageSearch(ArrayList<Song> querySongs, String query) {
         this.querySongs = querySongs;
+        this.query = query;
     }
 
     public ArrayList<Song> getQuerySongs() {
         return querySongs;
+    }
+
+    public String getQuery() {
+        return query;
     }
 }

@@ -409,10 +409,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 querySongs.add(song);
             }
         }
-        EventBus.getDefault().post(new MessageSearch(querySongs));
-        //songsRecyclerView = (RecyclerView) getActivity().findViewById(R.id.songsRecyclerView);
-//        SongsAdapter songsAdapter = new SongsAdapter(querySongs, SongsAdapter.TYPE_ALL_SONGS, this);
-//        songsRecyclerView.setAdapter(songsAdapter);
+        EventBus.getDefault().post(new MessageSearch(querySongs, query));
         return true;
     }
 }

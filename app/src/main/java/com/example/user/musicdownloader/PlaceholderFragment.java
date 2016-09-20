@@ -62,7 +62,7 @@ public class PlaceholderFragment extends Fragment  {
         position = getArguments().getInt(ARG_SECTION_NUMBER);
         switch (position) {
             case 0:
-                songsAdapter = new SongsAdapter(GetMusicData.songs, SongsAdapter.TYPE_ALL_SONGS, getContext());
+                songsAdapter = new SongsAdapter(GetMusicData.songs);
                 songsRecyclerView.setAdapter(songsAdapter);
                 break;
             case 1:
@@ -104,7 +104,7 @@ public class PlaceholderFragment extends Fragment  {
                         artistSongs.add(songs.get(i));
                     }
                 }
-                songsAdapter = new SongsAdapter(artistSongs, SongsAdapter.TYPE_ALL_SONGS, getContext());
+                songsAdapter = new SongsAdapter(artistSongs);
                 songsRecyclerView.setAdapter(songsAdapter);
                 break;
             case 3: //From adapter album
@@ -114,7 +114,7 @@ public class PlaceholderFragment extends Fragment  {
                         albumSongs.add(songs.get(i));
                     }
                 }
-                songsAdapter = new SongsAdapter(albumSongs, SongsAdapter.TYPE_ALL_SONGS, getContext());
+                songsAdapter = new SongsAdapter(albumSongs);
                 songsRecyclerView.setAdapter(songsAdapter);
                 break;
             case 4: //From Thread
@@ -122,7 +122,7 @@ public class PlaceholderFragment extends Fragment  {
                 position = getArguments().getInt(ARG_SECTION_NUMBER);
                 switch (position) {
                     case 0:
-                        songsAdapter = new SongsAdapter(GetMusicData.songs, SongsAdapter.TYPE_ALL_SONGS, getContext());
+                        songsAdapter = new SongsAdapter(GetMusicData.songs);
                         songsRecyclerView.setAdapter(songsAdapter);
                         break;
                     case 1:
@@ -154,7 +154,8 @@ public class PlaceholderFragment extends Fragment  {
     // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageSearch event) {
-        SongsAdapter songsAdapter = new SongsAdapter(event.getQuerySongs(), SongsAdapter.TYPE_ALL_SONGS, getActivity());
+        String placeHolder = getContext().getString(R.string.search_web);
+        SongsAdapter songsAdapter = new SongsAdapter(placeHolder, event.getQuerySongs(), event.getQuery());
         songsRecyclerView.setAdapter(songsAdapter);
     }
 
