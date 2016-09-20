@@ -23,7 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.user.musicdownloader.Contextor;
-import com.example.user.musicdownloader.MainActivity;
 import com.example.user.musicdownloader.PermissionChecker;
 import com.example.user.musicdownloader.PermissionsActivity;
 import com.example.user.musicdownloader.PlaySongService;
@@ -38,59 +37,63 @@ import java.util.ArrayList;
 
 public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder> {
 
+    private static final int VIEW_TYPE_SEARCH_ONLINE = 0;
+    private static final int VIEW_TYPE_REGULAR = 1;
+
     private final ArrayList<Song> songsList;
-    private Context mContext;
-    private final int songType;
+    private final boolean SHOW_SEARCH_ROW;
     public static final int TYPE_ALL_SONGS = 1;
+    private String songQuery;
+    private String quryPlaceHolder;
+
+
 
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        int layout;
         switch (viewType) {
-            case TYPE_ALL_SONGS:
-                View v1 = LayoutInflater.from(parent.getContext()).
-                        inflate(R.layout.item_cell_song, parent, false);
-                return new ViewHolder(v1);
+            case VIEW_TYPE_SEARCH_ONLINE:
+                layout = R.layout.row_search_online;
+                break;
             default:
-                View v10 = LayoutInflater.from(parent.getContext()).
-                        inflate(R.layout.item_cell_song, parent, false);
-                return new ViewHolder(v10);
+                layout = R.layout.item_cell_song;
+
         }
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).
+                inflate(layout, parent, false), viewType);
     }
 
-    public SongsAdapter(ArrayList<Song> songs, int songType, Context context) {
+    public SongsAdapter(ArrayList<Song> songs) {
         this.songsList = songs;
-        this.songType = songType;
-        this.mContext = context;
+        this.SHOW_SEARCH_ROW = false;
+    }
+
+    public SongsAdapter(String placeHolder, ArrayList<Song> songs, String query) {
+        this.songsList = songs;
+        this.songQuery = query;
+        this.quryPlaceHolder = placeHolder;
+        this.SHOW_SEARCH_ROW = true;
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final int p = holder.getAdapterPosition();
-        switch (songType) {
-            case TYPE_ALL_SONGS:
-                holder.title.setText(songsList.get(p).getName());
-                holder.artist.setText(songsList.get(p).getArtist());
-                //Picasso.with(mContext).load(songsList.get(p).getImage()).resize(34, 34).into(holder.thumbImageView);
-                Picasso.with(mContext).load(songsList.get(p).getImage()).into(holder.thumbImageView);
-
-                break;
+        if (getItemViewType(position) == VIEW_TYPE_SEARCH_ONLINE){
+            holder.songQuery.setText(String.format(quryPlaceHolder, songQuery));
+            return;
         }
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                playSong(p);
-            }
-        });
-        holder.dots.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showPopupMenu(view, p);
-            }
-        });
+        if (SHOW_SEARCH_ROW){
+            position--;
+        }
+
+        holder.title.setText(songsList.get(position).getName());
+        holder.artist.setText(songsList.get(position).getArtist());
+        //Picasso.with(mContext).load(songsList.get(p).getImage()).resize(34, 34).into(holder.thumbImageView);
+        Picasso.with(holder.itemView.getContext()).load(songsList.get(position).getImage()).into(holder.thumbImageView);
+
     }
 
-    private void showPopupMenu(View v, final int p) {
+    private void showPopupMenu(final View v, final int p) {
         PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
         popupMenu.getMenuInflater().inflate(R.menu.pop_up_menu, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -100,6 +103,9 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder> 
                 switch (item.getItemId()) {
                     case R.id.play:
                         playSong(p);
+                        break;
+                    case R.id.add_to_playlist:
+                        popUpForPlaylist(v.getContext());
                         break;
                     case R.id.use_as_ringtone:
 
@@ -121,25 +127,21 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder> 
 
                             //Insert it into the database
                             Uri uri = MediaStore.Audio.Media.getContentUriForPath(k.getAbsolutePath());
-                            Uri newUri = mContext.getContentResolver().insert(uri, values);
+                            Uri newUri = v.getContext().getContentResolver().insert(uri, values);
 
                             RingtoneManager.setActualDefaultRingtoneUri(
-                                    mContext,
+                                    v.getContext(),
                                     RingtoneManager.TYPE_RINGTONE,
                                     newUri
                             );
                         } else {
-                            PermissionsActivity.startActivityForResult((Activity) mContext, PermissionsActivity.REQUEST_CODE_PERMISSION_READ_EXTERNAL_STORAGE, permissions);
+                            PermissionsActivity.startActivityForResult((Activity) v.getContext(), PermissionsActivity.REQUEST_CODE_PERMISSION_READ_EXTERNAL_STORAGE, permissions);
                         }
 
                         break;
                     case R.id.delete:
-
-                        new File(songsList.get(p).getUri().toString()).delete();
-                        File file = new File(songsList.get(p).getUri().toString());
-                        boolean deleted = file.delete();
-                        mContext.deleteFile(songsList.get(p).getName());
-                        songsList.remove(p);
+                        File k = new File(String.valueOf(songsList.get(p).getUri()));
+                        k.delete();
                         notifyDataSetChanged();
                         break;
                     default:
@@ -151,13 +153,13 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder> 
         popupMenu.show();
     }
 
-    private void popUpForPlaylist() {
+    private void popUpForPlaylist(Context context) {
 
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
         alertDialog.setTitle("");
         alertDialog.setMessage("Enter Password");
 
-        final EditText input = new EditText(mContext);
+        final EditText input = new EditText(context);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT);
@@ -198,15 +200,31 @@ public class ViewHolder extends RecyclerView.ViewHolder {
 
     private TextView title, artist;
     private ImageView thumbImageView, dots;
+    public TextView songQuery;
 
-    public ViewHolder(View itemView) {
+    public ViewHolder(View itemView, int viewType) {
         super(itemView);
-        switch (songType) {
-            case TYPE_ALL_SONGS:
+        switch (viewType) {
+            case VIEW_TYPE_REGULAR:
                 title = (TextView) itemView.findViewById(R.id.cellSongTextView);
                 artist = (TextView) itemView.findViewById(R.id.cellArtist_AlbumEditText);
                 thumbImageView = (ImageView) itemView.findViewById(R.id.cellImageView);
                 dots = (ImageView) itemView.findViewById(R.id.threeDotsItem);
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        playSong(getAdapterPosition());
+                    }
+                });
+                dots.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showPopupMenu(view, getAdapterPosition());
+                    }
+                });
+                break;
+            case VIEW_TYPE_SEARCH_ONLINE:
+                songQuery = (TextView)itemView.findViewById(R.id.query);
                 break;
         }
     }
@@ -216,6 +234,15 @@ public class ViewHolder extends RecyclerView.ViewHolder {
 
     @Override
     public int getItemCount() {
-        return songsList.size();
+        int size = songsList.size();
+        return SHOW_SEARCH_ROW ? ++size : size ;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (SHOW_SEARCH_ROW && position == 0){
+            return VIEW_TYPE_SEARCH_ONLINE;
+        }
+        return VIEW_TYPE_REGULAR;
     }
 }
