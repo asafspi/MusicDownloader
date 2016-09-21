@@ -98,7 +98,7 @@ public class fragmentSongPlayer extends Fragment  {
                 setRecyclerAlbums();
                 break;
             case TAB_SEARCH:
-
+                mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                 break;
 
         }
@@ -106,12 +106,12 @@ public class fragmentSongPlayer extends Fragment  {
 
     private void setRecyclerAlbums() {
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        mRecyclerView.setAdapter(new ArtistsAdapter(GetMusicData.artists, ArtistsAdapter.TYPE_ARTIST, getContext(), weak));
+        mRecyclerView.setAdapter(new ArtistsAdapter(GetMusicData.albums, ArtistsAdapter.TYPE_ALBUM, getContext(), weak));
     }
 
     private void setRecyclerArtist() {
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
-        mRecyclerView.setAdapter(new ArtistsAdapter(GetMusicData.albums, ArtistsAdapter.TYPE_ALBUM, getContext(), weak));
+        mRecyclerView.setAdapter(new ArtistsAdapter(GetMusicData.artists, ArtistsAdapter.TYPE_ARTIST, getContext(), weak));
     }
 
     private void setRecyclerSongs(ArrayList<Song> songs, String query){
@@ -246,10 +246,10 @@ public class fragmentSongPlayer extends Fragment  {
             super.onPostExecute(songs);
             mProgressBar.setVisibility(View.GONE); //display progressbar while waiting to server response
             if (songs != null && songs.size() > 0) {
-                mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                 mRecyclerView.setAdapter(new RecyclerAdapterSearch(songs));
                 textViewNoResult.setVisibility(View.GONE);
             } else {
+                mRecyclerView.setAdapter(new RecyclerAdapterSearch(songs));
                 textViewNoResult.setVisibility(View.VISIBLE);
             }
 
