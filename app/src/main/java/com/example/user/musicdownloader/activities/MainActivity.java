@@ -269,6 +269,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d("zaq", "From search button");
                 break;
             case R.id.shuffleButton:
+                PlaySongService.shuffle = !PlaySongService.shuffle;
+                if(PlaySongService.shuffle){
+                    Toast.makeText(this, "Shuffle mode is on", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(this, "Shuffle mode is off", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.repeatButton:
                 PlaySongService.repeatSong = !PlaySongService.repeatSong;

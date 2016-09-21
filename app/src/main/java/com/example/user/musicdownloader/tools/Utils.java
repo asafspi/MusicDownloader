@@ -21,26 +21,13 @@ import static com.example.user.musicdownloader.data.GetMusicData.songs;
 
 public class Utils {
 
-    public static boolean isStoragePermissionGranted(Context main2Activity) {
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (main2Activity.getApplicationContext().checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED) {
-                Log.v("ZAQ", "Permission is granted");
-                GetMusicData.getAllSongs(main2Activity);
-                return true;
-            } else {
+    public static void writePermission(){
 
-                Log.v("ZAQ", "Permission is revoked");
-                ActivityCompat.requestPermissions((Activity) main2Activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                ActivityCompat.requestPermissions((Activity) main2Activity, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-                return false;
-            }
-        } else { //permission is automatically granted on sdk<23 upon installation
-            Log.v("ZAQ", "Permission is granted");
-            GetMusicData.getAllSongs(main2Activity);
-            return true;
-        }
+
+
+
     }
+
     public static void changeSong(int i){
             Context context = Contextor.getInstance().getContext();
             int position = 2;
