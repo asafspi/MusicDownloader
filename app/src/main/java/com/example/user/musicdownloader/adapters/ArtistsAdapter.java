@@ -60,7 +60,7 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
             case TYPE_ARTIST:
                 holder.artistTextView.setText(artistsList.get(p));
                 //holder.numberOfAlbumsTextView.setText(GetMusicData.getNumberOfSongsFromArtist(artistsList.get(p)));
-                //holder.numberOfSongsTextView.setText(GetMusicData.getNumberOfSongsFromArtist(artistsList.get(p)));
+                holder.numberOfSongsTextView.setText(GetMusicData.getNumberOfSongsFromArtist(artistsList.get(p)) + " Songs");
                 break;
             case TYPE_ALBUM:
                 holder.title.setText(artistsList.get(p));
