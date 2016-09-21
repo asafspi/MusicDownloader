@@ -170,8 +170,6 @@
             android:id="@+id/playPauseButtonImageButton"
             android:layout_width="37dp"
             android:layout_height="37dp"
-            app:srcCompat="@drawable/play_icon"
-            android:background="@android:color/transparent"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:background="@android:color/transparent"
@@ -181,9 +179,7 @@
             android:id="@+id/previuseImageView"
             android:layout_width="37dp"
             android:layout_height="37dp"
-            app:srcCompat="@drawable/reward_icon"
             android:layout_marginRight="30dp"
-            android:background="@android:color/transparent"
             android:layout_alignParentBottom="true"
             android:layout_toLeftOf="@+id/playPauseButtonImageButton"
             android:layout_toStartOf="@+id/playPauseButtonImageButton"
@@ -214,6 +210,7 @@
             tools:ignore="RtlHardcoded" />
 
         <ImageButton
+            android:id="@+id/shuffleButton"
             android:layout_width="37dp"
             android:layout_height="37dp"
             android:layout_alignParentBottom="true"
