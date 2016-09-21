@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,7 +63,6 @@ public class fragmentSongPlayer extends Fragment  {
     public static fragmentSongPlayer newInstance(int sectionNumber) {
         fragmentSongPlayer fragment = new fragmentSongPlayer();
         Bundle args = new Bundle();
-        SearchView searchView;
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
         return fragment;
@@ -100,6 +98,7 @@ public class fragmentSongPlayer extends Fragment  {
                 setRecyclerAlbums();
                 break;
             case TAB_SEARCH:
+
                 break;
 
         }
@@ -175,8 +174,10 @@ public class fragmentSongPlayer extends Fragment  {
     // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageSearchOnline event) {
-        MainActivity.query = event.getQuery();
-        new SearchWebAsyncTask().execute(MainActivity.query);
+        if (position == TAB_SEARCH) {
+            MainActivity.query = event.getQuery();
+            new SearchWebAsyncTask().execute(MainActivity.query);
+        }
     }
 
     private class SearchWebAsyncTask extends AsyncTask<String, Void, ArrayList<SearchedSong>> {
@@ -245,6 +246,7 @@ public class fragmentSongPlayer extends Fragment  {
             super.onPostExecute(songs);
             mProgressBar.setVisibility(View.GONE); //display progressbar while waiting to server response
             if (songs != null && songs.size() > 0) {
+                mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                 mRecyclerView.setAdapter(new RecyclerAdapterSearch(songs));
                 textViewNoResult.setVisibility(View.GONE);
             } else {
