@@ -1,6 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:orientation="vertical">
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/musicnote_icon" />
+
+    <TextView
+        android:id="@+id/cellArtist_ArtistEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="9dp"
+        android:layout_marginTop="6dp"
+        android:layout_toEndOf="@+id/imageView3"
+        android:layout_toRightOf="@+id/imageView3"
+        android:textSize="18sp"
+        tools:text="Artist name" />
+
+
+    <TextView
+        android:id="@+id/cellArtist_numberOfAlbumsEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/cellArtist_ArtistEditText"
+        android:layout_alignStart="@+id/cellArtist_ArtistEditText"
+        android:layout_below="@+id/cellArtist_ArtistEditText"
+        tools:text="numbers of albums" />
+
+    <TextView
+        android:id="@+id/cellArtist_numberOfSongsEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/cellArtist_numberOfAlbumsEditText"
+        android:layout_alignStart="@+id/cellArtist_numberOfAlbumsEditText"
+        android:layout_below="@+id/cellArtist_numberOfAlbumsEditText"
+        android:textSize="13dp"
+        tools:text="number of songs" />
+</RelativeLayout>
