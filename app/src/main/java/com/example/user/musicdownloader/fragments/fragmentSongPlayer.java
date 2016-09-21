@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.example.user.musicdownloader.data.GetMusicData.songs;
+
 public class fragmentSongPlayer extends Fragment  {
 
     private static final int TAB_SONGS = 0;
@@ -50,6 +52,7 @@ public class fragmentSongPlayer extends Fragment  {
     private static final String ARG_SECTION_NUMBER = "section_number";
     int position;
     public static String placeHolder;
+    private boolean showFilterered;
 
     public fragmentSongPlayer() {
     }
@@ -88,7 +91,7 @@ public class fragmentSongPlayer extends Fragment  {
     private void setRecycler(){
         switch (position) {
             case TAB_SONGS:
-                setRecyclerSongs(GetMusicData.songs, null);
+                setRecyclerSongs(songs, null);
                 break;
             case TAB_ARTIST:
                 setRecyclerArtist();
@@ -119,22 +122,22 @@ public class fragmentSongPlayer extends Fragment  {
     }
 
     public void filterSongList(String title, int opt) {
-        ArrayList<Song> songs = GetMusicData.songs;
+        showFilterered = true;
         switch (opt) {
             case MainActivity.FROM_ADAPTER_ARTIST: //From adapter artist
                 ArrayList<Song> artistSongs = new ArrayList<>();
-                for (int i = 0; i < songs.size(); i++) {
-                    if (songs.get(i).getArtist().equals(title)) {
-                        artistSongs.add(songs.get(i));
+                for (int i = 0; i < GetMusicData.songs.size(); i++) {
+                    if (GetMusicData.songs.get(i).getArtist().equals(title)) {
+                        artistSongs.add(GetMusicData.songs.get(i));
                     }
                 }
                 setRecyclerSongs(artistSongs, null);
                 break;
             case MainActivity.FROM_ADAPTER_ALBUM: //From adapter album
                 ArrayList<Song> albumSongs = new ArrayList<>();
-                for (int i = 0; i < songs.size(); i++) {
-                    if (songs.get(i).getAlbum().equals(title)) {
-                        albumSongs.add(songs.get(i));
+                for (int i = 0; i < GetMusicData.songs.size(); i++) {
+                    if (GetMusicData.songs.get(i).getAlbum().equals(title)) {
+                        albumSongs.add(GetMusicData.songs.get(i));
                     }
                 }
                 setRecyclerSongs(albumSongs, null);
@@ -145,10 +148,17 @@ public class fragmentSongPlayer extends Fragment  {
     // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageFromBackPressed event) {
-        switch (event.action) {
+        switch (event.getAction()) {
             case MessageFromBackPressed.FROM_BACK_PRESSED:
-//                filterSongList("", MainActivity.FROM_BACK_PRESSED);
-                //todo back when display content
+                if (position != event.getPosition()){
+                    return;
+                }
+                if (showFilterered){
+                    setRecycler();
+                    showFilterered = false;
+                } else {
+                    getActivity().finish();
+                }
                 break;
             case MessageFromBackPressed.FROM_THREAD:  //
                 setRecycler();
