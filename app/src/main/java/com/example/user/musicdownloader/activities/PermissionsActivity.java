@@ -1,4 +1,4 @@
-package com.example.user.musicdownloader;
+package com.example.user.musicdownloader.activities;
 
 import android.Manifest;
 import android.app.Activity;
@@ -15,6 +15,10 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.example.user.musicdownloader.tools.Contextor;
+import com.example.user.musicdownloader.data.GetMusicData;
+import com.example.user.musicdownloader.tools.PermissionChecker;
+import com.example.user.musicdownloader.R;
 
 import java.util.ArrayList;
 

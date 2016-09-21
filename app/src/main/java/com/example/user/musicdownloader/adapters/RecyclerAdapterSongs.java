@@ -22,20 +22,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.user.musicdownloader.Contextor;
-import com.example.user.musicdownloader.PermissionChecker;
-import com.example.user.musicdownloader.PermissionsActivity;
-import com.example.user.musicdownloader.PlaySongService;
+import com.example.user.musicdownloader.tools.Contextor;
+import com.example.user.musicdownloader.tools.PermissionChecker;
+import com.example.user.musicdownloader.activities.PermissionsActivity;
+import com.example.user.musicdownloader.services.PlaySongService;
 import com.example.user.musicdownloader.R;
-import com.example.user.musicdownloader.ShPref;
-import com.example.user.musicdownloader.Song;
+import com.example.user.musicdownloader.tools.ShPref;
+import com.example.user.musicdownloader.data.Song;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
 
 
-public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder> {
+public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSongs.ViewHolder> {
 
     private static final int VIEW_TYPE_SEARCH_ONLINE = 0;
     private static final int VIEW_TYPE_REGULAR = 1;
@@ -64,12 +64,12 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder> 
                 inflate(layout, parent, false), viewType);
     }
 
-    public SongsAdapter(ArrayList<Song> songs) {
+    public RecyclerAdapterSongs(ArrayList<Song> songs) {
         this.songsList = songs;
         this.SHOW_SEARCH_ROW = false;
     }
 
-    public SongsAdapter(String placeHolder, ArrayList<Song> songs, String query) {
+    public RecyclerAdapterSongs(String placeHolder, ArrayList<Song> songs, String query) {
         this.songsList = songs;
         this.songQuery = query;
         this.quryPlaceHolder = placeHolder;

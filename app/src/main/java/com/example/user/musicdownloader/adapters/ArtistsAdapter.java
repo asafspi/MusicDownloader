@@ -8,11 +8,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.user.musicdownloader.GetMusicData;
-import com.example.user.musicdownloader.MainActivity;
-import com.example.user.musicdownloader.PlaceholderFragment;
+import com.example.user.musicdownloader.data.GetMusicData;
+import com.example.user.musicdownloader.activities.MainActivity;
+import com.example.user.musicdownloader.fragments.fragmentSongPlayer;
 import com.example.user.musicdownloader.R;
-import com.example.user.musicdownloader.Song;
+import com.example.user.musicdownloader.data.Song;
 import com.squareup.picasso.Picasso;
 
 import java.lang.ref.WeakReference;
@@ -28,7 +28,7 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
     private final ArrayList<Song> allSongsList = GetMusicData.songs;
     private Context mContext;
     private final int itemType;
-    private WeakReference<PlaceholderFragment> week;
+    private WeakReference<fragmentSongPlayer> week;
     public static final int TYPE_ARTIST = 1;
     public static final int TYPE_ALBUM = 2;
     private int songType;
@@ -52,7 +52,7 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
         }
     }
 
-    public ArtistsAdapter(ArrayList<String> artists, int itemYype, Context context, WeakReference<PlaceholderFragment> weak) {
+    public ArtistsAdapter(ArrayList<String> artists, int itemYype, Context context, WeakReference<fragmentSongPlayer> weak) {
         this.artistsList = artists;
         this.itemType = itemYype;
         this.mContext = context;
@@ -80,7 +80,7 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PlaceholderFragment fragment = week.get();
+                fragmentSongPlayer fragment = week.get();
                 if (fragment != null) {
                     switch (itemType) {
                         case TYPE_ARTIST:

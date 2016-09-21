@@ -8,7 +8,7 @@
               android:orientation="vertical"
               android:background="@drawable/background"
               android:fitsSystemWindows="true"
-              tools:context="com.example.user.musicdownloader.MainActivity">
+              tools:context="com.example.user.musicdownloader.activities.MainActivity">
 
 
     <android.support.v7.widget.Toolbar

@@ -1,4 +1,4 @@
-package com.example.user.musicdownloader;
+package com.example.user.musicdownloader.data;
 
 
 import android.app.DownloadManager;
@@ -6,18 +6,14 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.MediaStore;
-import android.renderscript.Sampler;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.user.musicdownloader.tools.Contextor;
 import com.example.user.musicdownloader.EventBus.MessageFromBackPressed;
 
 import org.greenrobot.eventbus.EventBus;
@@ -26,22 +22,19 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 public class GetMusicData {
     public static ArrayList<Song> songs = new ArrayList<>();
     public static ArrayList<String> artists = new ArrayList<>();
     public static ArrayList<String> albums = new ArrayList<>();
 
-    static void getAllSongs(final Context context) {
+    public static void getAllSongs(final Context context) {
         new Thread(new Runnable() {
             public void run() {
                 if(songs.size() > 0){
@@ -159,7 +152,7 @@ public class GetMusicData {
         Log.d("ZAQ file size === ", b + " " + String.valueOf(file_size));
     }
 
-    static int getSongPosition(String currentSong) {
+    public static int getSongPosition(String currentSong) {
 
         for (int i = 0; i < songs.size(); i++) {
             if (songs.get(i).getName().equals(currentSong)) {

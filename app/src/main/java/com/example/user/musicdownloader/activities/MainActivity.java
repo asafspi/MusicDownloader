@@ -1,4 +1,4 @@
-package com.example.user.musicdownloader;
+package com.example.user.musicdownloader.activities;
 
 import android.Manifest;
 import android.content.ComponentName;
@@ -26,6 +26,16 @@ import com.example.user.musicdownloader.EventBus.EventToService;
 import com.example.user.musicdownloader.EventBus.MessageEvent;
 import com.example.user.musicdownloader.EventBus.MessageFromBackPressed;
 import com.example.user.musicdownloader.EventBus.MessageSearch;
+import com.example.user.musicdownloader.data.GetMusicData;
+import com.example.user.musicdownloader.MyApplication;
+import com.example.user.musicdownloader.tools.PermissionChecker;
+import com.example.user.musicdownloader.services.PlaySongService;
+import com.example.user.musicdownloader.R;
+import com.example.user.musicdownloader.recievers.RemoteControlReceiver;
+import com.example.user.musicdownloader.tools.ShPref;
+import com.example.user.musicdownloader.data.Song;
+import com.example.user.musicdownloader.tools.Utils;
+import com.example.user.musicdownloader.adapters.MusicPlayerPagerAdapter;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -37,10 +47,17 @@ import java.util.ArrayList;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-import static com.example.user.musicdownloader.GetMusicData.songs;
+import static com.example.user.musicdownloader.data.GetMusicData.songs;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener, SearchView.OnQueryTextListener {
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+
+    public static int FROM_BACK_PRESSED = 1;
+    public static int FROM_ADAPTER_ARTIST = 2;
+    public static int FROM_ADAPTER_ALBUM = 3;
+
+    public static String query;
+
+    private MusicPlayerPagerAdapter mSectionsPagerAdapter;
     public ViewPager mViewPager;
     private ImageButton nextSong, priviesSong, playPause, shuffleButton, repeatButton;
     private TextView songNameTextView, artistNameTextView, songDuration, runningTime;
@@ -49,9 +66,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private SearchView searchView;
     private AudioManager mAudioManager;
     private ComponentName mRemoteControlResponder;
-    public static int FROM_BACK_PRESSED = 1;
-    public static int FROM_ADAPTER_ARTIST = 2;
-    public static int FROM_ADAPTER_ALBUM = 3;
+
+
 
     //http://android-developers.blogspot.co.il/2010/06/allowing-applications-to-play-nicer.html
     private static Method mRegisterMediaButtonEventReceiver;
@@ -86,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter = new MusicPlayerPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);

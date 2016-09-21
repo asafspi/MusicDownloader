@@ -1,21 +1,14 @@
-package com.example.user.musicdownloader;
+package com.example.user.musicdownloader.activities;
 
 import android.Manifest;
-import android.app.DownloadManager;
-import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
+import android.os.Bundle;
 import android.os.StrictMode;
-import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -24,22 +17,10 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
-import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-
-import static com.example.user.musicdownloader.GetMusicData.songs;
+import com.example.user.musicdownloader.data.GetMusicData;
+import com.example.user.musicdownloader.R;
 
 public class MainActivityOld extends AppCompatActivity implements View.OnClickListener, Runnable{
 

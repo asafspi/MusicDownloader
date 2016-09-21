@@ -1,6 +1,6 @@
 package com.example.user.musicdownloader.EventBus;
 
-import com.example.user.musicdownloader.Song;
+import com.example.user.musicdownloader.data.Song;
 
 import java.util.ArrayList;
 
