@@ -141,7 +141,8 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
                         break;
                     case R.id.delete:
                         File k = new File(String.valueOf(songsList.get(p).getUri()));
-                        k.delete();
+                        boolean b = k.delete();
+                        k.deleteOnExit();
                         notifyDataSetChanged();
                         break;
                     default:
