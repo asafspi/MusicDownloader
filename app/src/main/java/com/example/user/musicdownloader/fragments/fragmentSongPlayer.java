@@ -1,9 +1,10 @@
 package com.example.user.musicdownloader.fragments;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
@@ -12,28 +13,43 @@ import android.view.ViewGroup;
 
 import com.example.user.musicdownloader.EventBus.messages.MessageFromBackPressed;
 import com.example.user.musicdownloader.EventBus.messages.MessageSearch;
-import com.example.user.musicdownloader.data.GetMusicData;
+import com.example.user.musicdownloader.EventBus.messages.MessageSearchOnline;
 import com.example.user.musicdownloader.R;
-import com.example.user.musicdownloader.data.Song;
 import com.example.user.musicdownloader.activities.MainActivity;
 import com.example.user.musicdownloader.adapters.ArtistsAdapter;
+import com.example.user.musicdownloader.adapters.RecyclerAdapterSearch;
 import com.example.user.musicdownloader.adapters.RecyclerAdapterSongs;
+import com.example.user.musicdownloader.data.GetMusicData;
+import com.example.user.musicdownloader.data.SearchedSong;
+import com.example.user.musicdownloader.data.Song;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class fragmentSongPlayer extends Fragment  {
 
-    private RecyclerView songsRecyclerView;
+    private static final int TAB_SONGS = 0;
+    private static final int TAB_ARTIST = 1;
+    private static final int TAB_ALBUM = 2;
+    private static final int TAB_SEARCH = 3;
+    private RecyclerView mRecyclerView;
     private RecyclerAdapterSongs songsAdapter;
     public WeakReference<fragmentSongPlayer> weak;
-    private TabLayout tabHost;
+    private View mProgressBar;
+    private View textViewNoResult;;
+
     private static final String ARG_SECTION_NUMBER = "section_number";
     int position;
+    public static String placeHolder;
 
     public fragmentSongPlayer() {
     }
@@ -56,88 +72,72 @@ public class fragmentSongPlayer extends Fragment  {
                              Bundle savedInstanceState) {
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
+        placeHolder = getContext().getString(R.string.search_web);
         weak = new WeakReference<>(this);
-        View rootView = inflater.inflate(R.layout.fragment_recycler, container, false);
-        songsRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-        songsRecyclerView.setHasFixedSize(true);
-        songsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
-        tabHost = (TabLayout) getActivity().findViewById(R.id.tabs);
+        View rootView = inflater.inflate(R.layout.fragment_search, container, false);
+        mProgressBar = rootView.findViewById(R.id.progressBar);
+        textViewNoResult = rootView.findViewById(R.id.text_no_result);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        mRecyclerView.setHasFixedSize(true);
 
         position = getArguments().getInt(ARG_SECTION_NUMBER);
-        switch (position) {
-            case 0:
-                songsAdapter = new RecyclerAdapterSongs(GetMusicData.songs);
-                songsRecyclerView.setAdapter(songsAdapter);
-                break;
-            case 1:
-                ArtistsAdapter artistAdapter = new ArtistsAdapter(GetMusicData.artists, ArtistsAdapter.TYPE_ARTIST, getContext(), weak);
-                songsRecyclerView.setAdapter(artistAdapter);
-                break;
-            case 2:
-                songsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-                ArtistsAdapter albumAdapter = new ArtistsAdapter(GetMusicData.albums, ArtistsAdapter.TYPE_ALBUM, getContext(), weak);
-                songsRecyclerView.setAdapter(albumAdapter);
-                break;
-        }
+        setRecycler();
         return rootView;
     }
 
-    public void setRecyclerView(String title, int opt) {
-        ArrayList<Song> songs = GetMusicData.songs;
-        songsRecyclerView.setHasFixedSize(true);
-        songsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
-        switch (opt) {
-            case 1: // From back pressed
-                ArtistsAdapter artistAdapter;
-                if (position == 1) {
-                    artistAdapter = new ArtistsAdapter(GetMusicData.artists, ArtistsAdapter.TYPE_ARTIST, getContext(), weak);
-                    songsRecyclerView.setAdapter(artistAdapter);
-                }
-                if (position == 2) {
-                    artistAdapter = new ArtistsAdapter(GetMusicData.albums, ArtistsAdapter.TYPE_ALBUM, getContext(), weak);
-                    songsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-                    songsRecyclerView.setAdapter(artistAdapter);
-                }
-
+    private void setRecycler(){
+        switch (position) {
+            case TAB_SONGS:
+                setRecyclerSongs(GetMusicData.songs, null);
+                break;
+            case TAB_ARTIST:
+                setRecyclerArtist();
+                break;
+            case TAB_ALBUM:
+                setRecyclerAlbums();
+                break;
+            case TAB_SEARCH:
                 break;
 
-            case 2: //From adapter artist
+        }
+    }
+
+    private void setRecyclerAlbums() {
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        mRecyclerView.setAdapter(new ArtistsAdapter(GetMusicData.artists, ArtistsAdapter.TYPE_ARTIST, getContext(), weak));
+    }
+
+    private void setRecyclerArtist() {
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
+        mRecyclerView.setAdapter(new ArtistsAdapter(GetMusicData.albums, ArtistsAdapter.TYPE_ALBUM, getContext(), weak));
+    }
+
+    private void setRecyclerSongs(ArrayList<Song> songs, String query){
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setAdapter(new RecyclerAdapterSongs(songs, query));
+
+    }
+
+    public void filterSongList(String title, int opt) {
+        ArrayList<Song> songs = GetMusicData.songs;
+        switch (opt) {
+            case MainActivity.FROM_ADAPTER_ARTIST: //From adapter artist
                 ArrayList<Song> artistSongs = new ArrayList<>();
                 for (int i = 0; i < songs.size(); i++) {
                     if (songs.get(i).getArtist().equals(title)) {
                         artistSongs.add(songs.get(i));
                     }
                 }
-                songsAdapter = new RecyclerAdapterSongs(artistSongs);
-                songsRecyclerView.setAdapter(songsAdapter);
+                setRecyclerSongs(artistSongs, null);
                 break;
-            case 3: //From adapter album
+            case MainActivity.FROM_ADAPTER_ALBUM: //From adapter album
                 ArrayList<Song> albumSongs = new ArrayList<>();
                 for (int i = 0; i < songs.size(); i++) {
                     if (songs.get(i).getAlbum().equals(title)) {
                         albumSongs.add(songs.get(i));
                     }
                 }
-                songsAdapter = new RecyclerAdapterSongs(albumSongs);
-                songsRecyclerView.setAdapter(songsAdapter);
-                break;
-            case 4: //From Thread
-
-                position = getArguments().getInt(ARG_SECTION_NUMBER);
-                switch (position) {
-                    case 0:
-                        songsAdapter = new RecyclerAdapterSongs(GetMusicData.songs);
-                        songsRecyclerView.setAdapter(songsAdapter);
-                        break;
-                    case 1:
-                        artistAdapter = new ArtistsAdapter(GetMusicData.artists, ArtistsAdapter.TYPE_ARTIST, getContext(), weak);
-                        songsRecyclerView.setAdapter(artistAdapter);
-                        break;
-                    case 2:
-                        ArtistsAdapter albumAdapter = new ArtistsAdapter(GetMusicData.albums, ArtistsAdapter.TYPE_ALBUM, getContext(), weak);
-                        songsRecyclerView.setAdapter(albumAdapter);
-                        break;
-                }
+                setRecyclerSongs(albumSongs, null);
                 break;
         }
     }
@@ -146,11 +146,12 @@ public class fragmentSongPlayer extends Fragment  {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageFromBackPressed event) {
         switch (event.action) {
-            case 1: //MessageFromBackPressed.FROM_BACK_PRESSED
-                setRecyclerView("", MainActivity.FROM_BACK_PRESSED);
+            case MessageFromBackPressed.FROM_BACK_PRESSED:
+//                filterSongList("", MainActivity.FROM_BACK_PRESSED);
+                //todo back when display content
                 break;
-            case 2:  // MessageFromBackPressed.FROM_THREAD
-                setRecyclerView("", 4);
+            case MessageFromBackPressed.FROM_THREAD:  //
+                setRecycler();
                 break;
         }
     }
@@ -158,9 +159,89 @@ public class fragmentSongPlayer extends Fragment  {
     // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageSearch event) {
-        String placeHolder = getContext().getString(R.string.search_web);
-        RecyclerAdapterSongs songsAdapter = new RecyclerAdapterSongs(placeHolder, event.getQuerySongs(), event.getQuery());
-        songsRecyclerView.setAdapter(songsAdapter);
+        setRecyclerSongs(event.getQuerySongs(), event.getQuery());
+    }
+
+    // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageSearchOnline event) {
+        MainActivity.query = event.getQuery();
+        new SearchWebAsyncTask().execute(MainActivity.query);
+    }
+
+    private class SearchWebAsyncTask extends AsyncTask<String, Void, ArrayList<SearchedSong>> {
+
+        private Element connectionElement;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressBar.setVisibility(View.VISIBLE); //display progressbar while waiting to server response
+        }
+
+        @Override
+        protected ArrayList<SearchedSong> doInBackground(String... params) {
+            String query = params[0];
+            query = query.trim().replaceAll(" ", "+");
+            try {
+                connectionElement = Jsoup.connect("http://mp3.sogou.com/music.so?st=1&query=" + query + "&debug=null&comp=1" + "&len=30").timeout(8000).ignoreHttpErrors(true).get().body();//&page=" + this.f1478d
+                final ArrayList<SearchedSong> songs = new ArrayList<>();
+                String songLink = null;
+                String songLabel = null;
+                String songArtist = null;
+                String songAlbum = null;
+                LOOP: for (Element element : connectionElement.getElementsByClass("play_btn")){
+                    Pattern p = Pattern.compile("#(.*?)#");
+                    Matcher matcher = p.matcher(element.attr("onclick"));
+                    int i = 0;
+                    String s;
+                    MATCHER: while (matcher.find()) {
+                        s = matcher.group(1);
+                        switch (i){
+                            case 2:
+                                if (s == null || s.length() < 10){ //link is broken
+                                    continue LOOP;
+                                }
+                                songLink = s;
+                                break;
+                            case 3:
+                                songLabel = s;
+                                break;
+                            case 5 :
+                                songArtist = s;
+                                break;
+                            case 7:
+                                songAlbum = s;
+                                break MATCHER;
+
+                        }
+                        System.out.println(s);
+                        i++;
+                    }
+                    SearchedSong song = new SearchedSong(songLink, songLabel, songArtist, songAlbum);
+                    songs.add(song);
+//                    System.out.println("_____________________________________________________________");
+                }
+                return songs;
+//                Log.d("TAG", songs.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<SearchedSong> songs) {
+            super.onPostExecute(songs);
+            mProgressBar.setVisibility(View.GONE); //display progressbar while waiting to server response
+            if (songs != null && songs.size() > 0) {
+                mRecyclerView.setAdapter(new RecyclerAdapterSearch(songs));
+                textViewNoResult.setVisibility(View.GONE);
+            } else {
+                textViewNoResult.setVisibility(View.VISIBLE);
+            }
+
+        }
     }
 
 }

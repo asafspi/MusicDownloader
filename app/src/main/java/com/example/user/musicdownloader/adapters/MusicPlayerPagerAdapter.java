@@ -38,7 +38,7 @@ public class MusicPlayerPagerAdapter extends FragmentPagerAdapter {
             case 2:
                 return "Albums";
             case 3:
-                return "Folders";
+                return "Search";
 //            case 4:
 //                return "Playlist";
         }
