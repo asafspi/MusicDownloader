@@ -226,7 +226,7 @@ public class fragmentSongPlayer extends Fragment  {
                                 break MATCHER;
 
                         }
-                        System.out.println(s);
+//                        System.out.println(s);
                         i++;
                     }
                     SearchedSong song = new SearchedSong(songLink, songLabel, songArtist, songAlbum);
