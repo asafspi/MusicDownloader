@@ -255,7 +255,7 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
         if (null!= player && player.isPlaying()) {
             contentView.setImageViewResource(R.id.playNotificationImage, android.R.drawable.ic_media_pause);
         } else {
-            contentView.setImageViewResource(R.id.playNotificationImage, android.R.drawable.ic_media_play);
+            contentView.setImageViewResource(R.id.playNotificationImage, R.drawable.play_notification);
         }
         setNextNotificationButton();
         setPreviewsNotificationButton();

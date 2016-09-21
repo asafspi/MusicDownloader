@@ -37,14 +37,15 @@
         android:id="@+id/cellSongTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxLines="1"
         android:layout_alignLeft="@+id/cellArtist_AlbumEditText"
         android:layout_alignStart="@+id/cellArtist_AlbumEditText"
         android:layout_alignTop="@+id/cellImageView"
         android:layout_marginTop="5dp"
         android:textSize="15sp"
         tools:text="Title"
-        android:layout_toLeftOf="@+id/threeDotsItem"
-        android:layout_toStartOf="@+id/threeDotsItem" />
+        android:layout_toStartOf="@+id/threeDotsItem"
+        android:layout_toLeftOf="@+id/threeDotsItem" />
 
     <ImageView
         android:id="@+id/threeDotsItem"
