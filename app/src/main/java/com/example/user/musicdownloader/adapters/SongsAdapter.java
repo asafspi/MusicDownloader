@@ -104,9 +104,9 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ViewHolder> 
                     case R.id.play:
                         playSong(p);
                         break;
-                    case R.id.add_to_playlist:
-                        popUpForPlaylist(v.getContext());
-                        break;
+//                    case R.id.add_to_playlist:
+//                        popUpForPlaylist(v.getContext());
+//                        break;
                     case R.id.use_as_ringtone:
 
                         String[] permissions = new String[]{Manifest.permission.WRITE_SETTINGS};

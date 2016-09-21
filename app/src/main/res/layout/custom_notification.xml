@@ -5,7 +5,7 @@
     android:id="@+id/custom_notification"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/notif_background"
+    android:background="@android:color/black"
     android:baselineAligned="false"
     android:orientation="horizontal">
 
@@ -16,9 +16,13 @@
 
         <ImageView
             android:id="@+id/torch_image"
-            android:layout_width="55dp"
-            android:layout_height="65dp"
-            android:src="@android:drawable/ic_media_next" />
+            android:layout_width="20dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/forward_notification"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp" />
 
     </RelativeLayout>
 
@@ -30,9 +34,11 @@
 
         <ImageView
             android:id="@+id/playNotificationImage"
-            android:layout_width="55dp"
-            android:layout_height="65dp"
-            android:src="@android:drawable/ic_media_play" />
+            android:layout_width="50dp"
+            android:layout_height="60dp"
+            android:src="@drawable/play_notification"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
 
     </RelativeLayout>
 
@@ -42,9 +48,14 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:layout_width="50dp"
-            android:layout_height="65dp"
-            android:src="@android:drawable/ic_media_previous" />
+            android:layout_width="20dp"
+            android:layout_height="40dp"
+            android:src="@drawable/forward_notification"
+            android:rotation="180"
+            android:id="@+id/imageView2"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp" />
 
     </RelativeLayout>
 
@@ -54,13 +65,13 @@
 
         <Button
             android:id="@+id/x_notification"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="13dp"
+            android:layout_height="13dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_margin="5dp"
-            android:background="@android:drawable/btn_dialog" />
+            android:background="@drawable/x_notfication" />
 
         <TextView
             android:id="@+id/textViewNotification"

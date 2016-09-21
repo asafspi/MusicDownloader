@@ -77,6 +77,7 @@ public class GetMusicData {
                             Uri uriToImage = ContentUris.withAppendedId(sArtworkUri, albumId);
                             ContentResolver res = context.getContentResolver();
                             Uri uriOfSong = Uri.parse(cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.DATA)));
+                            String fileSize = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.SIZE));
                             File file = new File(String.valueOf(uriOfSong));
                             int file_size = Integer.parseInt(String.valueOf(file.length()/1024));
 
