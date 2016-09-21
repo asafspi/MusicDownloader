@@ -438,6 +438,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onQueryTextChange(String query) {
+        if (mViewPager.getVisibility() == View.GONE) {
+            mViewPager.setVisibility(View.VISIBLE);
+            mFrameLayoutSearchFragment.setVisibility(View.GONE);
+        }
         ArrayList<Song> querySongs = new ArrayList<>();
         for (Song song : GetMusicData.songs){
             if (song.getName().toLowerCase().contains(query.toLowerCase())
