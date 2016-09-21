@@ -17,7 +17,7 @@ import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -27,7 +27,7 @@ import com.example.user.musicdownloader.EventBus.EventToService;
 import com.example.user.musicdownloader.EventBus.messages.MessageEvent;
 import com.example.user.musicdownloader.EventBus.messages.MessageFromBackPressed;
 import com.example.user.musicdownloader.EventBus.messages.MessageSearch;
-import com.example.user.musicdownloader.MyApplication;
+import com.example.user.musicdownloader.EventBus.messages.MessageSearchOnline;
 import com.example.user.musicdownloader.R;
 import com.example.user.musicdownloader.adapters.MusicPlayerPagerAdapter;
 import com.example.user.musicdownloader.data.GetMusicData;
@@ -50,7 +50,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import static com.example.user.musicdownloader.data.GetMusicData.songs;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener, SearchView.OnQueryTextListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener, SearchView.OnQueryTextListener, ViewPager.OnPageChangeListener {
 
     public static final int FROM_BACK_PRESSED = 1;
     public static final int FROM_ADAPTER_ARTIST = 2;
@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //http://android-developers.blogspot.co.il/2010/06/allowing-applications-to-play-nicer.html
     private static Method mRegisterMediaButtonEventReceiver;
     private static Method mUnregisterMediaButtonEventReceiver;
-    private FrameLayout mFrameLayoutSearchFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,9 +105,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.addOnPageChangeListener(this);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-        mFrameLayoutSearchFragment = (FrameLayout)findViewById(R.id.frame_layout_search_fragment);
 
         setVies();
 
@@ -350,9 +349,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 finish();
                 break;
             case 1:
-                EventBus.getDefault().post(new MessageFromBackPressed(MessageFromBackPressed.FROM_BACK_PRESSED));
             case 2://no break!!
-                EventBus.getDefault().post(new MessageFromBackPressed(MessageFromBackPressed.FROM_BACK_PRESSED));
+                EventBus.getDefault().post(new MessageFromBackPressed(MessageFromBackPressed.FROM_BACK_PRESSED, position));
                 break;
             case 3:
                 break;
@@ -422,19 +420,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onQueryTextChange(String query) {
-        if (mViewPager.getVisibility() == View.GONE) {
-            mViewPager.setVisibility(View.VISIBLE);
-            mFrameLayoutSearchFragment.setVisibility(View.GONE);
-        }
-        ArrayList<Song> querySongs = new ArrayList<>();
-        for (Song song : GetMusicData.songs){
-            if (song.getName().toLowerCase().contains(query.toLowerCase())
-                    || song.getArtist().toLowerCase().contains(query.toLowerCase())
-                    || song.getAlbum().toLowerCase().contains(query.toLowerCase())) {
-                querySongs.add(song);
+        if (mViewPager.getCurrentItem() == 3){
+            EventBus.getDefault().post(new MessageSearchOnline(query));
+        } else {
+            ArrayList<Song> querySongs = new ArrayList<>();
+            for (Song song : GetMusicData.songs){
+                if (song.getName().toLowerCase().contains(query.toLowerCase())
+                        || song.getArtist().toLowerCase().contains(query.toLowerCase())
+                        || song.getAlbum().toLowerCase().contains(query.toLowerCase())) {
+                    querySongs.add(song);
+                }
             }
+            EventBus.getDefault().post(new MessageSearch(querySongs, query));
         }
-        EventBus.getDefault().post(new MessageSearch(querySongs, query));
         return true;
+    }
+
+
+    @Override
+    public void onPageScrolled(int i, float v, int i1) {
+
+    }
+
+    @Override
+    public void onPageSelected(int i) {
+        if (i == 3){
+            searchView.setIconified(false);
+            searchView.setFocusable(true);
+            InputMethodManager imm = (InputMethodManager)   getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        }
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int i) {
+
     }
 }
