@@ -28,6 +28,11 @@ public class MusicPlayerPagerAdapter extends FragmentPagerAdapter {
         return 4;
     }
 
+   /* @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
+    }*/
+
     @Override
     public CharSequence getPageTitle(int position) {
         switch (position) {
@@ -39,8 +44,6 @@ public class MusicPlayerPagerAdapter extends FragmentPagerAdapter {
                 return "Albums";
             case 3:
                 return "Search";
-//            case 4:
-//                return "Playlist";
         }
         return null;
     }

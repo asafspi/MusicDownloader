@@ -1,11 +1,17 @@
 package com.example.user.musicdownloader.activities;
 
 import android.Manifest;
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -43,6 +49,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -57,8 +64,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int FROM_ADAPTER_ARTIST = 2;
     public static final int FROM_ADAPTER_ALBUM = 3;
     public static String query;
+    public static long downId;
+    public static String pathId;
 
-    private MusicPlayerPagerAdapter mSectionsPagerAdapter;
     public ViewPager mViewPager;
     private ImageButton nextSong, priviesSong, playPause, shuffleButton, repeatButton;
     private TextView songNameTextView, artistNameTextView, songDuration, runningTime;
@@ -94,16 +102,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onFocusChange(View view, boolean isFocused) {
                 if (isFocused){
-                    mViewPager.setCurrentItem(0);
+                    mViewPager.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            int position = mViewPager.getCurrentItem();
+                            if (position == 1 || position == 2 ) {
+                                mViewPager.setCurrentItem(0);
+                            }
+                        }
+                    });
                 }
             }
         });
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new MusicPlayerPagerAdapter(getSupportFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
+        MusicPlayerPagerAdapter mSectionsPagerAdapter = new MusicPlayerPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.addOnPageChangeListener(this);
@@ -116,6 +130,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mRemoteControlResponder = new ComponentName(getPackageName(),
                 RemoteControlReceiver.class.getName());
         initializeRemoteControlRegistrationMethods();
+        registerReceiver(receiver, new IntentFilter(
+                DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         //GetMusicData.downloadFile("url download Test", "http://cc.stream.qqmusic.qq.com/C100000nb6qX0MA1Lm.m4a?fromtag=52");
     }
 
@@ -464,4 +480,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onPageScrollStateChanged(int i) {
 
     }
+
+    BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
+                Long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
+                if (downloadId == downId) {
+                    Log.d("TAG", "reciever got the doownload complete");
+                    File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), pathId);
+                    MediaScannerConnection.scanFile(getApplicationContext(), new String[]{
+                                    file.getAbsolutePath()},
+                            null, new MediaScannerConnection.OnScanCompletedListener() {
+                                public void onScanCompleted(String path, Uri uri) {
+                                    if (uri != null) {
+                                        Log.d("TAG", "onScanCompleted: " + uri.toString());
+                                        GetMusicData.getAllSongs(MainActivity.this);
+                                    }
+                                }
+
+                            });
+                }
+            }
+        }
+    };
 }

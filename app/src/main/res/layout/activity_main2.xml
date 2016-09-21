@@ -58,10 +58,10 @@
                 android:layout_gravity="center_vertical"
                 app:iconifiedByDefault="true"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:queryBackground="@drawable/search_view_underline"
                 app:queryHint="Search"/>
 
-
+<!--
+                app:queryBackground="@drawable/search_view_underline"-->
         </LinearLayout>
 
 

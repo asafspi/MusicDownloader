@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.musicdownloader.R;
+import com.example.user.musicdownloader.activities.MainActivity;
 import com.example.user.musicdownloader.activities.PermissionsActivity;
 import com.example.user.musicdownloader.data.SearchedSong;
 import com.example.user.musicdownloader.tools.Utils;
@@ -78,7 +79,7 @@ public class RecyclerAdapterSearch extends RecyclerView.Adapter<RecyclerAdapterS
         }
     }
 
-    public long downloadFile(Context context, String url, String fileName) {
+    public void downloadFile(Context context, String url, String fileName) {
         boolean permission = ContextCompat.checkSelfPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
         if (permission) {
             DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
@@ -89,12 +90,14 @@ public class RecyclerAdapterSearch extends RecyclerView.Adapter<RecyclerAdapterS
             request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
             request.allowScanningByMediaScanner();
             DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-            return manager.enqueue(request);
+            MainActivity.downId =  manager.enqueue(request);
+            MainActivity.pathId = fileName;
+
         } else {
             Toast.makeText(context, "You need to allow writing to memory", Toast.LENGTH_SHORT).show();
             ActivityCompat.requestPermissions((Activity)context, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     PermissionsActivity.REQUEST_CODE_PERMISSION_WRITE_SETTINGS);
-            return -1;
+            MainActivity.downId = -1;
         }
 
     }

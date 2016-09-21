@@ -21,18 +21,14 @@ import com.example.user.musicdownloader.adapters.RecyclerAdapterSongs;
 import com.example.user.musicdownloader.data.GetMusicData;
 import com.example.user.musicdownloader.data.SearchedSong;
 import com.example.user.musicdownloader.data.Song;
+import com.example.user.musicdownloader.tools.SearchHelper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.example.user.musicdownloader.data.GetMusicData.songs;
 
@@ -52,6 +48,7 @@ public class fragmentSongPlayer extends Fragment  {
     int position;
     public static String placeHolder;
     private boolean showFilterered;
+    private SearchWebAsyncTask searchWebAsyncTask;
 
     public fragmentSongPlayer() {
     }
@@ -176,13 +173,16 @@ public class fragmentSongPlayer extends Fragment  {
     public void onMessageEvent(MessageSearchOnline event) {
         if (position == TAB_SEARCH) {
             MainActivity.query = event.getQuery();
-            new SearchWebAsyncTask().execute(MainActivity.query);
+            if (searchWebAsyncTask != null) {
+                searchWebAsyncTask.cancel(true);
+            }
+            searchWebAsyncTask = new SearchWebAsyncTask();
+            searchWebAsyncTask.execute(MainActivity.query);
         }
     }
 
     private class SearchWebAsyncTask extends AsyncTask<String, Void, ArrayList<SearchedSong>> {
 
-        private Element connectionElement;
 
         @Override
         protected void onPreExecute() {
@@ -194,56 +194,18 @@ public class fragmentSongPlayer extends Fragment  {
         protected ArrayList<SearchedSong> doInBackground(String... params) {
             String query = params[0];
             query = query.trim().replaceAll(" ", "+");
-            try {
-                connectionElement = Jsoup.connect("http://mp3.sogou.com/music.so?st=1&query=" + query + "&debug=null&comp=1" + "&len=30").timeout(8000).ignoreHttpErrors(true).get().body();//&page=" + this.f1478d
-                final ArrayList<SearchedSong> songs = new ArrayList<>();
-                String songLink = null;
-                String songLabel = null;
-                String songArtist = null;
-                String songAlbum = null;
-                LOOP: for (Element element : connectionElement.getElementsByClass("play_btn")){
-                    Pattern p = Pattern.compile("#(.*?)#");
-                    Matcher matcher = p.matcher(element.attr("onclick"));
-                    int i = 0;
-                    String s;
-                    MATCHER: while (matcher.find()) {
-                        s = matcher.group(1);
-                        switch (i){
-                            case 2:
-                                if (s == null || s.length() < 10){ //link is broken
-                                    continue LOOP;
-                                }
-                                songLink = s;
-                                break;
-                            case 3:
-                                songLabel = s;
-                                break;
-                            case 5 :
-                                songArtist = s;
-                                break;
-                            case 7:
-                                songAlbum = s;
-                                break MATCHER;
-
-                        }
-//                        System.out.println(s);
-                        i++;
-                    }
-                    SearchedSong song = new SearchedSong(songLink, songLabel, songArtist, songAlbum);
-                    songs.add(song);
-//                    System.out.println("_____________________________________________________________");
-                }
-                return songs;
-//                Log.d("TAG", songs.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (isCancelled()){
+                return null;
             }
-            return null;
+            return SearchHelper.searchWeb(query);
         }
 
         @Override
         protected void onPostExecute(ArrayList<SearchedSong> songs) {
             super.onPostExecute(songs);
+            if (isCancelled()){
+                return;
+            }
             mProgressBar.setVisibility(View.GONE); //display progressbar while waiting to server response
             if (songs != null && songs.size() > 0) {
                 mRecyclerView.setAdapter(new RecyclerAdapterSearch(songs));
@@ -252,7 +214,7 @@ public class fragmentSongPlayer extends Fragment  {
                 mRecyclerView.setAdapter(new RecyclerAdapterSearch(songs));
                 textViewNoResult.setVisibility(View.VISIBLE);
             }
-
+            searchWebAsyncTask = null;
         }
     }
 
