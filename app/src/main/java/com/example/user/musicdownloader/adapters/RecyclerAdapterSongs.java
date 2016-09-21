@@ -6,9 +6,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.user.musicdownloader.EventBus.messages.MessageSearchOnline;
+import com.example.user.musicdownloader.MyApplication;
 import com.example.user.musicdownloader.R;
 import com.example.user.musicdownloader.activities.PermissionsActivity;
 import com.example.user.musicdownloader.data.Song;
@@ -48,6 +51,11 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
     public static final int TYPE_ALL_SONGS = 1;
     private String songQuery;
     private String quryPlaceHolder;
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
 
 
 
@@ -143,10 +151,13 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
 
                         break;
                     case R.id.delete:
-                        File k = new File(String.valueOf(songsList.get(p).getUri()));
-                        boolean b = k.delete();
-                        k.deleteOnExit();
-                        notifyDataSetChanged();
+
+                        //verifyStoragePermissions(MyApplication.);
+
+//                        File k = new File(String.valueOf(songsList.get(p).getUri()));
+//                        boolean b = k.delete();
+//                        k.deleteOnExit();
+//                        notifyDataSetChanged();
                         break;
                     default:
                         break;
@@ -157,36 +168,19 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
         popupMenu.show();
     }
 
-    private void popUpForPlaylist(Context context) {
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-        alertDialog.setTitle("");
-        alertDialog.setMessage("Enter Password");
-
-        final EditText input = new EditText(context);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        input.setLayoutParams(lp);
-        alertDialog.setView(input);
-        //alertDialog.setIcon(R.drawable.key);
-
-        alertDialog.setPositiveButton("Add",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-
-                    }
-                });
-
-        alertDialog.setNegativeButton("NO",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-        alertDialog.show();
-}
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+    }
 
     private void playSong(int p) {
         Context context = Contextor.getInstance().getContext();
@@ -238,7 +232,6 @@ public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickL
     @Override
     public void onClick(View view) {
         EventBus.getDefault().post(new MessageSearchOnline(songQuery));
-
     }
 }
 

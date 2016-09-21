@@ -47,4 +47,13 @@ public class Utils {
             context.startService(new Intent(context, PlaySongService.class));
 
     }
+
+    public static void playFromInternet(String name, String artist, String path){
+        Context context = Contextor.getInstance().getContext();
+        ShPref.put(R.string.song_path_for_service, path);
+        ShPref.put(R.string.song_name_for_service, name);
+        ShPref.put(R.string.song_artist_for_service, artist);
+        context.stopService(new Intent(context, PlaySongService.class));
+        context.startService(new Intent(context, PlaySongService.class));
+    }
 }
