@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static int FROM_BACK_PRESSED = 1;
     public static int FROM_ADAPTER_ARTIST = 2;
     public static int FROM_ADAPTER_ALBUM = 3;
-
     public static String query;
 
     private MusicPlayerPagerAdapter mSectionsPagerAdapter;
@@ -148,7 +147,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     songDuration.setText(String.valueOf(min + ":" + sec));
                 }
-
                 break;
             case "from run":
                 timeInSeconds = event.currentDuration / 1000;
