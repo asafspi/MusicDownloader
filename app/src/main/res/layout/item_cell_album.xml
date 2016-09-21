@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_centerInParent="true"
     android:layout_gravity="center"
-    android:layout_margin="15dp">
+    android:layout_margin="5dp">
 
     <ImageView
         android:layout_width="100dp"
@@ -18,8 +18,8 @@
 
     <ImageView
         android:id="@+id/cellAlbumImageView"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="190dp"
+        android:layout_height="190dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -27,12 +27,14 @@
     <View
         android:layout_width="150dp"
         android:layout_height="45dp"
+        android:layout_marginBottom="10dp"
+
         android:layout_alignBottom="@+id/cellAlbumImageView"
         android:layout_alignEnd="@+id/cellAlbumImageView"
         android:layout_alignLeft="@+id/cellAlbumImageView"
         android:layout_alignRight="@+id/cellAlbumImageView"
         android:layout_alignStart="@+id/cellAlbumImageView"
-        android:alpha="0.3"
+        android:alpha="0.4"
         android:background="@android:color/black" />
 
     <TextView
@@ -44,6 +46,7 @@
         android:textSize="12sp"
         android:layout_marginLeft="5dp"
         tools:text="TextView"
+        android:layout_marginBottom="13dp"
         android:layout_alignBottom="@+id/cellAlbumImageView"
         android:layout_alignLeft="@+id/cellAlbumImageView"
         android:layout_alignStart="@+id/cellAlbumImageView" />
@@ -54,7 +57,6 @@
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:layout_marginLeft="5dp"
-
         android:textColor="@android:color/white"
         android:textSize="17sp"
         tools:text="Artist"
