@@ -14,7 +14,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.user.musicdownloader.tools.Contextor;
-import com.example.user.musicdownloader.EventBus.MessageFromBackPressed;
+import com.example.user.musicdownloader.EventBus.messages.MessageFromBackPressed;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;

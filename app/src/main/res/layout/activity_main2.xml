@@ -31,7 +31,7 @@
                 android:layout_gravity="center_vertical"
                 android:onClick="showMenu"
                 android:padding="4dp"
-                android:src="@drawable/menu_btn" />
+                android:src="@drawable/menu_btn"/>
 
             <TextView
                 android:id="@+id/header"
@@ -44,12 +44,12 @@
                 android:text="MUSIC PLAYER"
                 android:textColor="@android:color/white"
                 android:textSize="23sp"
-                tools:ignore="MissingPrefix" />
+                tools:ignore="MissingPrefix"/>
 
             <View
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"/>
 
             <android.support.v7.widget.SearchView
                 android:id="@+id/searchView"
@@ -59,7 +59,7 @@
                 app:iconifiedByDefault="true"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:queryBackground="@drawable/search_view_underline"
-                app:queryHint="Search" />
+                app:queryHint="Search"/>
 
 
         </LinearLayout>
@@ -81,7 +81,23 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"/>
+
+    <FrameLayout
+        android:id="@+id/frame_layout_search_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:visibility="gone">
+
+       <!-- <fragment
+            android:id="@+id/search_fragment"
+            android:name="com.example.user.musicdownloader.fragments.FragmentSearch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>-->
+
+    </FrameLayout>
+
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -129,11 +145,7 @@
             android:id="@+id/artistNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
             android:layout_marginLeft="10dp"
-            android:layout_toStartOf="@+id/playPauseButtonImageButton"
             android:maxLines="1"
             android:textColor="@android:color/white"
             android:textSize="20sp"
@@ -158,6 +170,8 @@
             android:id="@+id/playPauseButtonImageButton"
             android:layout_width="37dp"
             android:layout_height="37dp"
+            app:srcCompat="@drawable/play_icon"
+            android:background="@android:color/transparent"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:background="@android:color/transparent"
@@ -167,8 +181,10 @@
             android:id="@+id/previuseImageView"
             android:layout_width="37dp"
             android:layout_height="37dp"
-            android:layout_alignParentBottom="true"
+            app:srcCompat="@drawable/reward_icon"
             android:layout_marginRight="30dp"
+            android:background="@android:color/transparent"
+            android:layout_alignParentBottom="true"
             android:layout_toLeftOf="@+id/playPauseButtonImageButton"
             android:layout_toStartOf="@+id/playPauseButtonImageButton"
             android:background="@android:color/transparent"
@@ -198,7 +214,6 @@
             tools:ignore="RtlHardcoded" />
 
         <ImageButton
-            android:id="@+id/shuffleButton"
             android:layout_width="37dp"
             android:layout_height="37dp"
             android:layout_alignParentBottom="true"

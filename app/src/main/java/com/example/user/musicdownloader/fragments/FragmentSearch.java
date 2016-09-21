@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.example.user.musicdownloader.R.id.progressBar;
-
 /**
  * Created by B.E.L on 21/09/2016.
  */
@@ -44,10 +42,10 @@ public class FragmentSearch extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_recycler, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_search, container, false);
         mRecyclerView = (RecyclerView)rootView.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mProgressBar = rootView.findViewById(progressBar);
+        mProgressBar = rootView.findViewById(R.id.progressBar);
         queryWeb();
         return rootView;
     }

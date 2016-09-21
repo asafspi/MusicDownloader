@@ -17,25 +17,28 @@ import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.musicdownloader.EventBus.EventToService;
-import com.example.user.musicdownloader.EventBus.MessageEvent;
-import com.example.user.musicdownloader.EventBus.MessageFromBackPressed;
-import com.example.user.musicdownloader.EventBus.MessageSearch;
-import com.example.user.musicdownloader.data.GetMusicData;
+import com.example.user.musicdownloader.EventBus.messages.MessageEvent;
+import com.example.user.musicdownloader.EventBus.messages.MessageFromBackPressed;
+import com.example.user.musicdownloader.EventBus.messages.MessageSearch;
+import com.example.user.musicdownloader.EventBus.messages.MessageSearchOnline;
 import com.example.user.musicdownloader.MyApplication;
-import com.example.user.musicdownloader.tools.PermissionChecker;
-import com.example.user.musicdownloader.services.PlaySongService;
 import com.example.user.musicdownloader.R;
-import com.example.user.musicdownloader.recievers.RemoteControlReceiver;
-import com.example.user.musicdownloader.tools.ShPref;
-import com.example.user.musicdownloader.data.Song;
-import com.example.user.musicdownloader.tools.Utils;
 import com.example.user.musicdownloader.adapters.MusicPlayerPagerAdapter;
+import com.example.user.musicdownloader.data.GetMusicData;
+import com.example.user.musicdownloader.data.Song;
+import com.example.user.musicdownloader.fragments.FragmentSearch;
+import com.example.user.musicdownloader.recievers.RemoteControlReceiver;
+import com.example.user.musicdownloader.services.PlaySongService;
+import com.example.user.musicdownloader.tools.PermissionChecker;
+import com.example.user.musicdownloader.tools.ShPref;
+import com.example.user.musicdownloader.tools.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -72,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //http://android-developers.blogspot.co.il/2010/06/allowing-applications-to-play-nicer.html
     private static Method mRegisterMediaButtonEventReceiver;
     private static Method mUnregisterMediaButtonEventReceiver;
+    private FrameLayout mFrameLayoutSearchFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mViewPager.setAdapter(mSectionsPagerAdapter);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+        mFrameLayoutSearchFragment = (FrameLayout)findViewById(R.id.frame_layout_search_fragment);
 
         setVies();
 
@@ -177,6 +182,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
+
+    // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageSearchOnline event) {
+        MainActivity.query = event.getQuery();
+        mViewPager.setVisibility(View.GONE);
+        mFrameLayoutSearchFragment.setVisibility(View.VISIBLE);
+        // Add the fragment to the 'fragment_container' FrameLayout
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.frame_layout_search_fragment, FragmentSearch.newInstance()).commit();
+    }
+
 
     private void setVies() {
         nextSong = (ImageButton) findViewById(R.id.nextButtonImageView);
