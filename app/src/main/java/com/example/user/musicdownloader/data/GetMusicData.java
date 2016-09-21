@@ -37,7 +37,7 @@ public class GetMusicData {
     public static void getAllSongs(final Context context) {
         new Thread(new Runnable() {
             public void run() {
-                if(songs.size() > 0){
+                if (songs.size() > 0) {
                     songs.clear();
                     artists.clear();
                     albums.clear();
@@ -45,7 +45,7 @@ public class GetMusicData {
 
                 ContentResolver cr = context.getContentResolver();
                 Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-                String selection = MediaStore.Audio.Media.ARTIST + "!= 0" ;
+                String selection = MediaStore.Audio.Media.ARTIST + "!= 0";
                 String sortOrder = MediaStore.Audio.Media.ARTIST + " ASC";
 
                 Cursor cur;
@@ -72,7 +72,7 @@ public class GetMusicData {
                             Uri uriOfSong = Uri.parse(cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.DATA)));
                             //String fileSize = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.SIZE));
                             File file = new File(String.valueOf(uriOfSong));
-                            int file_size = Integer.parseInt(String.valueOf(file.length()/1024));
+                            int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
 
                             if (!name.toLowerCase().contains("notification") && !name.toLowerCase().contains("ringtone") && file_size > 0) {
                                 songs.add(new Song(name, artist, album, null, uriOfSong, uriToImage));
@@ -86,7 +86,6 @@ public class GetMusicData {
             }
         }).start();
     }
-
 
 
     public static void getDataFromJson(String shortVideoId) {
@@ -151,7 +150,7 @@ public class GetMusicData {
         Toast.makeText(context, "Download started", Toast.LENGTH_SHORT).show();
         File file = new File(Environment.getExternalStorageDirectory() + "/Music Download/", title + ".mp3");
         boolean b = file.exists();
-        int file_size = Integer.parseInt(String.valueOf(file.length()/1024));
+        int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
         Log.d("ZAQ file size === ", b + " " + String.valueOf(file_size));
     }
 
@@ -165,13 +164,21 @@ public class GetMusicData {
         return 1;
     }
 
-    public static int getNumberOfSongsFromArtist(String artist){
-            int counter = 0;
-            for(int i = 0; i<songs.size(); i++){
-                if(songs.get(i).getArtist().equals(artist)){
-                    counter ++;
-                }
+    public static String[] getNumberOfSongsFromArtist(String artist) {
+        int counterForSongs = 0;
+        int counterForAlbums = 0;
+        String counterForSongsToString, counterForAlbumsToString;
+
+        for (int i = 0; i < songs.size(); i++) {
+            if (songs.get(i).getArtist().equals(artist)) {
+                counterForSongs++;
             }
-        return counter;
+            //if(songs.get(i).getAlbum())
+        }
+
+        counterForSongsToString = String.valueOf(counterForSongs);
+        String songsAndAlbumsCount[] = {};
+        return songsAndAlbumsCount;
     }
+
 }
