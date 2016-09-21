@@ -30,22 +30,23 @@
         tools:text="Artist name" />
 
 
-    <TextView
-        android:id="@+id/cellArtist_numberOfAlbumsEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/cellArtist_ArtistEditText"
-        android:layout_alignStart="@+id/cellArtist_ArtistEditText"
-        android:layout_below="@+id/cellArtist_ArtistEditText"
-        tools:text="numbers of albums" />
+    <!--<TextView-->
+        <!--android:id="@+id/cellArtist_numberOfAlbumsEditText"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignLeft="@+id/cellArtist_ArtistEditText"-->
+        <!--android:layout_alignStart="@+id/cellArtist_ArtistEditText"-->
+        <!--android:layout_below="@+id/cellArtist_ArtistEditText"-->
+        <!--tools:text="numbers of albums" />-->
 
     <TextView
         android:id="@+id/cellArtist_numberOfSongsEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/cellArtist_numberOfAlbumsEditText"
-        android:layout_alignStart="@+id/cellArtist_numberOfAlbumsEditText"
-        android:layout_below="@+id/cellArtist_numberOfAlbumsEditText"
+
         android:textSize="13dp"
-        tools:text="number of songs" />
+        tools:text="number of songs"
+        android:layout_below="@+id/cellArtist_ArtistEditText"
+        android:layout_alignLeft="@+id/cellArtist_ArtistEditText"
+        android:layout_alignStart="@+id/cellArtist_ArtistEditText" />
 </RelativeLayout>

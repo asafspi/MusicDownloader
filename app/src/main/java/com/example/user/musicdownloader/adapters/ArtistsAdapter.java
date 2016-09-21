@@ -110,7 +110,7 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
                 case TYPE_ARTIST:
                     artistTextView = (TextView) itemView.findViewById(R.id.cellArtist_ArtistEditText);
                     numberOfSongsTextView = (TextView) itemView.findViewById(R.id.cellArtist_numberOfSongsEditText);
-                    numberOfAlbumsTextView = (TextView) itemView.findViewById(R.id.cellArtist_numberOfAlbumsEditText);
+                    //numberOfAlbumsTextView = (TextView) itemView.findViewById(R.id.cellArtist_numberOfAlbumsEditText);
                     break;
             }
 
