@@ -1,7 +1,5 @@
 package com.example.user.musicdownloader.EventBus.messages;
 
-import android.content.Intent;
-
 /**
  * Created by User on 9/11/2016.
  */
@@ -10,8 +8,8 @@ import android.content.Intent;
 
 public class MessageFromBackPressed {
 
-    public static Integer FROM_BACK_PRESSED = 1;
-    public static Integer FROM_THREAD = 2;
+    public static final int FROM_BACK_PRESSED = 1;
+    public static final int FROM_THREAD = 2;
     public final int action;
 
     public MessageFromBackPressed(int action) {

@@ -78,10 +78,10 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
                 if (fragment != null) {
                     switch (itemType) {
                         case TYPE_ARTIST:
-                            fragment.setRecyclerView(artistsList.get(p), MainActivity.FROM_ADAPTER_ARTIST);
+                            fragment.filterSongList(artistsList.get(p), MainActivity.FROM_ADAPTER_ARTIST);
                             break;
                         case TYPE_ALBUM:
-                            fragment.setRecyclerView(artistsList.get(p), MainActivity.FROM_ADAPTER_ALBUM);
+                            fragment.filterSongList(artistsList.get(p), MainActivity.FROM_ADAPTER_ALBUM);
                             break;
                     }
                 }

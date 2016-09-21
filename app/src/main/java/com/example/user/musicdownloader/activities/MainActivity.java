@@ -27,13 +27,11 @@ import com.example.user.musicdownloader.EventBus.EventToService;
 import com.example.user.musicdownloader.EventBus.messages.MessageEvent;
 import com.example.user.musicdownloader.EventBus.messages.MessageFromBackPressed;
 import com.example.user.musicdownloader.EventBus.messages.MessageSearch;
-import com.example.user.musicdownloader.EventBus.messages.MessageSearchOnline;
 import com.example.user.musicdownloader.MyApplication;
 import com.example.user.musicdownloader.R;
 import com.example.user.musicdownloader.adapters.MusicPlayerPagerAdapter;
 import com.example.user.musicdownloader.data.GetMusicData;
 import com.example.user.musicdownloader.data.Song;
-import com.example.user.musicdownloader.fragments.FragmentSearch;
 import com.example.user.musicdownloader.recievers.RemoteControlReceiver;
 import com.example.user.musicdownloader.services.PlaySongService;
 import com.example.user.musicdownloader.tools.PermissionChecker;
@@ -54,9 +52,9 @@ import static com.example.user.musicdownloader.data.GetMusicData.songs;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener, SearchView.OnQueryTextListener {
 
-    public static int FROM_BACK_PRESSED = 1;
-    public static int FROM_ADAPTER_ARTIST = 2;
-    public static int FROM_ADAPTER_ALBUM = 3;
+    public static final int FROM_BACK_PRESSED = 1;
+    public static final int FROM_ADAPTER_ARTIST = 2;
+    public static final int FROM_ADAPTER_ALBUM = 3;
     public static String query;
 
     private MusicPlayerPagerAdapter mSectionsPagerAdapter;
@@ -177,17 +175,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 playPause.setImageResource(R.drawable.play_icon);
                 break;
         }
-    }
-
-    // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(MessageSearchOnline event) {
-        MainActivity.query = event.getQuery();
-        mViewPager.setVisibility(View.GONE);
-        mFrameLayoutSearchFragment.setVisibility(View.VISIBLE);
-        // Add the fragment to the 'fragment_container' FrameLayout
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.frame_layout_search_fragment, FragmentSearch.newInstance()).commit();
     }
 
 
@@ -364,8 +351,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case 1:
                 EventBus.getDefault().post(new MessageFromBackPressed(MessageFromBackPressed.FROM_BACK_PRESSED));
-                break;
-            case 2:
+            case 2://no break!!
                 EventBus.getDefault().post(new MessageFromBackPressed(MessageFromBackPressed.FROM_BACK_PRESSED));
                 break;
             case 3:
@@ -436,6 +422,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onQueryTextChange(String query) {
+        if (mViewPager.getVisibility() == View.GONE) {
+            mViewPager.setVisibility(View.VISIBLE);
+            mFrameLayoutSearchFragment.setVisibility(View.GONE);
+        }
         ArrayList<Song> querySongs = new ArrayList<>();
         for (Song song : GetMusicData.songs){
             if (song.getName().toLowerCase().contains(query.toLowerCase())

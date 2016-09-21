@@ -4,14 +4,12 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,13 +17,10 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.user.musicdownloader.EventBus.messages.MessageSearchOnline;
-import com.example.user.musicdownloader.MyApplication;
 import com.example.user.musicdownloader.R;
 import com.example.user.musicdownloader.activities.MainActivity;
 import com.example.user.musicdownloader.activities.PermissionsActivity;
@@ -41,6 +36,8 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.File;
 import java.util.ArrayList;
 
+import static com.example.user.musicdownloader.fragments.fragmentSongPlayer.placeHolder;
+
 
 public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSongs.ViewHolder>  {
 
@@ -51,6 +48,13 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
     private final boolean SHOW_SEARCH_ROW;
     public static final int TYPE_ALL_SONGS = 1;
     private String songQuery;
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
+
     private String quryPlaceHolder;
 
 
@@ -69,22 +73,16 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
                 inflate(layout, parent, false), viewType);
     }
 
-    public RecyclerAdapterSongs(ArrayList<Song> songs) {
-        this.songsList = songs;
-        this.SHOW_SEARCH_ROW = false;
-    }
-
-    public RecyclerAdapterSongs(String placeHolder, ArrayList<Song> songs, String query) {
+    public RecyclerAdapterSongs(ArrayList<Song> songs, String query) {
         this.songsList = songs;
         this.songQuery = query;
-        this.quryPlaceHolder = placeHolder;
-        this.SHOW_SEARCH_ROW = true;
+        this.SHOW_SEARCH_ROW = (query != null);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         if (getItemViewType(position) == VIEW_TYPE_SEARCH_ONLINE){
-            holder.textViewQuery.setText(String.format(quryPlaceHolder, songQuery));
+            holder.textViewQuery.setText(String.format(placeHolder, songQuery));
             return;
         }
         if (SHOW_SEARCH_ROW){

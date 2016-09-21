@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.example.user.musicdownloader.R;
 import com.example.user.musicdownloader.activities.PermissionsActivity;
 import com.example.user.musicdownloader.data.SearchedSong;
+import com.example.user.musicdownloader.tools.Utils;
 
 import java.util.ArrayList;
 
@@ -45,6 +46,9 @@ public class RecyclerAdapterSearch extends RecyclerView.Adapter<RecyclerAdapterS
 
     @Override
     public int getItemCount() {
+        if (songs == null) {
+            return 0;
+        }
         return songs.size();
     }
 
@@ -65,11 +69,11 @@ public class RecyclerAdapterSearch extends RecyclerView.Adapter<RecyclerAdapterS
 
         @Override
         public void onClick(View view) {
+            SearchedSong song = songs.get(getAdapterPosition());
             if (view.equals(btnDownload)){
-                SearchedSong song = songs.get(getAdapterPosition());
                 downloadFile(view.getContext(), song.getSongLink(), song.getSongLabel() + ".mp3");
             } else if (view.equals(btnPlay)){
-                //TODO Asaf build method
+                Utils.playFromInternet(song.getSongLabel(), song.getSongArtist() , song.getSongLink());
             }
         }
     }
