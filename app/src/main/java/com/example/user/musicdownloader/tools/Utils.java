@@ -1,4 +1,4 @@
-package com.example.user.musicdownloader;
+package com.example.user.musicdownloader.tools;
 
 import android.Manifest;
 import android.app.Activity;
@@ -9,8 +9,11 @@ import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
-import static com.example.user.musicdownloader.GetMusicData.getAllSongs;
-import static com.example.user.musicdownloader.GetMusicData.songs;
+import com.example.user.musicdownloader.R;
+import com.example.user.musicdownloader.data.GetMusicData;
+import com.example.user.musicdownloader.services.PlaySongService;
+
+import static com.example.user.musicdownloader.data.GetMusicData.songs;
 
 /**
  * Created by User on 9/11/2016.

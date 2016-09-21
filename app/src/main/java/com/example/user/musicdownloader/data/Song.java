@@ -1,6 +1,5 @@
-package com.example.user.musicdownloader;
+package com.example.user.musicdownloader.data;
 
-import android.graphics.Bitmap;
 import android.net.Uri;
 
 import java.io.Serializable;

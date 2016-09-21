@@ -19,7 +19,7 @@
         android:label="@string/app_name"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivityOld">
+        <activity android:name=".activities.MainActivityOld">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
 
@@ -29,7 +29,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/title_activity_main2"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar">
@@ -41,25 +41,25 @@
         </activity>
 
         <service
-            android:name=".PlaySongService"
+            android:name=".services.PlaySongService"
             android:stopWithTask="false" />
 
-        <receiver android:name=".PlaySongService$NextButtonListener" />
-        <receiver android:name=".PlaySongService$PreviewsButtonListener" />
-        <receiver android:name=".PlaySongService$PlayPauseButtonListener" />
-        <receiver android:name=".PlaySongService$ExitButtonListener" />
+        <receiver android:name=".services.PlaySongService$NextButtonListener" />
+        <receiver android:name=".services.PlaySongService$PreviewsButtonListener" />
+        <receiver android:name=".services.PlaySongService$PlayPauseButtonListener" />
+        <receiver android:name=".services.PlaySongService$ExitButtonListener" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="d5b726713bba81f15f5b663ce4a0b5a51c678b76" />
 
-        <receiver android:name=".RemoteControlReceiver">
+        <receiver android:name=".recievers.RemoteControlReceiver">
              <intent-filter>
              <action android:name="android.intent.action.MEDIA_BUTTON" />
              </intent-filter>
         </receiver>
 
-        <activity android:name=".PermissionsActivity"/>
+        <activity android:name=".activities.PermissionsActivity"/>
     </application>
 
 </manifest>

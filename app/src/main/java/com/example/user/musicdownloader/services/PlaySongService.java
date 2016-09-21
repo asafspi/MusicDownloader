@@ -1,4 +1,4 @@
-package com.example.user.musicdownloader;
+package com.example.user.musicdownloader.services;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -18,6 +18,10 @@ import android.widget.RemoteViews;
 
 import com.example.user.musicdownloader.EventBus.EventToService;
 import com.example.user.musicdownloader.EventBus.MessageEvent;
+import com.example.user.musicdownloader.data.GetMusicData;
+import com.example.user.musicdownloader.R;
+import com.example.user.musicdownloader.tools.ShPref;
+import com.example.user.musicdownloader.activities.MainActivity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -25,7 +29,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Random;
 
-import static com.example.user.musicdownloader.GetMusicData.songs;
+import static com.example.user.musicdownloader.data.GetMusicData.songs;
 
 public class PlaySongService extends Service implements Runnable, MediaPlayer.OnCompletionListener {
     private static final String TAG = null;

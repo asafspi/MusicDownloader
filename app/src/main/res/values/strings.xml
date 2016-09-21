@@ -39,5 +39,6 @@
     <string name="action_equlizer">EQUALIZER</string>
     <string name="action_exit">EXIT</string>
     <string name="search_web">Search \"%1$s\" in the web</string>
+    <string name="action_search">SEARCH</string>
 
 </resources>

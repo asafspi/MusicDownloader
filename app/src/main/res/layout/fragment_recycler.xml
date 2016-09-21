@@ -3,10 +3,10 @@
     android:id="@+id/mainFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.user.musicdownloader.MainActivity$PlaceholderFragment">
+    tools:context="com.example.user.musicdownloader.fragments.fragmentSongPlayer">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/songsRecyclerView"
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
