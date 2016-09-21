@@ -164,21 +164,15 @@ public class GetMusicData {
         return 1;
     }
 
-    public static String[] getNumberOfSongsFromArtist(String artist) {
-        int counterForSongs = 0;
-        int counterForAlbums = 0;
-        String counterForSongsToString, counterForAlbumsToString;
-
+    public static String getNumberOfSongsFromArtist(String artist) {
+        int counter = 0;
+        String counterToString;
         for (int i = 0; i < songs.size(); i++) {
             if (songs.get(i).getArtist().equals(artist)) {
-                counterForSongs++;
+                counter++;
             }
-            //if(songs.get(i).getAlbum())
         }
-
-        counterForSongsToString = String.valueOf(counterForSongs);
-        String songsAndAlbumsCount[] = {};
-        return songsAndAlbumsCount;
+        counterToString = String.valueOf(counter);
+        return counterToString;
     }
-
 }
