@@ -20,14 +20,10 @@ import static com.example.user.musicdownloader.data.GetMusicData.songs;
  */
 
 public class Utils {
-
-    public static void writePermission(){
-
-
-
-
-    }
-
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
     public static void changeSong(int i){
             Context context = Contextor.getInstance().getContext();
             int position = 2;
@@ -55,5 +51,19 @@ public class Utils {
         ShPref.put(R.string.song_artist_for_service, artist);
         context.stopService(new Intent(context, PlaySongService.class));
         context.startService(new Intent(context, PlaySongService.class));
+    }
+
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
     }
 }

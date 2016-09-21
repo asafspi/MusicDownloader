@@ -74,7 +74,6 @@ public class GetMusicData {
                             File file = new File(String.valueOf(uriOfSong));
                             int file_size = Integer.parseInt(String.valueOf(file.length()/1024));
 
-
                             if (!name.toLowerCase().contains("notification") && !name.toLowerCase().contains("ringtone") && file_size > 0) {
                                 songs.add(new Song(name, artist, album, null, uriOfSong, uriToImage));
                             }
@@ -164,5 +163,15 @@ public class GetMusicData {
             }
         }
         return 1;
+    }
+
+    public static int getNumberOfSongsFromArtist(String artist){
+            int counter = 0;
+            for(int i = 0; i<songs.size(); i++){
+                if(songs.get(i).getArtist().equals(artist)){
+                    counter ++;
+                }
+            }
+        return counter;
     }
 }

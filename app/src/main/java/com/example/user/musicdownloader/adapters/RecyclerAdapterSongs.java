@@ -27,6 +27,7 @@ import android.widget.TextView;
 import com.example.user.musicdownloader.EventBus.messages.MessageSearchOnline;
 import com.example.user.musicdownloader.MyApplication;
 import com.example.user.musicdownloader.R;
+import com.example.user.musicdownloader.activities.MainActivity;
 import com.example.user.musicdownloader.activities.PermissionsActivity;
 import com.example.user.musicdownloader.data.Song;
 import com.example.user.musicdownloader.services.PlaySongService;
@@ -41,7 +42,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 
-public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSongs.ViewHolder> {
+public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSongs.ViewHolder>  {
 
     private static final int VIEW_TYPE_SEARCH_ONLINE = 0;
     private static final int VIEW_TYPE_REGULAR = 1;
@@ -51,13 +52,6 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
     public static final int TYPE_ALL_SONGS = 1;
     private String songQuery;
     private String quryPlaceHolder;
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
-
-
 
 
     @Override
@@ -96,12 +90,10 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
         if (SHOW_SEARCH_ROW){
             position--;
         }
-
         holder.title.setText(songsList.get(position).getName());
         holder.artist.setText(songsList.get(position).getArtist());
         //Picasso.with(mContext).load(songsList.get(p).getImage()).resize(34, 34).into(holder.thumbImageView);
         Picasso.with(holder.itemView.getContext()).load(songsList.get(position).getImage()).into(holder.thumbImageView);
-
     }
 
     private void showPopupMenu(final View v, final int p) {
@@ -115,11 +107,7 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
                     case R.id.play:
                         playSong(p);
                         break;
-//                    case R.id.add_to_playlist:
-//                        popUpForPlaylist(v.getContext());
-//                        break;
                     case R.id.use_as_ringtone:
-
                         String[] permissions = new String[]{Manifest.permission.WRITE_SETTINGS};
                         if (PermissionChecker.isPermissionsGranted(permissions)) {
                             Log.d("zaq", "Permissions granted");
@@ -148,16 +136,14 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
                         } else {
                             PermissionsActivity.startActivityForResult((Activity) v.getContext(), PermissionsActivity.REQUEST_CODE_PERMISSION_READ_EXTERNAL_STORAGE, permissions);
                         }
-
                         break;
                     case R.id.delete:
 
-                        //verifyStoragePermissions(MyApplication.);
-
-//                        File k = new File(String.valueOf(songsList.get(p).getUri()));
-//                        boolean b = k.delete();
-//                        k.deleteOnExit();
-//                        notifyDataSetChanged();
+                        //verifyStoragePermissions((Activity) v.getContext());
+                        File k = new File(String.valueOf(songsList.get(p).getUri()));
+                        boolean b = k.delete();
+                        k.deleteOnExit();
+                        notifyDataSetChanged();
                         break;
                     default:
                         break;
@@ -168,19 +154,7 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
         popupMenu.show();
     }
 
-    public static void verifyStoragePermissions(Activity activity) {
-        // Check if we have write permission
-        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            // We don't have permission so prompt the user
-            ActivityCompat.requestPermissions(
-                    activity,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE
-            );
-        }
-    }
 
     private void playSong(int p) {
         Context context = Contextor.getInstance().getContext();
@@ -198,8 +172,7 @@ public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickL
 
     private TextView title, artist;
     private ImageView thumbImageView, dots;
-    public TextView textViewQuery
-            ;
+    public TextView textViewQuery;
 
     public ViewHolder(View itemView, int viewType) {
         super(itemView);
@@ -209,18 +182,8 @@ public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickL
                 artist = (TextView) itemView.findViewById(R.id.cellArtist_AlbumEditText);
                 thumbImageView = (ImageView) itemView.findViewById(R.id.cellImageView);
                 dots = (ImageView) itemView.findViewById(R.id.threeDotsItem);
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        playSong(getAdapterPosition());
-                    }
-                });
-                dots.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        showPopupMenu(view, getAdapterPosition());
-                    }
-                });
+                itemView.setOnClickListener(this);
+                dots.setOnClickListener(this);
                 break;
             case VIEW_TYPE_SEARCH_ONLINE:
                 textViewQuery = (TextView)itemView.findViewById(R.id.query);
@@ -231,7 +194,17 @@ public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickL
 
     @Override
     public void onClick(View view) {
-        EventBus.getDefault().post(new MessageSearchOnline(songQuery));
+        if (view.equals(textViewQuery)){
+            EventBus.getDefault().post(new MessageSearchOnline(songQuery));
+            return;
+        }
+        switch (view.getId()){
+            case R.id.threeDotsItem:
+                showPopupMenu(dots, getAdapterPosition());
+                break;
+            default:
+                playSong(getAdapterPosition());
+        }
     }
 }
 

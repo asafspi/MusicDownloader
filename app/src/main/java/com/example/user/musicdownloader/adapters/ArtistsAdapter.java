@@ -18,10 +18,6 @@ import com.squareup.picasso.Picasso;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-/**
- * Created by User on 9/7/2016.
- */
-
 public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHolder> {
 
     private final ArrayList<String> artistsList;
@@ -31,15 +27,13 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
     private WeakReference<fragmentSongPlayer> week;
     public static final int TYPE_ARTIST = 1;
     public static final int TYPE_ALBUM = 2;
-    private int songType;
-
 
     @Override
     public ArtistsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        switch (viewType) {
+        switch (itemType) {
             case TYPE_ARTIST:
                 View v1 = LayoutInflater.from(parent.getContext()).
-                        inflate(R.layout.item_cell_album, parent, false);
+                        inflate(R.layout.item_cell_artist, parent, false);
                 return new ArtistsAdapter.ViewHolder(v1);
             case TYPE_ALBUM:
                 View v2 = LayoutInflater.from(parent.getContext()).
@@ -52,9 +46,9 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
         }
     }
 
-    public ArtistsAdapter(ArrayList<String> artists, int itemYype, Context context, WeakReference<fragmentSongPlayer> weak) {
+    public ArtistsAdapter(ArrayList<String> artists, int itemType, Context context, WeakReference<fragmentSongPlayer> weak) {
         this.artistsList = artists;
-        this.itemType = itemYype;
+        this.itemType = itemType;
         this.mContext = context;
         this.week = weak;
     }
@@ -64,7 +58,7 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
         final int p = holder.getAdapterPosition();
         switch (itemType) {
             case TYPE_ARTIST:
-                holder.title.setText(artistsList.get(p));
+                holder.artistTextView.setText(artistsList.get(p));
                 break;
             case TYPE_ALBUM:
                 holder.title.setText(artistsList.get(p));
@@ -105,13 +99,19 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
 
         public ViewHolder(View itemView) {
             super(itemView);
-            title = (TextView) itemView.findViewById(R.id.cellArtist_AlbumEditText);
-            artistTextView = (TextView) itemView.findViewById(R.id.cellArtist_ArtistEditText);
-            albumImageView = (ImageView) itemView.findViewById(R.id.cellAlbumImageView);
+            switch (itemType){
+                case TYPE_ALBUM:
+                    title = (TextView) itemView.findViewById(R.id.cellArtist_AlbumEditText);
+                    artistTextView = (TextView) itemView.findViewById(R.id.cellArtist_ArtistEditText);
+                    albumImageView = (ImageView) itemView.findViewById(R.id.cellAlbumImageView);
+                    break;
+                case TYPE_ARTIST:
+                    artistTextView = (TextView) itemView.findViewById(R.id.cellArtist_ArtistEditText);
+                    break;
+            }
+
         }
     }
-
-
     @Override
     public int getItemCount() {
         return artistsList.size();

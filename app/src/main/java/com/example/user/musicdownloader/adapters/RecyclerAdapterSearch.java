@@ -21,10 +21,6 @@ import com.example.user.musicdownloader.data.SearchedSong;
 
 import java.util.ArrayList;
 
-/**
- * Created by B.E.L on 21/09/2016.
- */
-
 public class RecyclerAdapterSearch extends RecyclerView.Adapter<RecyclerAdapterSearch.ViewHolder> {
 
     private ArrayList<SearchedSong> songs;
