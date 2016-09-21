@@ -10,8 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.user.musicdownloader.EventBus.MessageFromBackPressed;
-import com.example.user.musicdownloader.EventBus.MessageSearch;
+import com.example.user.musicdownloader.EventBus.messages.MessageFromBackPressed;
+import com.example.user.musicdownloader.EventBus.messages.MessageSearch;
 import com.example.user.musicdownloader.data.GetMusicData;
 import com.example.user.musicdownloader.R;
 import com.example.user.musicdownloader.data.Song;

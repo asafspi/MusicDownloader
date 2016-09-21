@@ -1,4 +1,4 @@
-package com.example.user.musicdownloader.EventBus;
+package com.example.user.musicdownloader.EventBus.messages;
 
 import android.content.Intent;
 

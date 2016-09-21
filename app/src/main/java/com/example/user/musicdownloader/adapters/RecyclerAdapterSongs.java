@@ -22,14 +22,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.user.musicdownloader.EventBus.messages.MessageSearchOnline;
+import com.example.user.musicdownloader.R;
+import com.example.user.musicdownloader.activities.PermissionsActivity;
+import com.example.user.musicdownloader.data.Song;
+import com.example.user.musicdownloader.services.PlaySongService;
 import com.example.user.musicdownloader.tools.Contextor;
 import com.example.user.musicdownloader.tools.PermissionChecker;
-import com.example.user.musicdownloader.activities.PermissionsActivity;
-import com.example.user.musicdownloader.services.PlaySongService;
-import com.example.user.musicdownloader.R;
 import com.example.user.musicdownloader.tools.ShPref;
-import com.example.user.musicdownloader.data.Song;
 import com.squareup.picasso.Picasso;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -79,7 +82,7 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         if (getItemViewType(position) == VIEW_TYPE_SEARCH_ONLINE){
-            holder.songQuery.setText(String.format(quryPlaceHolder, songQuery));
+            holder.textViewQuery.setText(String.format(quryPlaceHolder, songQuery));
             return;
         }
         if (SHOW_SEARCH_ROW){
@@ -104,9 +107,9 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
                     case R.id.play:
                         playSong(p);
                         break;
-                    case R.id.add_to_playlist:
-                        popUpForPlaylist(v.getContext());
-                        break;
+//                    case R.id.add_to_playlist:
+//                        popUpForPlaylist(v.getContext());
+//                        break;
                     case R.id.use_as_ringtone:
 
                         String[] permissions = new String[]{Manifest.permission.WRITE_SETTINGS};
@@ -196,11 +199,12 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
     }
 
 
-public class ViewHolder extends RecyclerView.ViewHolder {
+public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     private TextView title, artist;
     private ImageView thumbImageView, dots;
-    public TextView songQuery;
+    public TextView textViewQuery
+            ;
 
     public ViewHolder(View itemView, int viewType) {
         super(itemView);
@@ -224,11 +228,17 @@ public class ViewHolder extends RecyclerView.ViewHolder {
                 });
                 break;
             case VIEW_TYPE_SEARCH_ONLINE:
-                songQuery = (TextView)itemView.findViewById(R.id.query);
+                textViewQuery = (TextView)itemView.findViewById(R.id.query);
+                textViewQuery.setOnClickListener(this);
                 break;
         }
     }
 
+    @Override
+    public void onClick(View view) {
+        EventBus.getDefault().post(new MessageSearchOnline(songQuery));
+
+    }
 }
 
 

@@ -17,7 +17,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.example.user.musicdownloader.EventBus.EventToService;
-import com.example.user.musicdownloader.EventBus.MessageEvent;
+import com.example.user.musicdownloader.EventBus.messages.MessageEvent;
 import com.example.user.musicdownloader.data.GetMusicData;
 import com.example.user.musicdownloader.R;
 import com.example.user.musicdownloader.tools.ShPref;
