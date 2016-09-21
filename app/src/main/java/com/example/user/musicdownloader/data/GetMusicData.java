@@ -42,6 +42,7 @@ public class GetMusicData {
                     artists.clear();
                     albums.clear();
                 }
+
                 ContentResolver cr = context.getContentResolver();
                 Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
                 String selection = MediaStore.Audio.Media.ARTIST + "!= 0" ;
@@ -59,7 +60,6 @@ public class GetMusicData {
                             String album = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.ALBUM));
                             long albumId = cur.getLong(cur.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
                             String artist = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-                            //String data = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.DATA));
                             if (!artists.contains(artist)) {
                                 artists.add(artist);
                             }
@@ -70,7 +70,7 @@ public class GetMusicData {
                             Uri uriToImage = ContentUris.withAppendedId(sArtworkUri, albumId);
                             ContentResolver res = context.getContentResolver();
                             Uri uriOfSong = Uri.parse(cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.DATA)));
-                            String fileSize = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.SIZE));
+                            //String fileSize = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.SIZE));
                             File file = new File(String.valueOf(uriOfSong));
                             int file_size = Integer.parseInt(String.valueOf(file.length()/1024));
 
