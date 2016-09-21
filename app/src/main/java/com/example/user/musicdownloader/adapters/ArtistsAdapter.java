@@ -59,6 +59,8 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
         switch (itemType) {
             case TYPE_ARTIST:
                 holder.artistTextView.setText(artistsList.get(p));
+                //holder.numberOfAlbumsTextView.setText(GetMusicData.getNumberOfSongsFromArtist(artistsList.get(p)));
+                //holder.numberOfSongsTextView.setText(GetMusicData.getNumberOfSongsFromArtist(artistsList.get(p)));
                 break;
             case TYPE_ALBUM:
                 holder.title.setText(artistsList.get(p));
@@ -94,7 +96,7 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView title, artistTextView;
+        private TextView title, artistTextView, numberOfSongsTextView, numberOfAlbumsTextView;
         private ImageView albumImageView;
 
         public ViewHolder(View itemView) {
@@ -107,6 +109,8 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
                     break;
                 case TYPE_ARTIST:
                     artistTextView = (TextView) itemView.findViewById(R.id.cellArtist_ArtistEditText);
+                    numberOfSongsTextView = (TextView) itemView.findViewById(R.id.cellArtist_numberOfSongsEditText);
+                    numberOfAlbumsTextView = (TextView) itemView.findViewById(R.id.cellArtist_numberOfAlbumsEditText);
                     break;
             }
 
