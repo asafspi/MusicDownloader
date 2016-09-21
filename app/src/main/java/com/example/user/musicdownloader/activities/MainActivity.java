@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
@@ -341,18 +342,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onBackPressed() {
         if (!searchView.isIconified()){
             searchView.setIconified(true);
+            searchView.setQuery("", false);
             return;
         }
         int position = mViewPager.getCurrentItem();
         switch (position) {
+            case 3:
             case 0:
                 finish();
                 break;
             case 1:
             case 2://no break!!
                 EventBus.getDefault().post(new MessageFromBackPressed(MessageFromBackPressed.FROM_BACK_PRESSED, position));
-                break;
-            case 3:
                 break;
         }
     }
@@ -421,7 +422,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onQueryTextChange(String query) {
         if (mViewPager.getCurrentItem() == 3){
-            EventBus.getDefault().post(new MessageSearchOnline(query));
+            if (query != null && query.length() > 0) {
+                EventBus.getDefault().post(new MessageSearchOnline(query));
+            }
         } else {
             ArrayList<Song> querySongs = new ArrayList<>();
             for (Song song : GetMusicData.songs){
@@ -444,11 +447,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onPageSelected(int i) {
-        if (i == 3){
-            searchView.setIconified(false);
-            searchView.setFocusable(true);
-            InputMethodManager imm = (InputMethodManager)   getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        switch (i){
+            case 0:
+                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+                break;
+            case 3:
+                searchView.setIconified(false);
+                searchView.setFocusable(true);
+                InputMethodManager imm = (InputMethodManager)   getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                break;
         }
     }
 
