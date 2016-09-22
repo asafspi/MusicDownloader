@@ -1,5 +1,8 @@
 package com.example.user.musicdownloader.tools;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import com.example.user.musicdownloader.data.SearchedSong;
 
 import org.jsoup.Jsoup;
@@ -112,7 +115,12 @@ public class SearchHelper {
                     e.printStackTrace();
                     listener.onFailure();
                 }
-                listener.onSuccess(songs);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.onSuccess(songs);
+                    }
+                });
             }
         }).start();
     }
