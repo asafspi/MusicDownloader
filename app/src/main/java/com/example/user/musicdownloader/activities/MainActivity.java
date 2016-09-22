@@ -97,7 +97,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         searchView = (SearchView) findViewById(R.id.searchView);
-        searchView.setOnQueryTextListener(this);
         searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean isFocused) {
@@ -230,6 +229,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
+        mAudioManager.registerMediaButtonEventReceiver(
+                mRemoteControlResponder);
+        searchView.setOnQueryTextListener(this);
+
+    }
+
     private void changeSong(int i) {
         int position = 2;
         switch (i) {
@@ -357,8 +367,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
         if (!searchView.isIconified()){
-            searchView.setIconified(true);
             searchView.setQuery("", false);
+            searchView.setIconified(true);
             return;
         }
         int position = mViewPager.getCurrentItem();
@@ -374,12 +384,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (!EventBus.getDefault().isRegistered(this))
-            EventBus.getDefault().register(this);
-    }
+
 
     @Override
     public void onStop() {
@@ -387,12 +392,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         EventBus.getDefault().unregister(this);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        mAudioManager.registerMediaButtonEventReceiver(
-                mRemoteControlResponder);
-    }
+
 
     @Override
     public void onDestroy() {
@@ -437,13 +437,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onQueryTextChange(String query) {
+        Log.d("TAG", "query: " + query);
+        if (query == null || query.length() == 0) {
+            return true;
+        }
         if (mViewPager.getCurrentItem() == 3){
-            if (query != null && query.length() > 0) {
                 EventBus.getDefault().post(new MessageSearchOnline(query));
-            }
         } else {
             ArrayList<Song> querySongs = new ArrayList<>();
-            for (Song song : GetMusicData.songs){
+            @SuppressWarnings("unchecked")
+            ArrayList<Song> songs = (ArrayList<Song>) GetMusicData.songs.clone();
+            for (Song song : songs){
                 if (song.getName().toLowerCase().contains(query.toLowerCase())
                         || song.getArtist().toLowerCase().contains(query.toLowerCase())
                         || song.getAlbum().toLowerCase().contains(query.toLowerCase())) {
