@@ -73,6 +73,7 @@ public class MainActivityOld extends AppCompatActivity implements View.OnClickLi
             editText.setText(sharedText);
             getVideoId();
             GetMusicData.getDataFromJson(shortVideoId);
+            finish();
         }
     }
 
