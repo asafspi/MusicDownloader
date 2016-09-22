@@ -7,11 +7,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -63,18 +65,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int FROM_BACK_PRESSED = 1;
     public static final int FROM_ADAPTER_ARTIST = 2;
     public static final int FROM_ADAPTER_ALBUM = 3;
+    public static final int CODE_WRITE_BT_SETTINGS_PERMISSION = 100;
     public static String query;
     public static long downId;
     public static String pathId;
 
     public ViewPager mViewPager;
-    private ImageButton nextSong, priviesSong, playPause, shuffleButton, repeatButton;
+    private ImageButton playPause;
     private TextView songNameTextView, artistNameTextView, songDuration, runningTime;
     private SeekBar mainSeekBar;
-    private Toolbar toolbar;
     private SearchView searchView;
     private AudioManager mAudioManager;
     private ComponentName mRemoteControlResponder;
+    public static Song requestedBTSong;
 
 
 
@@ -94,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             PermissionsActivity.startActivityForResult(this, PermissionsActivity.REQUEST_CODE_PERMISSION_WRITE_SETTINGS, permissions);
         }
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         searchView = (SearchView) findViewById(R.id.searchView);
         searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
@@ -194,15 +197,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void setVies() {
-        nextSong = (ImageButton) findViewById(R.id.nextButtonImageView);
+        ImageButton nextSong = (ImageButton) findViewById(R.id.nextButtonImageView);
         nextSong.setOnClickListener(this);
-        priviesSong = (ImageButton) findViewById(R.id.previuseImageView);
+        ImageButton priviesSong = (ImageButton) findViewById(R.id.previuseImageView);
         priviesSong.setOnClickListener(this);
         playPause = (ImageButton) findViewById(R.id.playPauseButtonImageButton);
         playPause.setOnClickListener(this);
-        shuffleButton = (ImageButton) findViewById(R.id.shuffleButton);
+        ImageButton shuffleButton = (ImageButton) findViewById(R.id.shuffleButton);
         shuffleButton.setOnClickListener(this);
-        repeatButton = (ImageButton) findViewById(R.id.repeatButton);
+        ImageButton repeatButton = (ImageButton) findViewById(R.id.repeatButton);
         repeatButton.setOnClickListener(this);
         //thumbSongImageView = (ImageView) findViewById(R.id.playerImageView);
         mainSeekBar = (SeekBar) findViewById(R.id.seekBar);
@@ -509,4 +512,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     };
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CODE_WRITE_BT_SETTINGS_PERMISSION && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (requestedBTSong != null) {
+                Utils.setSongAsRingtone(this, requestedBTSong);
+            }
+        }
+    }
 }

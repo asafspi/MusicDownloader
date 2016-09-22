@@ -2,16 +2,24 @@ package com.example.user.musicdownloader.tools;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.example.user.musicdownloader.R;
+import com.example.user.musicdownloader.activities.MainActivity;
 import com.example.user.musicdownloader.data.GetMusicData;
+import com.example.user.musicdownloader.data.Song;
 import com.example.user.musicdownloader.services.PlaySongService;
+
+import java.io.File;
 
 import static com.example.user.musicdownloader.data.GetMusicData.songs;
 
@@ -20,10 +28,15 @@ import static com.example.user.musicdownloader.data.GetMusicData.songs;
  */
 
 public class Utils {
+
+
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
+
+
+
     public static void changeSong(int i){
             Context context = Contextor.getInstance().getContext();
             int position = 2;
@@ -64,6 +77,38 @@ public class Utils {
                     PERMISSIONS_STORAGE,
                     REQUEST_EXTERNAL_STORAGE
             );
+        }
+    }
+
+    public static void setSongAsRingtone(Context context, Song song){
+        boolean permission = ContextCompat.checkSelfPermission(context, android.Manifest.permission.WRITE_SETTINGS) == PackageManager.PERMISSION_GRANTED;
+        if (permission) {
+            Log.d("zaq", "Permissions granted");
+            File k = new File(String.valueOf(song.getUri()));
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.MediaColumns.DATA, k.getAbsolutePath());
+            values.put(MediaStore.MediaColumns.TITLE, song.getName());
+            values.put(MediaStore.MediaColumns.SIZE, 215454);
+            values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3");
+            values.put(MediaStore.Audio.Media.ARTIST, song.getArtist());
+            values.put(MediaStore.Audio.Media.DURATION, 230);
+            values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
+            values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false);
+            values.put(MediaStore.Audio.Media.IS_ALARM, false);
+            values.put(MediaStore.Audio.Media.IS_MUSIC, false);
+
+            //Insert it into the database
+            Uri uri = MediaStore.Audio.Media.getContentUriForPath(k.getAbsolutePath());
+            Uri newUri = context.getContentResolver().insert(uri, values);
+
+            RingtoneManager.setActualDefaultRingtoneUri(
+                    context,
+                    RingtoneManager.TYPE_RINGTONE,
+                    newUri
+            );
+        }  else {
+            MainActivity.requestedBTSong = song;
+            ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.WRITE_SETTINGS}, MainActivity.CODE_WRITE_BT_SETTINGS_PERMISSION);
         }
     }
 }
