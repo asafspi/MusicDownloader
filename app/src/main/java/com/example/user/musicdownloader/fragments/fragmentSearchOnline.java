@@ -33,9 +33,6 @@ public class FragmentSearchOnline extends Fragment implements SearchHelper.OnSea
     private View textViewNoResult;;
     private SearchWebAsyncTask searchWebAsyncTask;
 
-    public FragmentSearchOnline() {
-    }
-
     /**
      * Returns a new instance of this fragment for the given section
      * number.
