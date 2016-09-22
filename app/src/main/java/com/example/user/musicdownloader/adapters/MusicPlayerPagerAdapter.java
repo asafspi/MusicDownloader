@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.example.user.musicdownloader.fragments.FragmentSearchOnline;
+import com.example.user.musicdownloader.fragments.FragmentSearchTab;
 import com.example.user.musicdownloader.fragments.fragmentSongPlayer;
 
 /**
@@ -20,7 +20,7 @@ public class MusicPlayerPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if (position == 3){
-            return FragmentSearchOnline.newInstance();
+            return FragmentSearchTab.newInstance();
         }
         return fragmentSongPlayer.newInstance(position);
     }

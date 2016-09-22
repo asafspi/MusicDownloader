@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 import static com.example.user.musicdownloader.fragments.fragmentSongPlayer.placeHolder;
 
-public class FragmentSearchOnline extends Fragment implements SearchHelper.OnSearchFinishListener {
+public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearchFinishListener {
 
     private static ArrayList<SearchedSong> searchResultsSongs;
     private RecyclerView mRecyclerView;
@@ -37,8 +37,8 @@ public class FragmentSearchOnline extends Fragment implements SearchHelper.OnSea
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static FragmentSearchOnline newInstance() {
-        return new FragmentSearchOnline();
+    public static FragmentSearchTab newInstance() {
+        return new FragmentSearchTab();
     }
 
     @Override
@@ -97,7 +97,7 @@ public class FragmentSearchOnline extends Fragment implements SearchHelper.OnSea
 
     @Override
     public void onSuccess(ArrayList<SearchedSong> songs) {
-        FragmentSearchOnline.searchResultsSongs = songs;
+        FragmentSearchTab.searchResultsSongs = songs;
         setRecyclerView();
     }
 
@@ -133,7 +133,7 @@ public class FragmentSearchOnline extends Fragment implements SearchHelper.OnSea
             if (isCancelled()){
                 return;
             }
-            FragmentSearchOnline.searchResultsSongs = songs;
+            FragmentSearchTab.searchResultsSongs = songs;
             setRecyclerView();
             searchWebAsyncTask = null;
         }
