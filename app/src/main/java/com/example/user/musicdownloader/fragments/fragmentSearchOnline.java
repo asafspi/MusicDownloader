@@ -25,8 +25,9 @@ import java.util.ArrayList;
 
 import static com.example.user.musicdownloader.fragments.fragmentSongPlayer.placeHolder;
 
-public class FragmentSearchOnline extends Fragment  {
+public class FragmentSearchOnline extends Fragment implements SearchHelper.OnSearchFinishListener {
 
+    private static ArrayList<SearchedSong> searchResultsSongs;
     private RecyclerView mRecyclerView;
     private View mProgressBar;
     private View textViewNoResult;;
@@ -56,10 +57,21 @@ public class FragmentSearchOnline extends Fragment  {
         mRecyclerView.setHasFixedSize(true);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
+        setRecyclerView();
         return rootView;
     }
 
+
+    private void setRecyclerView(){
+        mProgressBar.setVisibility(View.GONE); //display progressbar while waiting to server response
+        if (searchResultsSongs != null && searchResultsSongs.size() > 0) {
+            mRecyclerView.setAdapter(new RecyclerAdapterSearch(searchResultsSongs));
+            textViewNoResult.setVisibility(View.GONE);
+        } else {
+            mRecyclerView.setAdapter(new RecyclerAdapterSearch(searchResultsSongs));
+            textViewNoResult.setVisibility(View.VISIBLE);
+        }
+    }
 
     // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -70,6 +82,7 @@ public class FragmentSearchOnline extends Fragment  {
         }
         searchWebAsyncTask = new SearchWebAsyncTask();
         searchWebAsyncTask.execute(MainActivity.query);
+//        SearchHelper.searchWeb(this, MainActivity.query);
     }
 
     // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
@@ -85,6 +98,17 @@ public class FragmentSearchOnline extends Fragment  {
         }
     }
 
+    @Override
+    public void onSuccess(ArrayList<SearchedSong> songs) {
+        FragmentSearchOnline.searchResultsSongs = songs;
+        setRecyclerView();
+    }
+
+    @Override
+    public void onFailure() {
+
+    }
+
 
     private class SearchWebAsyncTask extends AsyncTask<String, Void, ArrayList<SearchedSong>> {
 
@@ -92,6 +116,7 @@ public class FragmentSearchOnline extends Fragment  {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            textViewNoResult.setVisibility(View.GONE);
             mProgressBar.setVisibility(View.VISIBLE); //display progressbar while waiting to server response
         }
 
@@ -111,14 +136,8 @@ public class FragmentSearchOnline extends Fragment  {
             if (isCancelled()){
                 return;
             }
-            mProgressBar.setVisibility(View.GONE); //display progressbar while waiting to server response
-            if (songs != null && songs.size() > 0) {
-                mRecyclerView.setAdapter(new RecyclerAdapterSearch(songs));
-                textViewNoResult.setVisibility(View.GONE);
-            } else {
-                mRecyclerView.setAdapter(new RecyclerAdapterSearch(songs));
-                textViewNoResult.setVisibility(View.VISIBLE);
-            }
+            FragmentSearchOnline.searchResultsSongs = songs;
+            setRecyclerView();
             searchWebAsyncTask = null;
         }
     }
