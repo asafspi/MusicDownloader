@@ -1,6 +1,7 @@
 package com.example.user.musicdownloader.activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -13,6 +14,7 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -514,6 +516,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     };
 
 
+    @SuppressLint("NewApi")
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CODE_WRITE_BT_SETTINGS_PERMISSION  && Settings.System.canWrite(this)){
+            Log.d("TAG", "CODE_WRITE_BT_SETTINGS_PERMISSION success");
+            if (requestedBTSong != null) {
+                Utils.setSongAsRingtone(this, requestedBTSong);
+            }
+        }
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

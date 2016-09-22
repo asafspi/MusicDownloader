@@ -8,8 +8,10 @@ public class Song implements Serializable {
     private String name, artist, album, playlist;
     private Uri uri;
     private Uri image;
+    private Uri songUri;
 
-    public Song(String name, String artist, String album, String playlist, Uri uri, Uri image ) {
+    public Song(Uri songUri, String name, String artist, String album, String playlist, Uri uri, Uri image ) {
+        this.songUri = songUri;
         this.name = name;
         this.artist = artist;
         this.album = album;
@@ -64,5 +66,9 @@ public class Song implements Serializable {
 
     public void setImage(Uri image) {
         this.image = image;
+    }
+
+    public Uri getSongUri() {
+        return songUri;
     }
 }
