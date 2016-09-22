@@ -1,31 +1,32 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.user.musicdownloader.fragments.FragmentSearch">
+    tools:context="com.example.user.musicdownloader.fragments.FragmentSearchOnline">
 
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:visibility="gone"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
     <TextView
         android:id="@+id/text_no_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
-        android:visibility="gone"
-        android:textSize="22sp"
-        android:layout_marginTop="8dp"
         android:layout_marginLeft="16dp"
-        android:text="@string/no_result"/>
+        android:layout_marginTop="8dp"
+        android:text="@string/no_result"
+        android:textSize="22sp"
+        android:visibility="gone"/>
 
 </FrameLayout>

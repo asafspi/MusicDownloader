@@ -18,7 +18,7 @@ import com.squareup.picasso.Picasso;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHolder> {
+public class RecyclerAdapterArtists extends RecyclerView.Adapter<RecyclerAdapterArtists.ViewHolder> {
 
     private final ArrayList<String> artistsList;
     private final ArrayList<Song> allSongsList = GetMusicData.songs;
@@ -29,24 +29,24 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
     public static final int TYPE_ALBUM = 2;
 
     @Override
-    public ArtistsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerAdapterArtists.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (itemType) {
             case TYPE_ARTIST:
                 View v1 = LayoutInflater.from(parent.getContext()).
                         inflate(R.layout.item_cell_artist, parent, false);
-                return new ArtistsAdapter.ViewHolder(v1);
+                return new RecyclerAdapterArtists.ViewHolder(v1);
             case TYPE_ALBUM:
                 View v2 = LayoutInflater.from(parent.getContext()).
                         inflate(R.layout.item_cell_album, parent, false);
-                return new ArtistsAdapter.ViewHolder(v2);
+                return new RecyclerAdapterArtists.ViewHolder(v2);
             default:
                 View v10 = LayoutInflater.from(parent.getContext()).
                         inflate(R.layout.item_cell_album, parent, false);
-                return new ArtistsAdapter.ViewHolder(v10);
+                return new RecyclerAdapterArtists.ViewHolder(v10);
         }
     }
 
-    public ArtistsAdapter(ArrayList<String> artists, int itemType, Context context, WeakReference<fragmentSongPlayer> weak) {
+    public RecyclerAdapterArtists(ArrayList<String> artists, int itemType, Context context, WeakReference<fragmentSongPlayer> weak) {
         this.artistsList = artists;
         this.itemType = itemType;
         this.mContext = context;
@@ -54,7 +54,7 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(final ArtistsAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final RecyclerAdapterArtists.ViewHolder holder, final int position) {
         final int p = holder.getAdapterPosition();
         switch (itemType) {
             case TYPE_ARTIST:
