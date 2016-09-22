@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mainSeekBar.setMax(event.songDuration);
                 songNameTextView.setText(event.songName);
                 ShPref.put(getString(R.string.song_name_for_service), songNameTextView.getText().toString());
-                artistNameTextView.setText(event.songArtist);
+                artistNameTextView.setText(event.songArtist + " -");
                 ShPref.put(R.string.song_artist_for_service, artistNameTextView.getText().toString());
                 songNameTextView.setSelected(true);
                 songNameTextView.setEllipsize(TextUtils.TruncateAt.MARQUEE);

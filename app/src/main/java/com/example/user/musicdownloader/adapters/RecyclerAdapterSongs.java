@@ -5,11 +5,9 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,8 +20,8 @@ import android.widget.TextView;
 
 import com.example.user.musicdownloader.EventBus.messages.MessageSearchOnline;
 import com.example.user.musicdownloader.R;
-import com.example.user.musicdownloader.activities.MainActivity;
 import com.example.user.musicdownloader.activities.PermissionsActivity;
+import com.example.user.musicdownloader.data.GetMusicData;
 import com.example.user.musicdownloader.data.Song;
 import com.example.user.musicdownloader.services.PlaySongService;
 import com.example.user.musicdownloader.tools.Contextor;
@@ -96,7 +94,7 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
 
     private void showPopupMenu(final View v, final int p) {
         PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
-        popupMenu.getMenuInflater().inflate(R.menu.pop_up_menu, popupMenu.getMenu());
+        popupMenu.getMenuInflater().inflate(R.menu.pop_up_menu_song, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
             @Override
@@ -140,7 +138,8 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
                         //verifyStoragePermissions((Activity) v.getContext());
                         File k = new File(String.valueOf(songsList.get(p).getUri()));
                         boolean b = k.delete();
-                        k.deleteOnExit();
+                        GetMusicData.songs.remove(p);
+                        songsList.remove(p);
                         notifyDataSetChanged();
                         break;
                     default:
@@ -151,7 +150,6 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
         });
         popupMenu.show();
     }
-
 
 
     private void playSong(int p) {

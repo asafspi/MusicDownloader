@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_centerInParent="true"
     android:layout_gravity="center"
-    android:layout_margin="5dp">
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp">
 
     <ImageView
         android:layout_width="100dp"
@@ -27,8 +28,8 @@
     <View
         android:layout_width="150dp"
         android:layout_height="45dp"
+        android:id="@+id/blackView"
         android:layout_marginBottom="10dp"
-
         android:layout_alignBottom="@+id/cellAlbumImageView"
         android:layout_alignEnd="@+id/cellAlbumImageView"
         android:layout_alignLeft="@+id/cellAlbumImageView"
@@ -49,19 +50,34 @@
         android:layout_marginBottom="13dp"
         android:layout_alignBottom="@+id/cellAlbumImageView"
         android:layout_alignLeft="@+id/cellAlbumImageView"
-        android:layout_alignStart="@+id/cellAlbumImageView" />
+        android:layout_alignStart="@+id/cellAlbumImageView"
+        android:layout_toLeftOf="@+id/threeDotsItem"
+        android:layout_toStartOf="@+id/threeDotsItem" />
 
     <TextView
         android:id="@+id/cellArtist_AlbumEditText"
         android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:maxLines="1"
-        android:layout_marginLeft="5dp"
         android:textColor="@android:color/white"
         android:textSize="17sp"
         tools:text="Artist"
         android:layout_above="@+id/cellArtist_ArtistEditText"
-        android:layout_alignLeft="@+id/cellAlbumImageView"
-        android:layout_alignStart="@+id/cellAlbumImageView" />
+        android:layout_alignLeft="@+id/cellArtist_ArtistEditText"
+        android:layout_alignStart="@+id/cellArtist_ArtistEditText"
+        android:layout_toLeftOf="@+id/threeDotsItem"
+        android:layout_toStartOf="@+id/threeDotsItem" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/dots_icon"
+        android:id="@+id/threeDotsItem"
+        android:padding="10dp"
+        android:layout_alignBottom="@id/blackView"
+        android:layout_alignRight="@id/blackView"
+        android:layout_marginBottom="7dp"
+        android:layout_marginRight="5dp"/>
+
 
 </RelativeLayout>

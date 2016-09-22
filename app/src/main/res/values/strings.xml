@@ -41,5 +41,6 @@
     <string name="search_web">Search \"%1$s\" in the web</string>
     <string name="action_search">SEARCH</string>
     <string name="no_result">There is no result for current search</string>
+    <string name="add_to_queue">ADD TO QUEUE</string>
 
 </resources>
