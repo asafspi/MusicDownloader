@@ -104,6 +104,7 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
                         Utils.setSongAsRingtone(v.getContext(), songsList.get(p));
                         break;
                     case R.id.delete:
+
                         //verifyStoragePermissions((Activity) v.getContext());
                         File k = new File(String.valueOf(songsList.get(p).getUri()));
 
@@ -166,10 +167,18 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
             }
             switch (view.getId()) {
                 case R.id.threeDotsItem:
-                    showPopupMenu(view, getAdapterPosition());
+                    if (SHOW_SEARCH_ROW) {
+                        showPopupMenu(view, getAdapterPosition()-1);
+                    }else {
+                        showPopupMenu(view, getAdapterPosition());
+                    }
                     break;
                 default:
-                    playSong(getAdapterPosition());
+                    if (SHOW_SEARCH_ROW) {
+                        playSong(getAdapterPosition() - 1);
+                    }else {
+                        playSong(getAdapterPosition());
+                    }
             }
         }
     }
