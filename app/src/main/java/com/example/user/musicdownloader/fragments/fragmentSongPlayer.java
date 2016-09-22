@@ -64,6 +64,7 @@ public class fragmentSongPlayer extends Fragment  {
         weak = new WeakReference<>(this);
         mRecyclerView = (RecyclerView) inflater.inflate(R.layout.fragment_recycler, container, false);
         mRecyclerView.setHasFixedSize(true);
+
         position = getArguments().getInt(ARG_SECTION_NUMBER);
         setRecycler();
         return mRecyclerView;

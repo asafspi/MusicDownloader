@@ -59,6 +59,8 @@ public class GetMusicData {
                             String name = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.TITLE));
                             String album = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.ALBUM));
                             long albumId = cur.getLong(cur.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+                            Long id = cur.getLong(cur.getColumnIndex(MediaStore.Audio.Media._ID));
+                            Uri songUri = Uri.withAppendedPath(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id.toString());
                             String artist = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.ARTIST));
                             if (!artists.contains(artist)) {
                                 artists.add(artist);
@@ -75,7 +77,7 @@ public class GetMusicData {
                             int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
 
                             if (!name.toLowerCase().contains("notification") && !name.toLowerCase().contains("ringtone") && file_size > 0) {
-                                songs.add(new Song(name, artist, album, null, uriOfSong, uriToImage));
+                                songs.add(new Song(songUri, name, artist, album, null, uriOfSong, uriToImage));
                             }
                         }
                     }

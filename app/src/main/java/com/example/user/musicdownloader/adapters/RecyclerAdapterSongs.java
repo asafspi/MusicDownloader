@@ -1,8 +1,6 @@
 package com.example.user.musicdownloader.adapters;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
@@ -10,7 +8,6 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,8 +22,8 @@ import com.example.user.musicdownloader.data.GetMusicData;
 import com.example.user.musicdownloader.data.Song;
 import com.example.user.musicdownloader.services.PlaySongService;
 import com.example.user.musicdownloader.tools.Contextor;
-import com.example.user.musicdownloader.tools.PermissionChecker;
 import com.example.user.musicdownloader.tools.ShPref;
+import com.example.user.musicdownloader.tools.Utils;
 import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.EventBus;
@@ -92,6 +89,9 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
         Picasso.with(holder.itemView.getContext()).load(songsList.get(position).getImage()).into(holder.thumbImageView);
     }
 
+    private void showPopupMenu(final Context context, final View v, final int p) {
+        PopupMenu popupMenu = new PopupMenu(context, v);
+        popupMenu.getMenuInflater().inflate(R.menu.pop_up_menu, popupMenu.getMenu());
     private void showPopupMenu(final View v, final int p) {
         PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
         popupMenu.getMenuInflater().inflate(R.menu.pop_up_menu_song, popupMenu.getMenu());
@@ -104,39 +104,12 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
                         playSong(p);
                         break;
                     case R.id.use_as_ringtone:
-                        String[] permissions = new String[]{Manifest.permission.WRITE_SETTINGS};
-                        if (PermissionChecker.isPermissionsGranted(permissions)) {
-                            Log.d("zaq", "Permissions granted");
-                            File k = new File(String.valueOf(songsList.get(p).getUri()));
-                            ContentValues values = new ContentValues();
-                            values.put(MediaStore.MediaColumns.DATA, k.getAbsolutePath());
-                            values.put(MediaStore.MediaColumns.TITLE, songsList.get(p).getName());
-                            values.put(MediaStore.MediaColumns.SIZE, 215454);
-                            values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3");
-                            values.put(MediaStore.Audio.Media.ARTIST, songsList.get(p).getArtist());
-                            values.put(MediaStore.Audio.Media.DURATION, 230);
-                            values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
-                            values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false);
-                            values.put(MediaStore.Audio.Media.IS_ALARM, false);
-                            values.put(MediaStore.Audio.Media.IS_MUSIC, false);
-
-                            //Insert it into the database
-                            Uri uri = MediaStore.Audio.Media.getContentUriForPath(k.getAbsolutePath());
-                            Uri newUri = v.getContext().getContentResolver().insert(uri, values);
-
-                            RingtoneManager.setActualDefaultRingtoneUri(
-                                    v.getContext(),
-                                    RingtoneManager.TYPE_RINGTONE,
-                                    newUri
-                            );
-                        } else {
-                            PermissionsActivity.startActivityForResult((Activity) v.getContext(), PermissionsActivity.REQUEST_CODE_PERMISSION_READ_EXTERNAL_STORAGE, permissions);
-                        }
+                        Utils.setSongAsRingtone(context, songsList.get(p));
                         break;
                     case R.id.delete:
-
                         //verifyStoragePermissions((Activity) v.getContext());
                         File k = new File(String.valueOf(songsList.get(p).getUri()));
+
                         boolean b = k.delete();
                         GetMusicData.songs.remove(p);
                         songsList.remove(p);
@@ -196,7 +169,7 @@ public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickL
         }
         switch (view.getId()){
             case R.id.threeDotsItem:
-                showPopupMenu(dots, getAdapterPosition());
+                showPopupMenu(itemView.getContext(), dots, getAdapterPosition());
                 break;
             default:
                 playSong(getAdapterPosition());

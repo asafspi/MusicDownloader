@@ -1,17 +1,21 @@
 package com.example.user.musicdownloader.activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -63,18 +67,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int FROM_BACK_PRESSED = 1;
     public static final int FROM_ADAPTER_ARTIST = 2;
     public static final int FROM_ADAPTER_ALBUM = 3;
+    public static final int CODE_WRITE_BT_SETTINGS_PERMISSION = 100;
     public static String query;
     public static long downId;
     public static String pathId;
 
     public ViewPager mViewPager;
-    private ImageButton nextSong, priviesSong, playPause, shuffleButton, repeatButton;
+    private ImageButton playPause;
     private TextView songNameTextView, artistNameTextView, songDuration, runningTime;
     private SeekBar mainSeekBar;
-    private Toolbar toolbar;
     private SearchView searchView;
     private AudioManager mAudioManager;
     private ComponentName mRemoteControlResponder;
+    public static Song requestedBTSong;
 
 
 
@@ -94,10 +99,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             PermissionsActivity.startActivityForResult(this, PermissionsActivity.REQUEST_CODE_PERMISSION_WRITE_SETTINGS, permissions);
         }
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         searchView = (SearchView) findViewById(R.id.searchView);
-        searchView.setOnQueryTextListener(this);
         searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean isFocused) {
@@ -195,15 +199,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void setVies() {
-        nextSong = (ImageButton) findViewById(R.id.nextButtonImageView);
+        ImageButton nextSong = (ImageButton) findViewById(R.id.nextButtonImageView);
         nextSong.setOnClickListener(this);
-        priviesSong = (ImageButton) findViewById(R.id.previuseImageView);
+        ImageButton priviesSong = (ImageButton) findViewById(R.id.previuseImageView);
         priviesSong.setOnClickListener(this);
         playPause = (ImageButton) findViewById(R.id.playPauseButtonImageButton);
         playPause.setOnClickListener(this);
-        shuffleButton = (ImageButton) findViewById(R.id.shuffleButton);
+        ImageButton shuffleButton = (ImageButton) findViewById(R.id.shuffleButton);
         shuffleButton.setOnClickListener(this);
-        repeatButton = (ImageButton) findViewById(R.id.repeatButton);
+        ImageButton repeatButton = (ImageButton) findViewById(R.id.repeatButton);
         repeatButton.setOnClickListener(this);
         //thumbSongImageView = (ImageView) findViewById(R.id.playerImageView);
         mainSeekBar = (SeekBar) findViewById(R.id.seekBar);
@@ -228,6 +232,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 EventBus.getDefault().post(new EventToService(EventToService.SEEK_TO, seekBar.getProgress()));
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
+        mAudioManager.registerMediaButtonEventReceiver(
+                mRemoteControlResponder);
+        searchView.setOnQueryTextListener(this);
+
     }
 
     private void changeSong(int i) {
@@ -357,8 +372,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
         if (!searchView.isIconified()){
-            searchView.setIconified(true);
             searchView.setQuery("", false);
+            searchView.setIconified(true);
             return;
         }
         int position = mViewPager.getCurrentItem();
@@ -374,12 +389,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (!EventBus.getDefault().isRegistered(this))
-            EventBus.getDefault().register(this);
-    }
+
 
     @Override
     public void onStop() {
@@ -387,12 +397,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         EventBus.getDefault().unregister(this);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        mAudioManager.registerMediaButtonEventReceiver(
-                mRemoteControlResponder);
-    }
+
 
     @Override
     public void onDestroy() {
@@ -437,13 +442,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onQueryTextChange(String query) {
+        Log.d("TAG", "query: " + query);
+        if (query == null || query.length() == 0) {
+            return true;
+        }
         if (mViewPager.getCurrentItem() == 3){
-            if (query != null && query.length() > 0) {
                 EventBus.getDefault().post(new MessageSearchOnline(query));
-            }
         } else {
             ArrayList<Song> querySongs = new ArrayList<>();
-            for (Song song : GetMusicData.songs){
+            @SuppressWarnings("unchecked")
+            ArrayList<Song> songs = (ArrayList<Song>) GetMusicData.songs.clone();
+            for (Song song : songs){
                 if (song.getName().toLowerCase().contains(query.toLowerCase())
                         || song.getArtist().toLowerCase().contains(query.toLowerCase())
                         || song.getAlbum().toLowerCase().contains(query.toLowerCase())) {
@@ -505,4 +514,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     };
+
+
+    @SuppressLint("NewApi")
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CODE_WRITE_BT_SETTINGS_PERMISSION  && Settings.System.canWrite(this)){
+            Log.d("TAG", "CODE_WRITE_BT_SETTINGS_PERMISSION success");
+            if (requestedBTSong != null) {
+                Utils.setSongAsRingtone(this, requestedBTSong);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CODE_WRITE_BT_SETTINGS_PERMISSION && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (requestedBTSong != null) {
+                Utils.setSongAsRingtone(this, requestedBTSong);
+            }
+        }
+    }
 }

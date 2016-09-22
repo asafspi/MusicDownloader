@@ -2,6 +2,7 @@ package com.example.user.musicdownloader.fragments;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,8 +24,6 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
-import static com.example.user.musicdownloader.fragments.fragmentSongPlayer.placeHolder;
-
 public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearchFinishListener {
 
     private static ArrayList<SearchedSong> searchResultsSongs;
@@ -32,6 +31,7 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
     private View mProgressBar;
     private View textViewNoResult;;
     private SearchWebAsyncTask searchWebAsyncTask;
+    private Handler handler;
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -46,7 +46,7 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
                              Bundle savedInstanceState) {
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
-        placeHolder = getContext().getString(R.string.search_web);
+        handler = new Handler();
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
         mProgressBar = rootView.findViewById(R.id.progressBar);
         textViewNoResult = rootView.findViewById(R.id.text_no_result);
@@ -74,12 +74,12 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageSearchOnline event) {
         MainActivity.query = event.getQuery();
-        if (searchWebAsyncTask != null) {
-            searchWebAsyncTask.cancel(true);
-        }
-        searchWebAsyncTask = new SearchWebAsyncTask();
-        searchWebAsyncTask.execute(MainActivity.query);
-//        SearchHelper.searchWeb(this, MainActivity.query);
+//        if (searchWebAsyncTask != null) {
+//            searchWebAsyncTask.cancel(true);
+//        }
+//        searchWebAsyncTask = new SearchWebAsyncTask();
+//        searchWebAsyncTask.execute(MainActivity.query);
+        SearchHelper.searchWeb(handler, this);
     }
 
     // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
