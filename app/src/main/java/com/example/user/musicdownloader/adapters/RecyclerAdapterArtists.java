@@ -146,33 +146,7 @@ public class RecyclerAdapterArtists extends RecyclerView.Adapter<RecyclerAdapter
                             playNext(getAdapterPosition());
                             break;
                         case R.id.delete:
-
-                            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    switch (which){
-                                        case DialogInterface.BUTTON_POSITIVE:
-                                            for (int i = 0; i < GetMusicData.songs.size(); i++) {
-                                                if (GetMusicData.songs.get(i).getArtist().equals(artistsList.get(getAdapterPosition()))) {
-                                                    File k = new File(String.valueOf(GetMusicData.songs.get(i).getUri()));
-                                                    boolean b = k.delete();
-                                                }
-                                            }
-                                            artistsList.remove(getAdapterPosition());
-                                            notifyDataSetChanged();
-                                            break;
-
-                                        case DialogInterface.BUTTON_NEGATIVE:
-                                            dialog.dismiss();
-                                            break;
-                                    }
-                                }
-                            };
-                            AlertDialog.Builder builder = new AlertDialog.Builder(itemView.getContext());
-                            builder.setMessage("This action will delete all songs contains to this artist, are you sure you want to delete?").setPositiveButton("Yes", dialogClickListener)
-                                    .setNegativeButton("No", dialogClickListener).show();
-
-
+                            deleteArtist();
                             break;
                         default:
                             break;
@@ -183,34 +157,95 @@ public class RecyclerAdapterArtists extends RecyclerView.Adapter<RecyclerAdapter
             popupMenu.show();
         }
 
-        private void playAlbum(int p) {
-            //ArrayList<Song> songs = GetMusicData.songs;
-            for (int i = 0; i < allSongsList.size(); i++){
-                if(allSongsList.get(i).getArtist().equals(artistsList.get(p))){
-                    Context context = Contextor.getInstance().getContext();
-                    ShPref.put(R.string.song_path_for_service, allSongsList.get(i).getUri().toString());
-                    ShPref.put(R.string.song_name_for_service, allSongsList.get(i).getName());
-                    ShPref.put(R.string.song_artist_for_service, allSongsList.get(i).getArtist());
-                    ShPref.put(R.string.song_thumb_for_service, allSongsList.get(i).getImage().toString());
-                    ShPref.put(R.string.song_position_in_array, i);
-                    context.stopService(new Intent(context, PlaySongService.class));
-                    context.startService(new Intent(context, PlaySongService.class));
-                    return;
-                }
-            }
+        private void deleteArtist() {
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which){
+                        case DialogInterface.BUTTON_POSITIVE:
+                            for (int i = 0; i < GetMusicData.songs.size(); i++) {
+                                if (GetMusicData.songs.get(i).getArtist().equals(artistsList.get(getAdapterPosition()))) {
+                                    File k = new File(String.valueOf(GetMusicData.songs.get(i).getUri()));
+                                    boolean b = k.delete();
+                                }
+                            }
+                            artistsList.remove(getAdapterPosition());
+                            notifyDataSetChanged();
+                            break;
 
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            dialog.dismiss();
+                            break;
+                    }
+                }
+            };
+            AlertDialog.Builder builder = new AlertDialog.Builder(itemView.getContext());
+            builder.setMessage("This action will delete all songs contains to this artist, are you sure you want to delete?").setPositiveButton("Yes", dialogClickListener)
+                    .setNegativeButton("No", dialogClickListener).show();
         }
-        private void playNext(int p) {
 
-            for (int i = 0; i < allSongsList.size(); i++){
-                if(allSongsList.get(i).getArtist().equals(artistsList.get(p))){
-                    ShPref.put(R.string.song_path_for_service, allSongsList.get(i).getUri().toString());
-                    ShPref.put(R.string.song_name_for_service, allSongsList.get(i).getName());
-                    ShPref.put(R.string.song_artist_for_service, allSongsList.get(i).getArtist());
-                    ShPref.put(R.string.song_thumb_for_service, allSongsList.get(i).getImage().toString());
-                    ShPref.put(R.string.song_position_in_array, i);
-                    return;
-                }
+        private void playAlbum(int p) {
+            switch (itemType){
+                case TYPE_ALBUM:
+                    for (int i = 0; i < allSongsList.size(); i++){
+                        if(allSongsList.get(i).getAlbum().equals(artistsList.get(p))){
+                            Context context = Contextor.getInstance().getContext();
+                            ShPref.put(R.string.song_path_for_service, allSongsList.get(i).getUri().toString());
+                            ShPref.put(R.string.song_name_for_service, allSongsList.get(i).getName());
+                            ShPref.put(R.string.song_artist_for_service, allSongsList.get(i).getArtist());
+                            ShPref.put(R.string.song_thumb_for_service, allSongsList.get(i).getImage().toString());
+                            ShPref.put(R.string.song_position_in_array, i);
+                            context.stopService(new Intent(context, PlaySongService.class));
+                            context.startService(new Intent(context, PlaySongService.class));
+                            return;
+                        }
+                    }
+                    break;
+                case TYPE_ARTIST:
+                    for (int i = 0; i < allSongsList.size(); i++){
+                        if(allSongsList.get(i).getArtist().equals(artistsList.get(p))){
+                            Context context = Contextor.getInstance().getContext();
+                            ShPref.put(R.string.song_path_for_service, allSongsList.get(i).getUri().toString());
+                            ShPref.put(R.string.song_name_for_service, allSongsList.get(i).getName());
+                            ShPref.put(R.string.song_artist_for_service, allSongsList.get(i).getArtist());
+                            ShPref.put(R.string.song_thumb_for_service, allSongsList.get(i).getImage().toString());
+                            ShPref.put(R.string.song_position_in_array, i);
+                            context.stopService(new Intent(context, PlaySongService.class));
+                            context.startService(new Intent(context, PlaySongService.class));
+                            return;
+                        }
+                    }
+                    break;
+            }
+        }
+
+
+        private void playNext(int p) {
+            switch (itemType){
+                case TYPE_ALBUM:
+                    for (int i = 0; i < allSongsList.size(); i++){
+                        if(allSongsList.get(i).getAlbum().equals(artistsList.get(p))){
+                            ShPref.put(R.string.song_path_for_service, allSongsList.get(i).getUri().toString());
+                            ShPref.put(R.string.song_name_for_service, allSongsList.get(i).getName());
+                            ShPref.put(R.string.song_artist_for_service, allSongsList.get(i).getArtist());
+                            ShPref.put(R.string.song_thumb_for_service, allSongsList.get(i).getImage().toString());
+                            ShPref.put(R.string.song_position_in_array, i);
+                            return;
+                        }
+                    }
+                    break;
+                case TYPE_ARTIST:
+                    for (int i = 0; i < allSongsList.size(); i++){
+                        if(allSongsList.get(i).getArtist().equals(artistsList.get(p))){
+                            ShPref.put(R.string.song_path_for_service, allSongsList.get(i).getUri().toString());
+                            ShPref.put(R.string.song_name_for_service, allSongsList.get(i).getName());
+                            ShPref.put(R.string.song_artist_for_service, allSongsList.get(i).getArtist());
+                            ShPref.put(R.string.song_thumb_for_service, allSongsList.get(i).getImage().toString());
+                            ShPref.put(R.string.song_position_in_array, i);
+                            return;
+                        }
+                    }
+                    break;
             }
         }
     }

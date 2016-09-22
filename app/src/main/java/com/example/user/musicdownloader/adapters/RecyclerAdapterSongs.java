@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import static com.example.user.musicdownloader.fragments.fragmentSongPlayer.placeHolder;
 
 
-public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSongs.ViewHolder>  {
+public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSongs.ViewHolder> {
 
     private static final int VIEW_TYPE_SEARCH_ONLINE = 0;
     private static final int VIEW_TYPE_REGULAR = 1;
@@ -76,11 +76,11 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        if (getItemViewType(position) == VIEW_TYPE_SEARCH_ONLINE){
+        if (getItemViewType(position) == VIEW_TYPE_SEARCH_ONLINE) {
             holder.textViewQuery.setText(String.format(placeHolder, songQuery));
             return;
         }
-        if (SHOW_SEARCH_ROW){
+        if (SHOW_SEARCH_ROW) {
             position--;
         }
         holder.title.setText(songsList.get(position).getName());
@@ -89,11 +89,8 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
         Picasso.with(holder.itemView.getContext()).load(songsList.get(position).getImage()).into(holder.thumbImageView);
     }
 
-    private void showPopupMenu(final Context context, final View v, final int p) {
-        PopupMenu popupMenu = new PopupMenu(context, v);
-        popupMenu.getMenuInflater().inflate(R.menu.pop_up_menu, popupMenu.getMenu());
     private void showPopupMenu(final View v, final int p) {
-        PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
+        final PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
         popupMenu.getMenuInflater().inflate(R.menu.pop_up_menu_song, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
@@ -104,7 +101,7 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
                         playSong(p);
                         break;
                     case R.id.use_as_ringtone:
-                        Utils.setSongAsRingtone(context, songsList.get(p));
+                        Utils.setSongAsRingtone(v.getContext(), songsList.get(p));
                         break;
                     case R.id.delete:
                         //verifyStoragePermissions((Activity) v.getContext());
@@ -137,56 +134,56 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
     }
 
 
-public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    private TextView title, artist;
-    private ImageView thumbImageView, dots;
-    public TextView textViewQuery;
+        private TextView title, artist;
+        private ImageView thumbImageView, dots;
+        public TextView textViewQuery;
 
-    public ViewHolder(View itemView, int viewType) {
-        super(itemView);
-        switch (viewType) {
-            case VIEW_TYPE_REGULAR:
-                title = (TextView) itemView.findViewById(R.id.cellSongTextView);
-                artist = (TextView) itemView.findViewById(R.id.cellArtist_AlbumEditText);
-                thumbImageView = (ImageView) itemView.findViewById(R.id.cellImageView);
-                dots = (ImageView) itemView.findViewById(R.id.threeDotsItem);
-                itemView.setOnClickListener(this);
-                dots.setOnClickListener(this);
-                break;
-            case VIEW_TYPE_SEARCH_ONLINE:
-                textViewQuery = (TextView)itemView.findViewById(R.id.query);
-                textViewQuery.setOnClickListener(this);
-                break;
+        public ViewHolder(View itemView, int viewType) {
+            super(itemView);
+            switch (viewType) {
+                case VIEW_TYPE_REGULAR:
+                    title = (TextView) itemView.findViewById(R.id.cellSongTextView);
+                    artist = (TextView) itemView.findViewById(R.id.cellArtist_AlbumEditText);
+                    thumbImageView = (ImageView) itemView.findViewById(R.id.cellImageView);
+                    dots = (ImageView) itemView.findViewById(R.id.threeDotsItem);
+                    itemView.setOnClickListener(this);
+                    dots.setOnClickListener(this);
+                    break;
+                case VIEW_TYPE_SEARCH_ONLINE:
+                    textViewQuery = (TextView) itemView.findViewById(R.id.query);
+                    textViewQuery.setOnClickListener(this);
+                    break;
+            }
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (view.equals(textViewQuery)) {
+                EventBus.getDefault().post(new MessageSearchOnline(songQuery));
+                return;
+            }
+            switch (view.getId()) {
+                case R.id.threeDotsItem:
+                    showPopupMenu(view, getAdapterPosition());
+                    break;
+                default:
+                    playSong(getAdapterPosition());
+            }
         }
     }
-
-    @Override
-    public void onClick(View view) {
-        if (view.equals(textViewQuery)){
-            EventBus.getDefault().post(new MessageSearchOnline(songQuery));
-            return;
-        }
-        switch (view.getId()){
-            case R.id.threeDotsItem:
-                showPopupMenu(itemView.getContext(), dots, getAdapterPosition());
-                break;
-            default:
-                playSong(getAdapterPosition());
-        }
-    }
-}
 
 
     @Override
     public int getItemCount() {
         int size = songsList.size();
-        return SHOW_SEARCH_ROW ? ++size : size ;
+        return SHOW_SEARCH_ROW ? ++size : size;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (SHOW_SEARCH_ROW && position == 0){
+        if (SHOW_SEARCH_ROW && position == 0) {
             return VIEW_TYPE_SEARCH_ONLINE;
         }
         return VIEW_TYPE_REGULAR;
