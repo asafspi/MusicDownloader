@@ -161,13 +161,11 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
                             Utils.setSongAsRingtone(itemView.getContext(), songsList.get(p));
                             break;
                         case R.id.delete:
-
                             //verifyStoragePermissions((Activity) v.getContext());
                             File k = new File(String.valueOf(songsList.get(p).getUri()));
-
-                            boolean b = k.delete();
-                            GetMusicData.songs.remove(p);
                             songsList.remove(p);
+                            boolean b = k.delete();
+                            //GetMusicData.songs.remove(p);
                             notifyDataSetChanged();
                             break;
                         default:
