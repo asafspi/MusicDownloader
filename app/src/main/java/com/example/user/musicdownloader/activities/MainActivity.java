@@ -537,4 +537,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
+
+    // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageSearchOnline event) {
+        MainActivity.query = event.getQuery();
+        mViewPager.setCurrentItem(3);
+    }
+
+
 }
