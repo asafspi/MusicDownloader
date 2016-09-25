@@ -4,8 +4,8 @@
     android:id="@+id/custom_notification"
     android:layout_width="match_parent"
     android:layout_height="115dp"
-    android:background="@android:color/black"
-    >
+
+    android:background="@android:color/black">
 
 
     <RelativeLayout
@@ -99,10 +99,10 @@
     <Button
         android:id="@+id/x_notification"
         android:layout_width="15dp"
-        android:layout_height="18dp"
+        android:layout_height="17dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="11dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginLeft="13dp"
         android:layout_marginStart="11dp"
         android:layout_toEndOf="@+id/nextNotification"
         android:layout_toRightOf="@+id/nextNotification"
@@ -112,10 +112,10 @@
         android:id="@+id/pauseNotificationButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/x_notification"
-        android:layout_toEndOf="@+id/previous_notification"
-        android:layout_marginLeft="2dp"
-        android:layout_toRightOf="@+id/previous_notification">
+        android:layout_marginLeft="5dp"
+        android:layout_alignTop="@+id/x_notification"
+        android:layout_toRightOf="@+id/previous_notification"
+        android:layout_toEndOf="@+id/previous_notification">
 
         <ImageView
 

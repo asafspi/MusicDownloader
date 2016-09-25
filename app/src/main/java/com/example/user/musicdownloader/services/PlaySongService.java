@@ -41,7 +41,7 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
     public static String songName;
     private Thread thread;
     private NotificationCompat.Builder builder;
-    private RemoteViews contentView;
+    private RemoteViews contentViewBig, contentViewSmall;
     private NotificationManager manager;
     private PhoneStateListener phoneStateListener;
 
@@ -240,21 +240,25 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
         songName = ShPref.getString(R.string.song_name_for_service, "");
         builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.x).setOngoing(true) // Again,
-                .setContentTitle(" ").setContentText(" ")
+                .setContentTitle("Title").setContentText("Text")
                 .setPriority(NotificationCompat.PRIORITY_MAX);
-        //.setCustomBigContentView();
 
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), MAIN_REQUEST_ID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT); //123
         builder.setContentIntent(contentIntent);
-
-        contentView = new RemoteViews(getPackageName(), R.layout.custom_notification);
-
-        builder.setCustomBigContentView(contentView);
-        contentView.setTextViewText(R.id.textViewNotification, songName);
-        contentView.setImageViewResource(R.id.playNotificationImage, R.drawable.play_notification);
+        contentViewSmall = new RemoteViews(getPackageName(), R.layout.custom_notification_small);
+        contentViewBig = new RemoteViews(getPackageName(), R.layout.custom_notification);
+        builder.setCustomContentView(contentViewSmall);
+        if (null!= player && player.isPlaying()) {
+            contentViewSmall.setImageViewResource(R.id.playNotificationImage, R.drawable.pause_notification);
+        } else {
+            contentViewSmall.setImageViewResource(R.id.playNotificationImage, R.drawable.play_notification);
+        }
+        contentViewSmall.setTextViewText(R.id.textViewNotification, songName);
+        builder.setCustomBigContentView(contentViewBig);
+        contentViewBig.setTextViewText(R.id.textViewNotification, songName);
 
         setNextNotificationButton();
         setPreviewsNotificationButton();
@@ -265,37 +269,36 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
         // Add as notification
         manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(id, builder.build());
-        //MyLog.d("manager.notify(..)");
     }
 
     private void setNextNotificationButton() {
         Intent nextIntent = new Intent(this, NextButtonListener.class);
         PendingIntent pendingNextIntent = PendingIntent.getBroadcast(this, 0, nextIntent, 0);
-        contentView.setOnClickPendingIntent(R.id.nextNotification, pendingNextIntent);
+        contentViewBig.setOnClickPendingIntent(R.id.nextNotification, pendingNextIntent);
     }
 
     private void setPreviewsNotificationButton() {
         Intent previewsIntent = new Intent(this, PreviewsButtonListener.class);
         PendingIntent pendingPreviewsIntent = PendingIntent.getBroadcast(this, 0, previewsIntent, 0);
-        contentView.setOnClickPendingIntent(R.id.previous_notification, pendingPreviewsIntent);
+        contentViewBig.setOnClickPendingIntent(R.id.previous_notification, pendingPreviewsIntent);
     }
 
     private void setPlayNotificationButton() {
         Intent PlayPauseIntent = new Intent(this, PlayPauseButtonListener.class);
         PendingIntent pendingPlayPausesIntent = PendingIntent.getBroadcast(this, 0, PlayPauseIntent, 0);
-        contentView.setOnClickPendingIntent(R.id.playNotification, pendingPlayPausesIntent);
+        contentViewBig.setOnClickPendingIntent(R.id.playNotification, pendingPlayPausesIntent);
     }
 
     private void setPauseNotificationButton() {
         Intent PauseIntent = new Intent(this, PauseButtonListener.class);
         PendingIntent pendingPausesIntent = PendingIntent.getBroadcast(this, 0, PauseIntent, 0);
-        contentView.setOnClickPendingIntent(R.id.pauseNotificationButton, pendingPausesIntent);
+        contentViewBig.setOnClickPendingIntent(R.id.pauseNotificationButton, pendingPausesIntent);
     }
 
     private void setExitNotificationButton() {
         Intent ExitIntent = new Intent(this, ExitButtonListener.class);
         PendingIntent pendingExitIntent = PendingIntent.getBroadcast(this, 0, ExitIntent, 0);
-        contentView.setOnClickPendingIntent(R.id.x_notification, pendingExitIntent);
+        contentViewBig.setOnClickPendingIntent(R.id.x_notification, pendingExitIntent);
     }
 
     public static class NextButtonListener extends BroadcastReceiver {
