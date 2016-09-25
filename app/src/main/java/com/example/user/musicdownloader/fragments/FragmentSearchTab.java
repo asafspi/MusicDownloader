@@ -1,15 +1,21 @@
 package com.example.user.musicdownloader.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextSwitcher;
+import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.example.user.musicdownloader.EventBus.messages.MessageFromBackPressed;
 import com.example.user.musicdownloader.EventBus.messages.MessageSearchOnline;
@@ -23,6 +29,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearchFinishListener {
@@ -57,6 +64,22 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         textSwitcher = (TextSwitcher)rootView.findViewById(R.id.text_switcher);
+        // Set the ViewFactory of the TextSwitcher that will create TextView object when asked
+        textSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
+            public View makeView() {
+                TextView myText = new TextView(getContext());
+                myText.setGravity(Gravity.CENTER);
+                myText.setTextColor(Color.WHITE);
+                myText.setTextSize(30);
+                return myText;
+            }
+        });
+        // Declare the in and out animations and initialize them
+        Animation in = AnimationUtils.loadAnimation(getContext(), R.anim.slide_in_left);
+//        Animation out = AnimationUtils.loadAnimation(getContext(), android.R.anim.slide_out_right);
+        // set the animation type of textSwitcher
+        textSwitcher.setInAnimation(in);
+//        textSwitcher.setOutAnimation(out);
         setRecyclerView();
         return rootView;
     }
@@ -77,7 +100,7 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
                 textViewNoResult.setVisibility(View.GONE);
             } else {
                 mProgressBar.setVisibility(View.VISIBLE); //display progressbar while waiting to server response
-                SearchHelper.searchWeb(handler, this);
+                SearchHelper.searchWeb(handler, new WeakReference<SearchHelper.OnSearchFinishListener>(this));
             }
         } else {
             searchResultsSongs = null;
@@ -103,10 +126,12 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
 
     @Override
     public void onStartSearch(String query) {
-        textSwitcher.setText(query);
+        textSwitcher.setText("Searching " + "\"" + query + "\"");
         textSwitcher.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.VISIBLE);
+        textViewNoResult.setVisibility(View.GONE);
         searchResultsSongs = null;
+        mRecyclerView.invalidate();
         mRecyclerView.setAdapter(new RecyclerAdapterSearch(null));
     }
 
@@ -125,7 +150,7 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
     // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageSearchOnline event) {
-        SearchHelper.searchWeb(handler, this);
+        SearchHelper.searchWeb(handler, new WeakReference<SearchHelper.OnSearchFinishListener>(this));
         Log.d("TAG", "onMessageEvent:");
     }
 
