@@ -24,7 +24,6 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -90,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_main);
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
         if (PermissionChecker.isPermissionsGranted(permissions)) {
@@ -118,7 +117,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
-
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         MusicPlayerPagerAdapter mSectionsPagerAdapter = new MusicPlayerPagerAdapter(getSupportFragmentManager());
@@ -414,6 +412,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onNewIntent(intent);
     }
 
+/*
     public void showMenu(View view) {
         PopupMenu popupMenu;
         popupMenu = new PopupMenu(this, view);
@@ -423,6 +422,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         popupMenu.show();
 
     }
+*/
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
