@@ -13,6 +13,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="14dp"
         android:layout_marginStart="14dp"
+        android:layout_alignBottom="@+id/playNotification"
         android:layout_toEndOf="@+id/playNotification"
         android:layout_toRightOf="@+id/playNotification">
 
@@ -36,6 +37,7 @@
         android:layout_marginLeft="64dp"
         android:layout_marginStart="64dp"
         android:layout_toEndOf="@+id/previous_notification"
+        android:layout_alignBottom="@+id/playNotification"
         android:layout_toRightOf="@+id/previous_notification">
 
         <ImageView
@@ -73,49 +75,15 @@
 
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/x_notification"
-        android:layout_width="15dp"
-        android:layout_height="17dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="12dp"
-        android:layout_marginLeft="13dp"
-        android:layout_marginStart="11dp"
-        android:layout_toEndOf="@+id/nextNotification"
-        android:layout_toRightOf="@+id/nextNotification"
-        android:background="@drawable/x_notfication" />
-
-    <RelativeLayout
-        android:id="@+id/pauseNotificationButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/x_notification"
-        android:layout_marginLeft="5dp"
-        android:layout_toEndOf="@+id/previous_notification"
-        android:layout_toRightOf="@+id/previous_notification">
-
-        <ImageView
-
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginStart="20dp"
-            android:src="@drawable/pause_notification" />
-    </RelativeLayout>
-
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_above="@+id/x_notification"
+        android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/previous_notification"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
         android:layout_alignStart="@+id/previous_notification"
+        android:layout_marginRight="35dp"
         android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="15dp">
+        android:layout_marginTop="10dp"
+        android:layout_above="@+id/pauseNotificationButton">
 
         <TextView
             android:id="@+id/textViewNotification"
@@ -129,6 +97,34 @@
             android:textSize="17sp"
             tools:text="Song Title" />
 
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/x_notification"
+        android:layout_width="13dp"
+        android:layout_height="13dp"
+        android:padding="15dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/x_notfication"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <RelativeLayout
+        android:id="@+id/pauseNotificationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/playNotification"
+        android:layout_toRightOf="@+id/previous_notification"
+        android:layout_toEndOf="@+id/previous_notification">
+
+        <ImageView
+
+            android:layout_width="20dp"
+            android:layout_height="18dp"
+            android:layout_marginLeft="23dp"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/pause_notification" />
     </RelativeLayout>
 
 </RelativeLayout>
