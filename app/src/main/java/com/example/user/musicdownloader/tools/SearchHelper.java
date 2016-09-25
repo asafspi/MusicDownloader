@@ -9,6 +9,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -73,18 +74,21 @@ public class SearchHelper {
         return null;
     }
 
-    public static void searchWeb(final Handler handler, final OnSearchFinishListener listener){
+    public static void searchWeb(final Handler handler, final WeakReference<OnSearchFinishListener> listener){
         if (query == null || query.equals(currentQueried)){
             return;
         }
         long current = System.currentTimeMillis();
         if (current - last < 1000){
             Log.d("TAG", "searchWeb:current - last < 1000)");
-            handler.postDelayed(new runQueryRunable(handler, listener), current - last);
+            OnSearchFinishListener onSearchFinishListener = listener.get();
+            if (onSearchFinishListener != null) {
+                handler.postDelayed(new runQueryRunable(handler, onSearchFinishListener), current - last);
+            }
             return;
         }
 
-        Log.d("TAG", "searchWeb: "  + query);
+        Log.d("TAG", "searchWeb: " + query);
         last = current;
         final ArrayList<SearchedSong> songs = new ArrayList<>();
 
@@ -96,7 +100,12 @@ public class SearchHelper {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            listener.onStartSearch(currentQueried);
+
+                            Log.d("TAG", "listener.onStartSearch");
+                            OnSearchFinishListener onSearchFinishListener = listener.get();
+                            if (onSearchFinishListener != null) {
+                                onSearchFinishListener.onStartSearch(currentQueried);
+                            }
                         }
                     });
                     Element connectionElement = Jsoup.connect(URL_PREFIX + currentQueried + URL_SUFFIX).timeout(8000).ignoreHttpErrors(true).get().body();
@@ -138,12 +147,20 @@ public class SearchHelper {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            listener.onSuccess(songs);
+                            OnSearchFinishListener onSearchFinishListener = listener.get();
+                            if (onSearchFinishListener != null) {
+                                onSearchFinishListener.onSuccess(songs);
+
+                            }
                         }
                     });
                 } catch (IOException e) {
                     e.printStackTrace();
-                    listener.onFailure();
+                    OnSearchFinishListener onSearchFinishListener = listener.get();
+                    if (onSearchFinishListener != null) {
+                        onSearchFinishListener.onFailure();
+
+                    }
                 } finally {
                     currentQueried = null;
                 }
@@ -164,7 +181,7 @@ public class SearchHelper {
 
         @Override
         public void run() {
-            searchWeb(handler, listener);
+            searchWeb(handler, new WeakReference<>(listener));
         }
     }
 
