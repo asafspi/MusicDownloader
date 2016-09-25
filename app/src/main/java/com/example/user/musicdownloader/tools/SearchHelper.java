@@ -73,7 +73,7 @@ public class SearchHelper {
     }
 
     public static void searchWeb(final Handler handler, final OnSearchFinishListener listener){
-        if (query.equals(currentQueried)){
+        if (query == null || query.equals(currentQueried)){
             return;
         }
         long current = System.currentTimeMillis();

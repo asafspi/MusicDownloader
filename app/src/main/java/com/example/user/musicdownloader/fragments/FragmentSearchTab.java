@@ -1,6 +1,5 @@
 package com.example.user.musicdownloader.fragments;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -30,7 +29,6 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
     private RecyclerView mRecyclerView;
     private View mProgressBar;
     private View textViewNoResult;;
-    private SearchWebAsyncTask searchWebAsyncTask;
     private Handler handler;
 
     /**
@@ -54,13 +52,23 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
         mRecyclerView.setHasFixedSize(true);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        setRecyclerView();
+        if (MainActivity.query != null){
+            mProgressBar.setVisibility(View.VISIBLE); //display progressbar while waiting to server response
+            SearchHelper.searchWeb(handler, this);
+        } else {
+            setRecyclerView();
+        }
         return rootView;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        MainActivity.query = null;
+    }
 
     private void setRecyclerView(){
-        mProgressBar.setVisibility(View.GONE); //display progressbar while waiting to server response
+        mProgressBar.setVisibility(View.GONE);
         if (searchResultsSongs != null && searchResultsSongs.size() > 0) {
             mRecyclerView.setAdapter(new RecyclerAdapterSearch(searchResultsSongs));
             textViewNoResult.setVisibility(View.GONE);
@@ -68,18 +76,6 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
             mRecyclerView.setAdapter(new RecyclerAdapterSearch(searchResultsSongs));
             textViewNoResult.setVisibility(View.VISIBLE);
         }
-    }
-
-    // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(MessageSearchOnline event) {
-        MainActivity.query = event.getQuery();
-//        if (searchWebAsyncTask != null) {
-//            searchWebAsyncTask.cancel(true);
-//        }
-//        searchWebAsyncTask = new SearchWebAsyncTask();
-//        searchWebAsyncTask.execute(MainActivity.query);
-        SearchHelper.searchWeb(handler, this);
     }
 
     // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
@@ -107,36 +103,13 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
     }
 
 
-    private class SearchWebAsyncTask extends AsyncTask<String, Void, ArrayList<SearchedSong>> {
-
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            textViewNoResult.setVisibility(View.GONE);
-            mProgressBar.setVisibility(View.VISIBLE); //display progressbar while waiting to server response
-        }
-
-        @Override
-        protected ArrayList<SearchedSong> doInBackground(String... params) {
-            String query = params[0];
-            query = query.trim().replaceAll(" ", "+");
-            if (isCancelled()){
-                return null;
-            }
-            return SearchHelper.searchWeb(query);
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<SearchedSong> songs) {
-            super.onPostExecute(songs);
-            if (isCancelled()){
-                return;
-            }
-            FragmentSearchTab.searchResultsSongs = songs;
-            setRecyclerView();
-            searchWebAsyncTask = null;
-        }
+    // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageSearchOnline event) {
+        MainActivity.query = event.getQuery();
+        SearchHelper.searchWeb(handler, this);
     }
+
+
 
 }
