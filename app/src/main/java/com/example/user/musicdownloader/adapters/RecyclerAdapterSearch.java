@@ -79,7 +79,7 @@ public class RecyclerAdapterSearch extends RecyclerView.Adapter<RecyclerAdapterS
         }
     }
 
-    public void downloadFile(Context context, String url, String fileName) {
+    private void downloadFile(Context context, String url, String fileName) {
         boolean permission = ContextCompat.checkSelfPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
         if (permission) {
             DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
@@ -92,6 +92,7 @@ public class RecyclerAdapterSearch extends RecyclerView.Adapter<RecyclerAdapterS
             DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
             MainActivity.downId =  manager.enqueue(request);
             MainActivity.pathId = fileName;
+            Toast.makeText(context, "Download in progress", Toast.LENGTH_SHORT).show();
 
         } else {
             Toast.makeText(context, "You need to allow writing to memory", Toast.LENGTH_SHORT).show();

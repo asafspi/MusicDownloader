@@ -442,10 +442,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onQueryTextChange(String query) {
-        Log.d("TAG", "query: " + query);
+//        Log.d("TAG", "query: " + query);
         if (query == null || query.length() == 0) {
+            MainActivity.query = null;
             return true;
         }
+        MainActivity.query = query;
+
         if (mViewPager.getCurrentItem() == 3){
                 EventBus.getDefault().post(new MessageSearchOnline(query));
         } else {
@@ -541,7 +544,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageSearchOnline event) {
-        MainActivity.query = event.getQuery();
         mViewPager.setCurrentItem(3);
     }
 

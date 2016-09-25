@@ -64,8 +64,7 @@
                 app:searchHintIcon="@null"
                 app:searchIcon="@drawable/search_icon"/>
 
-            <!--
-                            app:queryBackground="@drawable/search_view_underline"-->
+
         </LinearLayout>
 
 

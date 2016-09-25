@@ -17,7 +17,7 @@
         <item name="textAppearanceSmallPopupMenu">@style/PopupMenu.MenuTextStyle</item>
         <item name="android:textAppearanceSmallPopupMenu">@style/PopupMenu.MenuTextStyle</item>
         <item name="android:editTextColor">@android:color/white</item>
-
+        <item name="android:textColorHint">@android:color/white</item>
 
     </style>
 

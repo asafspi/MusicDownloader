@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,27 +53,29 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
         mRecyclerView.setHasFixedSize(true);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        if (MainActivity.query != null){
-            mProgressBar.setVisibility(View.VISIBLE); //display progressbar while waiting to server response
-            SearchHelper.searchWeb(handler, this);
-        } else {
-            setRecyclerView();
-        }
+        setRecyclerView();
         return rootView;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        MainActivity.query = null;
+//        MainActivity.query = null;
     }
 
     private void setRecyclerView(){
-        mProgressBar.setVisibility(View.GONE);
-        if (searchResultsSongs != null && searchResultsSongs.size() > 0) {
-            mRecyclerView.setAdapter(new RecyclerAdapterSearch(searchResultsSongs));
-            textViewNoResult.setVisibility(View.GONE);
+        if (MainActivity.query != null){
+            if (searchResultsSongs != null && searchResultsSongs.size() > 0){
+                mProgressBar.setVisibility(View.GONE);
+                mRecyclerView.setAdapter(new RecyclerAdapterSearch(searchResultsSongs));
+                textViewNoResult.setVisibility(View.GONE);
+            } else {
+                mProgressBar.setVisibility(View.VISIBLE); //display progressbar while waiting to server response
+                SearchHelper.searchWeb(handler, this);
+            }
         } else {
+            searchResultsSongs = null;
+            mProgressBar.setVisibility(View.GONE);
             mRecyclerView.setAdapter(new RecyclerAdapterSearch(searchResultsSongs));
             textViewNoResult.setVisibility(View.VISIBLE);
         }
@@ -106,8 +109,8 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
     // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageSearchOnline event) {
-        MainActivity.query = event.getQuery();
         SearchHelper.searchWeb(handler, this);
+        Log.d("TAG", "onMessageEvent:");
     }
 
 
