@@ -19,7 +19,7 @@ public class MusicPlayerPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        if (position == 3){
+        if (position == 4){
             return FragmentSearchTab.newInstance();
         }
         return fragmentSongPlayer.newInstance(position);
@@ -28,7 +28,7 @@ public class MusicPlayerPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         // Show 4 total pages.
-        return 4;
+        return 5;
     }
 
    /* @Override
@@ -46,6 +46,8 @@ public class MusicPlayerPagerAdapter extends FragmentPagerAdapter {
             case 2:
                 return "Albums";
             case 3:
+                return "Downloads";
+            case 4:
                 return "Search";
         }
         return null;

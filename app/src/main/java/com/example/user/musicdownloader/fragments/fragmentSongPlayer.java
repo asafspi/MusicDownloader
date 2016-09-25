@@ -25,6 +25,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
+import static com.example.user.musicdownloader.data.GetMusicData.downloads;
 import static com.example.user.musicdownloader.data.GetMusicData.songs;
 
 public class fragmentSongPlayer extends Fragment  {
@@ -32,6 +33,7 @@ public class fragmentSongPlayer extends Fragment  {
     private static final int TAB_SONGS = 0;
     private static final int TAB_ARTIST = 1;
     private static final int TAB_ALBUM = 2;
+    private static final int TAB_DOWNLOADS = 3;
     private RecyclerView mRecyclerView;
     public WeakReference<fragmentSongPlayer> weak;
 
@@ -80,6 +82,9 @@ public class fragmentSongPlayer extends Fragment  {
                 break;
             case TAB_ALBUM:
                 setRecyclerAlbums();
+                break;
+            case TAB_DOWNLOADS:
+                setRecyclerSongs(downloads, null);
                 break;
         }
     }

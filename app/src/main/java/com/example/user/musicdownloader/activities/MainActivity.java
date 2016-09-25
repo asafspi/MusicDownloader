@@ -2,18 +2,12 @@ package com.example.user.musicdownloader.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.DownloadManager;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
-import android.media.MediaScannerConnection;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -52,7 +46,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -132,9 +125,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mRemoteControlResponder = new ComponentName(getPackageName(),
                 RemoteControlReceiver.class.getName());
         initializeRemoteControlRegistrationMethods();
-        registerReceiver(receiver, new IntentFilter(
-                DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-        //GetMusicData.downloadFile("url download Test", "http://cc.stream.qqmusic.qq.com/C100000nb6qX0MA1Lm.m4a?fromtag=52");
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -442,14 +432,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onQueryTextChange(String query) {
-//        Log.d("TAG", "query: " + query);
         if (query == null || query.length() == 0) {
             MainActivity.query = null;
             return true;
         }
         MainActivity.query = query;
 
-        if (mViewPager.getCurrentItem() == 3){
+        if (mViewPager.getCurrentItem() == 4){
                 EventBus.getDefault().post(new MessageSearchOnline(query));
         } else {
             ArrayList<Song> querySongs = new ArrayList<>();
@@ -479,7 +468,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case 0:
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                 break;
-            case 3:
+            case 4:
                 searchView.setIconified(false);
                 searchView.setFocusable(true);
                 InputMethodManager imm = (InputMethodManager)   getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -492,31 +481,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onPageScrollStateChanged(int i) {
 
     }
-
-    BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
-                Long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
-                if (downloadId == downId) {
-                    Log.d("TAG", "reciever got the doownload complete");
-                    File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), pathId);
-                    MediaScannerConnection.scanFile(getApplicationContext(), new String[]{
-                                    file.getAbsolutePath()},
-                            null, new MediaScannerConnection.OnScanCompletedListener() {
-                                public void onScanCompleted(String path, Uri uri) {
-                                    if (uri != null) {
-                                        Log.d("TAG", "onScanCompleted: " + uri.toString());
-                                        GetMusicData.getAllSongs(MainActivity.this);
-                                    }
-                                }
-
-                            });
-                }
-            }
-        }
-    };
 
 
     @SuppressLint("NewApi")
@@ -544,7 +508,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageSearchOnline event) {
-        mViewPager.setCurrentItem(3);
+        mViewPager.setCurrentItem(4);
     }
 
 

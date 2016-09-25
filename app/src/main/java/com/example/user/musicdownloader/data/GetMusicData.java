@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.user.musicdownloader.R;
 import com.example.user.musicdownloader.tools.Contextor;
 import com.example.user.musicdownloader.EventBus.messages.MessageFromBackPressed;
 
@@ -33,6 +34,7 @@ public class GetMusicData {
     public static ArrayList<Song> songs = new ArrayList<>();
     public static ArrayList<String> artists = new ArrayList<>();
     public static ArrayList<String> albums = new ArrayList<>();
+    public static ArrayList<Song> downloads = new ArrayList<>();
 
     public static void getAllSongs(final Context context) {
         new Thread(new Runnable() {
@@ -51,7 +53,7 @@ public class GetMusicData {
                 Cursor cur;
                 cur = cr.query(uri, null, selection, null, sortOrder);
                 int count = 0;
-
+                File fileDownloads =  new File(Environment.DIRECTORY_MUSIC + File.separator + context.getString(R.string.app_name));
                 if (cur != null) {
                     count = cur.getCount();
                     if (count > 0) {
@@ -77,12 +79,17 @@ public class GetMusicData {
                                 albums.add(album);
                             }
                             if (!name.toLowerCase().contains("notification") && !name.toLowerCase().contains("ringtone") && file_size > 0) {
-                                songs.add(new Song(songUri, name, artist, album, null, uriOfSong, uriToImage));
+                                Song song = new Song(songUri, name, artist, album, null, uriOfSong, uriToImage);
+                                songs.add(song);
+                                if (String.valueOf(uriOfSong).contains(fileDownloads.getPath())){
+                                    downloads.add(song);
+                                }
                             }
+
                         }
+                        cur.close();
                     }
                 }
-                cur.close();
                 Log.d("zaq", "FromThread");
                 EventBus.getDefault().post(new MessageFromBackPressed(MessageFromBackPressed.FROM_THREAD));
             }

@@ -93,6 +93,12 @@ public class SearchHelper {
             public void run() {
                 try {
                     currentQueried = query;
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            listener.onStartSearch(currentQueried);
+                        }
+                    });
                     Element connectionElement = Jsoup.connect(URL_PREFIX + currentQueried + URL_SUFFIX).timeout(8000).ignoreHttpErrors(true).get().body();
 
                     String songLink = null;
@@ -163,6 +169,7 @@ public class SearchHelper {
     }
 
     public interface OnSearchFinishListener {
+        void onStartSearch(String query);
         void onSuccess(ArrayList<SearchedSong> songs);
         void onFailure();
     }
