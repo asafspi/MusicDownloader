@@ -275,18 +275,21 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
         Intent nextIntent = new Intent(this, NextButtonListener.class);
         PendingIntent pendingNextIntent = PendingIntent.getBroadcast(this, 0, nextIntent, 0);
         contentViewBig.setOnClickPendingIntent(R.id.nextNotification, pendingNextIntent);
+        contentViewSmall.setOnClickPendingIntent(R.id.nextNotification, pendingNextIntent);
     }
 
     private void setPreviewsNotificationButton() {
         Intent previewsIntent = new Intent(this, PreviewsButtonListener.class);
         PendingIntent pendingPreviewsIntent = PendingIntent.getBroadcast(this, 0, previewsIntent, 0);
         contentViewBig.setOnClickPendingIntent(R.id.previous_notification, pendingPreviewsIntent);
+        contentViewSmall.setOnClickPendingIntent(R.id.previous_notification, pendingPreviewsIntent);
     }
 
     private void setPlayNotificationButton() {
         Intent PlayPauseIntent = new Intent(this, PlayPauseButtonListener.class);
         PendingIntent pendingPlayPausesIntent = PendingIntent.getBroadcast(this, 0, PlayPauseIntent, 0);
         contentViewBig.setOnClickPendingIntent(R.id.playNotification, pendingPlayPausesIntent);
+        contentViewSmall.setOnClickPendingIntent(R.id.playNotification, pendingPlayPausesIntent);
     }
 
     private void setPauseNotificationButton() {
@@ -299,6 +302,7 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
         Intent ExitIntent = new Intent(this, ExitButtonListener.class);
         PendingIntent pendingExitIntent = PendingIntent.getBroadcast(this, 0, ExitIntent, 0);
         contentViewBig.setOnClickPendingIntent(R.id.x_notification, pendingExitIntent);
+        contentViewSmall.setOnClickPendingIntent(R.id.x_notification, pendingExitIntent);
     }
 
     public static class NextButtonListener extends BroadcastReceiver {
