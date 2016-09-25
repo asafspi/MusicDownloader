@@ -9,17 +9,26 @@ import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.user.musicdownloader.EventBus.messages.EventForSearchRecyclerView;
+import com.example.user.musicdownloader.EventBus.messages.MessageEvent;
 import com.example.user.musicdownloader.R;
 import com.example.user.musicdownloader.activities.MainActivity;
 import com.example.user.musicdownloader.activities.PermissionsActivity;
 import com.example.user.musicdownloader.data.SearchedSong;
+import com.example.user.musicdownloader.tools.ShPref;
 import com.example.user.musicdownloader.tools.Utils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -58,15 +67,19 @@ public class RecyclerAdapterSearch extends RecyclerView.Adapter<RecyclerAdapterS
 
         TextView textLabel, textAlbum;
         View btnPlay, btnDownload;
+        ProgressBar rowProgressBar;
 
         ViewHolder(View itemView) {
+
             super(itemView);
+            EventBus.getDefault().register(this);
             textLabel = (TextView)itemView.findViewById(R.id.text_label);
             textAlbum = (TextView)itemView.findViewById(R.id.text_album);
             btnPlay = itemView.findViewById(R.id.play_btn);
             btnPlay.setOnClickListener(this);
             btnDownload = itemView.findViewById(R.id.down_btn);
             btnDownload.setOnClickListener(this);
+            rowProgressBar = (ProgressBar) itemView.findViewById(R.id.rowProgressBar);
         }
 
         @Override
@@ -75,8 +88,13 @@ public class RecyclerAdapterSearch extends RecyclerView.Adapter<RecyclerAdapterS
             if (view.equals(btnDownload)){
                 downloadFile(view.getContext(), song.getSongLink(), song.getSongLabel() + ".mp3");
             } else if (view.equals(btnPlay)){
+                rowProgressBar.setVisibility(View.VISIBLE);
                 Utils.playFromInternet(song.getSongLabel(), song.getSongArtist() , song.getSongLink());
             }
+        }
+        @Subscribe(threadMode = ThreadMode.MAIN)
+        public void onMessageEvent(EventForSearchRecyclerView event) {
+            rowProgressBar.setVisibility(View.GONE);
         }
     }
 
@@ -102,6 +120,5 @@ public class RecyclerAdapterSearch extends RecyclerView.Adapter<RecyclerAdapterS
                     PermissionsActivity.REQUEST_CODE_PERMISSION_WRITE_SETTINGS);
             MainActivity.downId = -1;
         }
-
     }
 }

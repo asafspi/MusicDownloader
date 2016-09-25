@@ -18,6 +18,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.example.user.musicdownloader.EventBus.EventToService;
+import com.example.user.musicdownloader.EventBus.messages.EventForSearchRecyclerView;
 import com.example.user.musicdownloader.EventBus.messages.MessageEvent;
 import com.example.user.musicdownloader.data.GetMusicData;
 import com.example.user.musicdownloader.R;
@@ -107,7 +108,6 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
         if (mgr != null) {
             mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
         }
-
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
