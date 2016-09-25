@@ -1,6 +1,7 @@
 package com.example.user.musicdownloader.tools;
 
 import android.os.Handler;
+import android.util.Log;
 
 import com.example.user.musicdownloader.data.SearchedSong;
 
@@ -77,10 +78,13 @@ public class SearchHelper {
             return;
         }
         long current = System.currentTimeMillis();
-        if (current - last < 1500){
+        if (current - last < 1000){
+            Log.d("TAG", "searchWeb:current - last < 1000)");
             handler.postDelayed(new runQueryRunable(handler, listener), current - last);
             return;
         }
+
+        Log.d("TAG", "searchWeb: "  + query);
         last = current;
         final ArrayList<SearchedSong> songs = new ArrayList<>();
 
@@ -89,6 +93,12 @@ public class SearchHelper {
             public void run() {
                 try {
                     currentQueried = query;
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            listener.onStartSearch(currentQueried);
+                        }
+                    });
                     Element connectionElement = Jsoup.connect(URL_PREFIX + currentQueried + URL_SUFFIX).timeout(8000).ignoreHttpErrors(true).get().body();
 
                     String songLink = null;
@@ -125,16 +135,19 @@ public class SearchHelper {
                         SearchedSong song = new SearchedSong(songLink, songLabel, songArtist, songAlbum);
                         songs.add(song);
                     }
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            listener.onSuccess(songs);
+                        }
+                    });
                 } catch (IOException e) {
                     e.printStackTrace();
                     listener.onFailure();
+                } finally {
+                    currentQueried = null;
                 }
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        listener.onSuccess(songs);
-                    }
-                });
+
             }
         }).start();
     }
@@ -156,6 +169,7 @@ public class SearchHelper {
     }
 
     public interface OnSearchFinishListener {
+        void onStartSearch(String query);
         void onSuccess(ArrayList<SearchedSong> songs);
         void onFailure();
     }

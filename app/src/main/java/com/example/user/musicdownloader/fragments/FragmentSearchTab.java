@@ -5,9 +5,11 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextSwitcher;
 
 import com.example.user.musicdownloader.EventBus.messages.MessageFromBackPressed;
 import com.example.user.musicdownloader.EventBus.messages.MessageSearchOnline;
@@ -29,7 +31,9 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
     private RecyclerView mRecyclerView;
     private View mProgressBar;
     private View textViewNoResult;;
+    private TextSwitcher textSwitcher;
     private Handler handler;
+
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -52,27 +56,33 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
         mRecyclerView.setHasFixedSize(true);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        if (MainActivity.query != null){
-            mProgressBar.setVisibility(View.VISIBLE); //display progressbar while waiting to server response
-            SearchHelper.searchWeb(handler, this);
-        } else {
-            setRecyclerView();
-        }
+        textSwitcher = (TextSwitcher)rootView.findViewById(R.id.text_switcher);
+        setRecyclerView();
         return rootView;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        MainActivity.query = null;
+//        MainActivity.query = null;
     }
 
     private void setRecyclerView(){
-        mProgressBar.setVisibility(View.GONE);
-        if (searchResultsSongs != null && searchResultsSongs.size() > 0) {
-            mRecyclerView.setAdapter(new RecyclerAdapterSearch(searchResultsSongs));
-            textViewNoResult.setVisibility(View.GONE);
+        if (MainActivity.query != null){
+            if (searchResultsSongs != null && searchResultsSongs.size() > 0){
+                mProgressBar.setVisibility(View.GONE);
+                textSwitcher.setVisibility(View.GONE);
+
+                mRecyclerView.setAdapter(new RecyclerAdapterSearch(searchResultsSongs));
+                textViewNoResult.setVisibility(View.GONE);
+            } else {
+                mProgressBar.setVisibility(View.VISIBLE); //display progressbar while waiting to server response
+                SearchHelper.searchWeb(handler, this);
+            }
         } else {
+            searchResultsSongs = null;
+            mProgressBar.setVisibility(View.GONE);
+            textSwitcher.setVisibility(View.GONE);
             mRecyclerView.setAdapter(new RecyclerAdapterSearch(searchResultsSongs));
             textViewNoResult.setVisibility(View.VISIBLE);
         }
@@ -83,12 +93,21 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
     public void onMessageEvent(MessageFromBackPressed event) {
         switch (event.getAction()) {
             case MessageFromBackPressed.FROM_BACK_PRESSED:
-                if (3 != event.getPosition()){
+                if (4 != event.getPosition()){
                     return;
                 }
                 getActivity().finish();
                 break;
         }
+    }
+
+    @Override
+    public void onStartSearch(String query) {
+        textSwitcher.setText(query);
+        textSwitcher.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.VISIBLE);
+        searchResultsSongs = null;
+        mRecyclerView.setAdapter(new RecyclerAdapterSearch(null));
     }
 
     @Override
@@ -106,8 +125,8 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
     // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageSearchOnline event) {
-        MainActivity.query = event.getQuery();
         SearchHelper.searchWeb(handler, this);
+        Log.d("TAG", "onMessageEvent:");
     }
 
 

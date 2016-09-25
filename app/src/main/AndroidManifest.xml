@@ -61,6 +61,12 @@
              </intent-filter>
         </receiver>
 
+        <receiver android:name=".recievers.DownloadCompletedReciever">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+            </intent-filter>
+        </receiver>
+
         <activity android:name=".activities.PermissionsActivity"/>
     </application>
 

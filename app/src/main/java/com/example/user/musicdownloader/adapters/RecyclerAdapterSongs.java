@@ -3,9 +3,6 @@ package com.example.user.musicdownloader.adapters;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,7 +14,6 @@ import android.widget.TextView;
 
 import com.example.user.musicdownloader.EventBus.messages.MessageSearchOnline;
 import com.example.user.musicdownloader.R;
-import com.example.user.musicdownloader.activities.PermissionsActivity;
 import com.example.user.musicdownloader.data.GetMusicData;
 import com.example.user.musicdownloader.data.Song;
 import com.example.user.musicdownloader.services.PlaySongService;
@@ -89,38 +85,6 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
         Picasso.with(holder.itemView.getContext()).load(songsList.get(position).getImage()).into(holder.thumbImageView);
     }
 
-    private void showPopupMenu(final View v, final int p) {
-        final PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
-        popupMenu.getMenuInflater().inflate(R.menu.pop_up_menu_song, popupMenu.getMenu());
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.play:
-                        playSong(p);
-                        break;
-                    case R.id.use_as_ringtone:
-                        Utils.setSongAsRingtone(v.getContext(), songsList.get(p));
-                        break;
-                    case R.id.delete:
-
-                        //verifyStoragePermissions((Activity) v.getContext());
-                        File k = new File(String.valueOf(songsList.get(p).getUri()));
-
-                        boolean b = k.delete();
-                        GetMusicData.songs.remove(p);
-                        songsList.remove(p);
-                        notifyDataSetChanged();
-                        break;
-                    default:
-                        break;
-                }
-                return true;
-            }
-        });
-        popupMenu.show();
-    }
 
 
     private void playSong(int p) {
@@ -181,6 +145,40 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
                     }
             }
         }
+
+        private void showPopupMenu(final View v, final int p) {
+            final PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
+            popupMenu.getMenuInflater().inflate(R.menu.pop_up_menu_song, popupMenu.getMenu());
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.play:
+                            playSong(p);
+                            break;
+                        case R.id.use_as_ringtone:
+                            Utils.setSongAsRingtone(itemView.getContext(), songsList.get(p));
+                            break;
+                        case R.id.delete:
+
+                            //verifyStoragePermissions((Activity) v.getContext());
+                            File k = new File(String.valueOf(songsList.get(p).getUri()));
+
+                            boolean b = k.delete();
+                            GetMusicData.songs.remove(p);
+                            songsList.remove(p);
+                            notifyDataSetChanged();
+                            break;
+                        default:
+                            break;
+                    }
+                    return true;
+                }
+            });
+            popupMenu.show();
+        }
+
     }
 
 
