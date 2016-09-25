@@ -87,7 +87,7 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-//        MainActivity.query = null;
+        EventBus.getDefault().unregister(this);
     }
 
     private void setRecyclerView(){

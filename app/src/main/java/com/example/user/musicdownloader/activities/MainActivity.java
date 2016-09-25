@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
         if (PermissionChecker.isPermissionsGranted(permissions)) {
-            GetMusicData.getAllSongs(this);
+            GetMusicData.getAllSongs(getContentResolver(), getString(R.string.app_name));
             Log.d("zaq", "Permissions granted");
         } else {
             PermissionsActivity.startActivityForResult(this, PermissionsActivity.REQUEST_CODE_PERMISSION_WRITE_SETTINGS, permissions);
@@ -392,6 +392,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onDestroy();
         mAudioManager.unregisterMediaButtonEventReceiver(
                 mRemoteControlResponder);
+        EventBus.getDefault().unregister(this);
     }
 
     @Override

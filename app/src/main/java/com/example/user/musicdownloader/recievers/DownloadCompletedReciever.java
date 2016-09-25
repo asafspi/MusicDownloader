@@ -11,7 +11,6 @@ import android.util.Log;
 
 import com.example.user.musicdownloader.R;
 import com.example.user.musicdownloader.data.GetMusicData;
-import com.example.user.musicdownloader.tools.Contextor;
 
 import java.io.File;
 
@@ -24,7 +23,7 @@ import static com.example.user.musicdownloader.activities.MainActivity.pathId;
 
 public class DownloadCompletedReciever extends BroadcastReceiver {
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
         String action = intent.getAction();
         if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
             Long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
@@ -37,7 +36,7 @@ public class DownloadCompletedReciever extends BroadcastReceiver {
                             public void onScanCompleted(String path, Uri uri) {
                                 if (uri != null) {
                                     Log.d("TAG", "onScanCompleted: " + uri.toString());
-                                    GetMusicData.getAllSongs(Contextor.getInstance().getContext());
+                                    GetMusicData.getAllSongs(context.getContentResolver(), context.getString(R.string.app_name));
                                 }
                             }
 
