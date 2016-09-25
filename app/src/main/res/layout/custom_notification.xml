@@ -1,96 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/custom_notification"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="115dp"
     android:background="@android:color/black"
-    android:baselineAligned="false"
-    android:orientation="horizontal">
+    >
+
+
+    <RelativeLayout
+        android:id="@+id/previous_notification"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="14dp"
+        android:layout_marginStart="14dp"
+        android:layout_toEndOf="@+id/playNotification"
+        android:layout_toRightOf="@+id/playNotification">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="20dp"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:rotation="180"
+            android:src="@drawable/forward_notification" />
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/nextNotification"
         android:layout_width="55dp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="64dp"
+        android:layout_marginStart="64dp"
+        android:layout_toEndOf="@+id/previous_notification"
+        android:layout_toRightOf="@+id/previous_notification">
 
         <ImageView
             android:id="@+id/torch_image"
             android:layout_width="20dp"
             android:layout_height="40dp"
-            android:layout_centerInParent="true"
-            android:src="@drawable/forward_notification"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp" />
+            android:layout_centerInParent="true"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/forward_notification" />
 
     </RelativeLayout>
-
 
     <RelativeLayout
         android:id="@+id/playNotification"
-        android:layout_width="55dp"
-        android:layout_height="wrap_content">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="13dp"
+        android:layout_marginStart="13dp">
 
         <ImageView
             android:id="@+id/playNotificationImage"
-            android:layout_width="35dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="5dp"
-            android:src="@drawable/play_notification"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/previous_notification"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="40dp"
-            android:src="@drawable/forward_notification"
-            android:rotation="180"
-            android:id="@+id/imageView2"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="23dp"
+            android:src="@drawable/play_notification" />
 
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="41dp">
-
-        <Button
-            android:id="@+id/x_notification"
-            android:layout_width="13dp"
-            android:layout_height="13dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_margin="5dp"
-            android:background="@drawable/x_notfication" />
+        android:layout_height="35dp"
+        android:layout_above="@+id/previous_notification"
+        android:layout_alignLeft="@+id/previous_notification"
+        android:layout_alignStart="@+id/previous_notification">
 
         <TextView
             android:id="@+id/textViewNotification"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ellipsize="marquee"
-            android:maxLines="1"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:scrollHorizontally="true"
-            android:textColor="@android:color/white"
-            android:textSize="22sp"
-            android:layout_marginTop="10dp"
-            tools:text="Song Title"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_toLeftOf="@+id/x_notification"
-            android:layout_toStartOf="@+id/x_notification" />
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            tools:text="Song Title" />
+
     </RelativeLayout>
 
-</LinearLayout>
+    <Button
+        android:id="@+id/x_notification"
+        android:layout_width="15dp"
+        android:layout_height="18dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="11dp"
+        android:layout_marginStart="11dp"
+        android:layout_toEndOf="@+id/nextNotification"
+        android:layout_toRightOf="@+id/nextNotification"
+        android:background="@drawable/x_notfication" />
+
+    <RelativeLayout
+        android:id="@+id/pauseNotificationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/x_notification"
+        android:layout_toEndOf="@+id/previous_notification"
+        android:layout_marginLeft="2dp"
+        android:layout_toRightOf="@+id/previous_notification">
+
+        <ImageView
+
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/pause_notification" />
+    </RelativeLayout>
+
+</RelativeLayout>

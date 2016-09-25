@@ -49,6 +49,7 @@
         <receiver android:name=".services.PlaySongService$PreviewsButtonListener" />
         <receiver android:name=".services.PlaySongService$PlayPauseButtonListener" />
         <receiver android:name=".services.PlaySongService$ExitButtonListener" />
+        <receiver android:name=".services.PlaySongService$PauseButtonListener" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
