@@ -84,7 +84,7 @@ public class PermissionsActivity extends AppCompatActivity {
         if (requestCode == PERMISSION_REQUEST_CODE && hasAllPermissionsGranted(grantResults)) {
             requiresCheck = true;
             setResult(Activity.RESULT_OK);
-            GetMusicData.getAllSongs(getApplicationContext());
+            GetMusicData.getAllSongs(getContentResolver(), getString(R.string.app_name));
             Log.d("zaq", "from permission");
             finish();
         } else {

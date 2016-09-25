@@ -12,13 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.user.musicdownloader.data.GetMusicData;
-import com.example.user.musicdownloader.activities.MainActivity;
-import com.example.user.musicdownloader.fragments.fragmentSongPlayer;
 import com.example.user.musicdownloader.R;
+import com.example.user.musicdownloader.activities.MainActivity;
+import com.example.user.musicdownloader.data.GetMusicData;
 import com.example.user.musicdownloader.data.Song;
+import com.example.user.musicdownloader.fragments.fragmentSongPlayer;
 import com.example.user.musicdownloader.services.PlaySongService;
 import com.example.user.musicdownloader.tools.Contextor;
 import com.example.user.musicdownloader.tools.ShPref;
@@ -32,7 +31,6 @@ public class RecyclerAdapterArtists extends RecyclerView.Adapter<RecyclerAdapter
 
     private final ArrayList<String> artistsList;
     private final ArrayList<Song> allSongsList = GetMusicData.songs;
-    private Context mContext;
     private final int itemType;
     private WeakReference<fragmentSongPlayer> week;
     public static final int TYPE_ARTIST = 1;
@@ -56,10 +54,9 @@ public class RecyclerAdapterArtists extends RecyclerView.Adapter<RecyclerAdapter
         }
     }
 
-    public RecyclerAdapterArtists(ArrayList<String> artists, int itemType, Context context, WeakReference<fragmentSongPlayer> weak) {
+    public RecyclerAdapterArtists(ArrayList<String> artists, int itemType,WeakReference<fragmentSongPlayer> weak) {
         this.artistsList = artists;
         this.itemType = itemType;
-        this.mContext = context;
         this.week = weak;
     }
 
@@ -75,7 +72,7 @@ public class RecyclerAdapterArtists extends RecyclerView.Adapter<RecyclerAdapter
                 holder.title.setText(artistsList.get(p));
                 for(int i = 0; i <allSongsList.size(); i++ ){
                     if(allSongsList.get(i).getAlbum().equals(artistsList.get(p))){
-                        Picasso.with(mContext).load(allSongsList.get(i).getImage()).into(holder.albumImageView);
+                        Picasso.with(holder.itemView.getContext()).load(allSongsList.get(i).getImage()).into(holder.albumImageView);
                         holder.artistTextView.setText(allSongsList.get(i).getArtist());
                         break;
                     }

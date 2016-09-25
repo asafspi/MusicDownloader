@@ -72,6 +72,12 @@ public class fragmentSongPlayer extends Fragment  {
         return mRecyclerView;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
+    }
+
     private void setRecycler(){
         switch (position) {
             case TAB_SONGS:
@@ -91,12 +97,12 @@ public class fragmentSongPlayer extends Fragment  {
 
     private void setRecyclerAlbums() {
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        mRecyclerView.setAdapter(new RecyclerAdapterArtists(GetMusicData.albums, RecyclerAdapterArtists.TYPE_ALBUM, getContext(), weak));
+        mRecyclerView.setAdapter(new RecyclerAdapterArtists(GetMusicData.albums, RecyclerAdapterArtists.TYPE_ALBUM,  weak));
     }
 
     private void setRecyclerArtist() {
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
-        mRecyclerView.setAdapter(new RecyclerAdapterArtists(GetMusicData.artists, RecyclerAdapterArtists.TYPE_ARTIST, getContext(), weak));
+        mRecyclerView.setAdapter(new RecyclerAdapterArtists(GetMusicData.artists, RecyclerAdapterArtists.TYPE_ARTIST,  weak));
     }
 
     private void setRecyclerSongs(ArrayList<Song> songs, String query){

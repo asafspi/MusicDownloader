@@ -13,9 +13,8 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.user.musicdownloader.R;
-import com.example.user.musicdownloader.tools.Contextor;
 import com.example.user.musicdownloader.EventBus.messages.MessageFromBackPressed;
+import com.example.user.musicdownloader.tools.Contextor;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
@@ -36,7 +35,7 @@ public class GetMusicData {
     public static ArrayList<String> albums = new ArrayList<>();
     public static ArrayList<Song> downloads = new ArrayList<>();
 
-    public static void getAllSongs(final Context context) {
+    public static void getAllSongs(final ContentResolver cr, final String appName) {
         new Thread(new Runnable() {
             public void run() {
                 if (songs.size() > 0) {
@@ -45,7 +44,6 @@ public class GetMusicData {
                     albums.clear();
                 }
 
-                ContentResolver cr = context.getContentResolver();
                 Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
                 String selection = MediaStore.Audio.Media.ARTIST + "!= 0";
                 String sortOrder = MediaStore.Audio.Media.ARTIST + " ASC";
@@ -53,7 +51,7 @@ public class GetMusicData {
                 Cursor cur;
                 cur = cr.query(uri, null, selection, null, sortOrder);
                 int count = 0;
-                File fileDownloads =  new File(Environment.DIRECTORY_MUSIC + File.separator + context.getString(R.string.app_name));
+                File fileDownloads =  new File(Environment.DIRECTORY_MUSIC + File.separator + appName);
                 if (cur != null) {
                     count = cur.getCount();
                     if (count > 0) {
@@ -67,7 +65,6 @@ public class GetMusicData {
 
                             Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
                             Uri uriToImage = ContentUris.withAppendedId(sArtworkUri, albumId);
-                            ContentResolver res = context.getContentResolver();
                             Uri uriOfSong = Uri.parse(cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.DATA)));
                             //String fileSize = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.SIZE));
                             File file = new File(String.valueOf(uriOfSong));
@@ -119,10 +116,7 @@ public class GetMusicData {
             downloadFile(title, link);
         } catch (IOException | JSONException e) {
             e.printStackTrace();
-        } catch (NullPointerException | SecurityException e) {
-            //ExceptionHandler.handleException(e);
-            // Asaf sometimes SecurityException occurs, check it on Fabric
-        } catch (OutOfMemoryError e) {
+        } catch (NullPointerException | SecurityException | OutOfMemoryError e) {
             //ExceptionHandler.handleException(e);
             // Asaf sometimes SecurityException occurs, check it on Fabric
         } finally {
