@@ -65,7 +65,7 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
             EventBus.getDefault().post(new MessageEvent("changePlayPauseButtonToPlay", 0, 0, null, null, null));
         }
         player = MediaPlayer.create(this, songUri);
-        if(null != player) {
+        if (null != player) {
             player.setOnCompletionListener(this);
         }
         if (EventBus.getDefault().isRegistered(this)) {
@@ -175,9 +175,9 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
                     player.stop();
                     EventBus.getDefault().post(new MessageEvent("changePlayPauseButtonToPlay", 0, 0, null, null, null));
                 }
-                if(!shuffle){
+                if (!shuffle) {
                     position = GetMusicData.getSongPosition(ShPref.getString(R.string.song_name_for_service, "")) + 1;
-                }else {
+                } else {
                     position = new Random().nextInt(GetMusicData.songs.size());
                 }
                 player = MediaPlayer.create(this, songs.get(position).getUri());
@@ -227,10 +227,10 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
-        if(!repeatSong){
+        if (!repeatSong) {
             EventBus.getDefault().post(new EventToService(EventToService.NEXT_BUTTON, 0));
             addNotification(NOTIFICATION_ID);
-        }else {
+        } else {
             player.seekTo(0);
             player.start();
         }
@@ -242,6 +242,8 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
                 .setSmallIcon(R.drawable.x).setOngoing(true) // Again,
                 .setContentTitle(" ").setContentText(" ")
                 .setPriority(NotificationCompat.PRIORITY_MAX);
+        //.setCustomBigContentView();
+
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -250,16 +252,14 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
 
         contentView = new RemoteViews(getPackageName(), R.layout.custom_notification);
 
-        builder.setContent(contentView);
+        builder.setCustomBigContentView(contentView);
         contentView.setTextViewText(R.id.textViewNotification, songName);
-        if (null!= player && player.isPlaying()) {
-            contentView.setImageViewResource(R.id.playNotificationImage, android.R.drawable.ic_media_pause);
-        } else {
-            contentView.setImageViewResource(R.id.playNotificationImage, R.drawable.play_notification);
-        }
+        contentView.setImageViewResource(R.id.playNotificationImage, R.drawable.play_notification);
+
         setNextNotificationButton();
         setPreviewsNotificationButton();
-        setPlayPauseNotificationButton();
+        setPlayNotificationButton();
+        setPauseNotificationButton();
         setExitNotificationButton();
 
         // Add as notification
@@ -280,10 +280,16 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
         contentView.setOnClickPendingIntent(R.id.previous_notification, pendingPreviewsIntent);
     }
 
-    private void setPlayPauseNotificationButton() {
+    private void setPlayNotificationButton() {
         Intent PlayPauseIntent = new Intent(this, PlayPauseButtonListener.class);
         PendingIntent pendingPlayPausesIntent = PendingIntent.getBroadcast(this, 0, PlayPauseIntent, 0);
         contentView.setOnClickPendingIntent(R.id.playNotification, pendingPlayPausesIntent);
+    }
+
+    private void setPauseNotificationButton() {
+        Intent PauseIntent = new Intent(this, PauseButtonListener.class);
+        PendingIntent pendingPausesIntent = PendingIntent.getBroadcast(this, 0, PauseIntent, 0);
+        contentView.setOnClickPendingIntent(R.id.pauseNotificationButton, pendingPausesIntent);
     }
 
     private void setExitNotificationButton() {
@@ -312,6 +318,14 @@ public class PlaySongService extends Service implements Runnable, MediaPlayer.On
     }
 
     public static class PlayPauseButtonListener extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            EventBus.getDefault().post(new EventToService(EventToService.PLAY_BUTTON, 0));
+            Log.d("zaq", "from notification");
+        }
+    }
+
+    public static class PauseButtonListener extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             EventBus.getDefault().post(new EventToService(EventToService.PLAY_BUTTON, 0));
