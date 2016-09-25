@@ -18,7 +18,6 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.example.user.musicdownloader.EventBus.EventToService;
-import com.example.user.musicdownloader.EventBus.messages.EventForSearchRecyclerView;
 import com.example.user.musicdownloader.EventBus.messages.MessageEvent;
 import com.example.user.musicdownloader.data.GetMusicData;
 import com.example.user.musicdownloader.R;
@@ -108,6 +107,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
         if (mgr != null) {
             mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
         }
+
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -117,7 +117,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
     @Override
     public void onDestroy() {
         super.onDestroy();
-        handler.removeCallbacks(this);
+        handler.removeCallbacks(updateUi);
         if (null != player) {
             player.stop();
             player.release();
@@ -289,9 +289,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
             EventBus.getDefault().post(new MessageEvent("changePlayPauseButtonToPause", 0, 0, null, null, null));
             ShPref.put(getString(R.string.current_song_duratoin), player.getDuration());
             EventBus.getDefault().post(new MessageEvent("start song", player.getDuration(), 0, songName, songArtist, songPath));
-            if (null == builder) {
-                addNotification(NOTIFICATION_ID);
-            }
+            addNotification(NOTIFICATION_ID);
             handler.post(updateUi);
         }
     }
