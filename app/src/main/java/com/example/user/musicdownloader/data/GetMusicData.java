@@ -62,12 +62,7 @@ public class GetMusicData {
                             Long id = cur.getLong(cur.getColumnIndex(MediaStore.Audio.Media._ID));
                             Uri songUri = Uri.withAppendedPath(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id.toString());
                             String artist = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-                            if (!artists.contains(artist)) {
-                                artists.add(artist);
-                            }
-                            if (!albums.contains(album)) {
-                                albums.add(album);
-                            }
+
                             Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
                             Uri uriToImage = ContentUris.withAppendedId(sArtworkUri, albumId);
                             ContentResolver res = context.getContentResolver();
@@ -75,7 +70,12 @@ public class GetMusicData {
                             //String fileSize = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.SIZE));
                             File file = new File(String.valueOf(uriOfSong));
                             int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
-
+                            if (!artists.contains(artist) && file_size > 0) {
+                                artists.add(artist);
+                            }
+                            if (!albums.contains(album) && file_size > 0) {
+                                albums.add(album);
+                            }
                             if (!name.toLowerCase().contains("notification") && !name.toLowerCase().contains("ringtone") && file_size > 0) {
                                 songs.add(new Song(songUri, name, artist, album, null, uriOfSong, uriToImage));
                             }
