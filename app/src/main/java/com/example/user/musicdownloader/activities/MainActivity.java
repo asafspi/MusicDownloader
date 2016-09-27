@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //http://android-developers.blogspot.co.il/2010/06/allowing-applications-to-play-nicer.html
     private static Method mRegisterMediaButtonEventReceiver;
     private static Method mUnregisterMediaButtonEventReceiver;
+    private boolean songPlaySet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,26 +135,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int sec, min;
         switch (event.getEvent()) {
             case START_SONG:
-                mainSeekBar.setProgress(0);
-                mainSeekBar.setMax(PlaySongService.totalSongDuration);
-                songNameTextView.setText(currentPlayedSong.getName());
-                ShPref.put(getString(R.string.song_name_for_service), songNameTextView.getText().toString());
-                artistNameTextView.setText(currentPlayedSong.getArtist() + " -");
-                ShPref.put(R.string.song_artist_for_service, artistNameTextView.getText().toString());
-                songNameTextView.setSelected(true);
-                songNameTextView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-                songNameTextView.setSingleLine(true);
-
-                timeInSeconds = PlaySongService.totalSongDuration / 1000;
-                sec = (int) (timeInSeconds % 60);
-                min = (int) ((timeInSeconds / 60)) % 60;
-                if (sec < 10) {
-                    songDuration.setText(String.valueOf(min + ":" + "0" + sec));
-                } else {
-                    songDuration.setText(String.valueOf(min + ":" + sec));
-                }
+                setSongUi();
                 break;
             case FROM_RUN:
+                if (!songPlaySet){
+                    setSongUi();
+                }
                 timeInSeconds = PlaySongService.currentTimeValue / 1000;
                 sec = (int) (timeInSeconds % 60);
                 min = (int) ((timeInSeconds / 60)) % 60;
@@ -183,6 +170,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case CHANGE_BTN_TO_PLAY:
                 playPause.setImageResource(R.drawable.play_icon);
                 break;
+        }
+    }
+
+    private void setSongUi() {
+        songPlaySet = true;
+        mainSeekBar.setMax(PlaySongService.totalSongDuration);
+        songNameTextView.setText(currentPlayedSong.getName());
+        artistNameTextView.setText(currentPlayedSong.getArtist() + " -");
+        songNameTextView.setSelected(true);
+        songNameTextView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+        songNameTextView.setSingleLine(true);
+        int sec, min;
+        long timeInSeconds;
+        timeInSeconds = PlaySongService.totalSongDuration / 1000;
+        sec = (int) (timeInSeconds % 60);
+        min = (int) ((timeInSeconds / 60)) % 60;
+        if (sec < 10) {
+            songDuration.setText(String.valueOf(min + ":" + "0" + sec));
+        } else {
+            songDuration.setText(String.valueOf(min + ":" + sec));
         }
     }
 
@@ -371,6 +378,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onStop() {
         super.onStop();
+        songPlaySet = false;
         EventBus.getDefault().unregister(this);
     }
 
