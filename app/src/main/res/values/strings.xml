@@ -42,5 +42,6 @@
     <string name="action_search">SEARCH</string>
     <string name="no_result">There is no result for current search</string>
     <string name="add_to_queue">ADD TO QUEUE</string>
+    <string name="no_internet">Your device is offline, please check your connectivity</string>
 
 </resources>

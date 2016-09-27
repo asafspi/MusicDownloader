@@ -1,12 +1,13 @@
 package com.example.user.musicdownloader.fragments;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.example.user.musicdownloader.activities.MainActivity;
 import com.example.user.musicdownloader.adapters.RecyclerAdapterSearch;
 import com.example.user.musicdownloader.data.Song;
 import com.example.user.musicdownloader.tools.SearchHelper;
+import com.example.user.musicdownloader.tools.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -37,9 +39,10 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
     private static ArrayList<Song> searchResultsSongs;
     private RecyclerView mRecyclerView;
     private View mProgressBar;
-    private View textViewNoResult;;
+    private TextView textViewNoResult;;
     private TextSwitcher textSwitcher;
     private Handler handler;
+    private ConnectivityManager connectivityManager;
 
 
     /**
@@ -56,9 +59,11 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
         handler = new Handler();
+        connectivityManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
         mProgressBar = rootView.findViewById(R.id.progressBar);
-        textViewNoResult = rootView.findViewById(R.id.text_no_result);
+        textViewNoResult = (TextView) rootView.findViewById(R.id.text_no_result);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
 
@@ -91,7 +96,14 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
     }
 
     private void setRecyclerView(){
-        if (MainActivity.query != null){
+        if (!Utils.isNetworkAvailable(getContext())){
+            mProgressBar.setVisibility(View.GONE);
+            textSwitcher.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.GONE);
+            textViewNoResult.setVisibility(View.VISIBLE);
+            textViewNoResult.setText(getString(R.string.no_internet));
+        }
+        else if (MainActivity.query != null){
             if (searchResultsSongs != null && searchResultsSongs.size() > 0){
                 mProgressBar.setVisibility(View.GONE);
                 textSwitcher.setVisibility(View.GONE);
@@ -108,6 +120,7 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
             textSwitcher.setVisibility(View.GONE);
             mRecyclerView.setAdapter(new RecyclerAdapterSearch(searchResultsSongs));
             textViewNoResult.setVisibility(View.VISIBLE);
+            textViewNoResult.setText(getString(R.string.no_result));
         }
     }
 
@@ -150,8 +163,9 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
     // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageSearchOnline event) {
-        SearchHelper.searchWeb(handler, new WeakReference<SearchHelper.OnSearchFinishListener>(this));
-        Log.d("TAG", "onMessageEvent:");
+        if (Utils.isNetworkAvailable(connectivityManager)) {
+            SearchHelper.searchWeb(handler, new WeakReference<SearchHelper.OnSearchFinishListener>(this));
+        }
     }
 
 
