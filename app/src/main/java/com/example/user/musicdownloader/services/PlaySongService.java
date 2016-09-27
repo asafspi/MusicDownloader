@@ -88,7 +88,6 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
             e.printStackTrace();
         }
         player.prepareAsync();
-
     }
 
     @Override
