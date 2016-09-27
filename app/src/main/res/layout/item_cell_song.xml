@@ -48,10 +48,13 @@
         android:textColor="@android:color/black"
         android:textStyle="bold"
         android:textSize="12sp"
+        android:layout_marginLeft="10dp"
+
         tools:text="Artist"
         android:layout_alignBottom="@+id/cellImageView"
         android:layout_toLeftOf="@+id/threeDotsItem"
-        android:layout_toStartOf="@+id/threeDotsItem" />
+        android:layout_toRightOf="@+id/cellImageView"
+        android:layout_toEndOf="@+id/cellImageView" />
 
     <TextView
         android:id="@+id/cellSongTextView"
@@ -61,8 +64,10 @@
         android:maxLines="1"
         android:textStyle="bold"
         android:textSize="15sp"
+        android:layout_marginLeft="10dp"
         tools:text="Title"
         android:layout_alignTop="@+id/cellImageView"
         android:layout_toLeftOf="@+id/threeDotsItem"
-        android:layout_toStartOf="@+id/threeDotsItem" />
+        android:layout_toRightOf="@+id/cellImageView"
+        android:layout_toEndOf="@+id/cellImageView" />
 </RelativeLayout>
