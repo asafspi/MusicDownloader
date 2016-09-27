@@ -13,9 +13,9 @@
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="14dp"
         android:layout_marginStart="14dp"
-        android:layout_alignBottom="@+id/playNotification"
-        android:layout_toEndOf="@+id/playNotification"
-        android:layout_toRightOf="@+id/playNotification">
+        android:layout_alignBottom="@+id/playNotificationRelative"
+        android:layout_toEndOf="@+id/playNotificationRelative"
+        android:layout_toRightOf="@+id/playNotificationRelative">
 
         <ImageView
             android:id="@+id/imageView2"
@@ -37,7 +37,7 @@
         android:layout_marginLeft="64dp"
         android:layout_marginStart="64dp"
         android:layout_toEndOf="@+id/previous_notification"
-        android:layout_alignBottom="@+id/playNotification"
+        android:layout_alignBottom="@+id/playNotificationRelative"
         android:layout_toRightOf="@+id/previous_notification">
 
         <ImageView
@@ -53,7 +53,7 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/playNotification"
+        android:id="@+id/playNotificationRelative"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -80,10 +80,12 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/previous_notification"
         android:layout_alignStart="@+id/previous_notification"
-        android:layout_marginRight="35dp"
         android:layout_marginBottom="10dp"
+        android:layout_above="@+id/pauseNotificationButton"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:layout_above="@+id/pauseNotificationButton">
+        android:layout_toLeftOf="@+id/x_notification"
+        android:layout_toStartOf="@+id/x_notification">
 
         <TextView
             android:id="@+id/textViewNotification"
@@ -114,7 +116,7 @@
         android:id="@+id/pauseNotificationButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/playNotification"
+        android:layout_alignBottom="@+id/playNotificationRelative"
         android:layout_toRightOf="@+id/previous_notification"
         android:layout_toEndOf="@+id/previous_notification">
 

@@ -270,8 +270,8 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
     private void setPlayNotificationButton() {
         Intent PlayPauseIntent = new Intent(this, PlayPauseButtonListener.class);
         PendingIntent pendingPlayPausesIntent = PendingIntent.getBroadcast(this, 0, PlayPauseIntent, 0);
-        contentViewBig.setOnClickPendingIntent(R.id.playNotification, pendingPlayPausesIntent);
-        contentViewSmall.setOnClickPendingIntent(R.id.playNotification, pendingPlayPausesIntent);
+        contentViewBig.setOnClickPendingIntent(R.id.playNotificationImage, pendingPlayPausesIntent);
+        contentViewSmall.setOnClickPendingIntent(R.id.playNotificationImage, pendingPlayPausesIntent);
     }
 
     private void setPauseNotificationButton() {
