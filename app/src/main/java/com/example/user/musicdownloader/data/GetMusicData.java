@@ -14,6 +14,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.user.musicdownloader.EventBus.messages.MessageFromBackPressed;
+import com.example.user.musicdownloader.R;
 import com.example.user.musicdownloader.tools.Contextor;
 
 import org.greenrobot.eventbus.EventBus;
@@ -69,7 +70,7 @@ public class GetMusicData {
                             //String fileSize = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.SIZE));
                             File file = new File(String.valueOf(uriOfSong));
                             int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
-                            if (!artists.contains(artist) && file_size > 0) {
+                            if (!artists.contains(artist) && file_size > 0 && !artist.equals(appName)) {
                                 artists.add(artist);
                             }
                             if (!albums.contains(album) && file_size > 0) {
@@ -145,7 +146,7 @@ public class GetMusicData {
             request.allowScanningByMediaScanner();
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         }
-        request.setDestinationInExternalPublicDir("/Music Download/", title + ".mp3");
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_MUSIC + File.separator + context.getString(R.string.app_name), title + ".mp3");
         // get download service and enqueue file
         DownloadManager manager;
         manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
