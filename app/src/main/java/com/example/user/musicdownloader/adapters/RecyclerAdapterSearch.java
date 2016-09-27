@@ -3,13 +3,13 @@ package com.example.user.musicdownloader.adapters;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +18,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.musicdownloader.EventBus.messages.EventForSearchRecyclerView;
-import com.example.user.musicdownloader.EventBus.messages.MessageEvent;
 import com.example.user.musicdownloader.R;
 import com.example.user.musicdownloader.activities.MainActivity;
 import com.example.user.musicdownloader.activities.PermissionsActivity;
-import com.example.user.musicdownloader.data.SearchedSong;
-import com.example.user.musicdownloader.tools.ShPref;
-import com.example.user.musicdownloader.tools.Utils;
+import com.example.user.musicdownloader.data.Song;
+import com.example.user.musicdownloader.services.PlaySongService;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -35,9 +33,9 @@ import java.util.ArrayList;
 
 public class RecyclerAdapterSearch extends RecyclerView.Adapter<RecyclerAdapterSearch.ViewHolder> {
 
-    private ArrayList<SearchedSong> songs;
+    private ArrayList<Song> songs;
 
-    public RecyclerAdapterSearch(ArrayList<SearchedSong> songs) {
+    public RecyclerAdapterSearch(ArrayList<Song> songs) {
         this.songs = songs;
     }
 
@@ -50,9 +48,9 @@ public class RecyclerAdapterSearch extends RecyclerView.Adapter<RecyclerAdapterS
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        SearchedSong song = songs.get(position);
-        holder.textLabel.setText(song.getSongLabel());
-        holder.textAlbum.setText(song.getSongAlbum());
+        Song song = songs.get(position);
+        holder.textLabel.setText(song.getName());
+        holder.textAlbum.setText(song.getAlbum());
     }
 
     @Override
@@ -84,12 +82,13 @@ public class RecyclerAdapterSearch extends RecyclerView.Adapter<RecyclerAdapterS
 
         @Override
         public void onClick(View view) {
-            SearchedSong song = songs.get(getAdapterPosition());
+            Song song = songs.get(getAdapterPosition());
             if (view.equals(btnDownload)){
-                downloadFile(view.getContext(), song.getSongLink(), song.getSongLabel() + ".mp3");
+                downloadFile(view.getContext(), song.getUri().toString(), song.getName() + ".mp3");
             } else if (view.equals(btnPlay)){
                 rowProgressBar.setVisibility(View.VISIBLE);
-                Utils.playFromInternet(song.getSongLabel(), song.getSongArtist() , song.getSongLink());
+                PlaySongService.currentPlayedSong = song;
+                itemView.getContext().startService(new Intent(itemView.getContext(), PlaySongService.class));
             }
         }
         @Subscribe(threadMode = ThreadMode.MAIN)

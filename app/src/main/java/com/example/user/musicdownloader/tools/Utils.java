@@ -46,11 +46,7 @@ public class Utils {
                     position = GetMusicData.getSongPosition(PlaySongService.currentPlayedSong) - 1;
                     break;
             }
-            ShPref.put(R.string.song_path_for_service, songs.get(position).getUri().toString());
-            ShPref.put(R.string.song_name_for_service, songs.get(position).getName());
-            ShPref.put(R.string.song_artist_for_service, songs.get(position).getArtist());
-            ShPref.put(R.string.song_thumb_for_service, songs.get(position).getImage().toString());
-            context.stopService(new Intent(context, PlaySongService.class));
+            PlaySongService.currentPlayedSong = songs.get(position);
             context.startService(new Intent(context, PlaySongService.class));
 
     }

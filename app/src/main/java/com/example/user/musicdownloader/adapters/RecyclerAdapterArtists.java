@@ -187,12 +187,7 @@ public class RecyclerAdapterArtists extends RecyclerView.Adapter<RecyclerAdapter
                     for (int i = 0; i < allSongsList.size(); i++){
                         if(allSongsList.get(i).getAlbum().equals(artistsList.get(p))){
                             Context context = Contextor.getInstance().getContext();
-                            ShPref.put(R.string.song_path_for_service, allSongsList.get(i).getUri().toString());
-                            ShPref.put(R.string.song_name_for_service, allSongsList.get(i).getName());
-                            ShPref.put(R.string.song_artist_for_service, allSongsList.get(i).getArtist());
-                            ShPref.put(R.string.song_thumb_for_service, allSongsList.get(i).getImage().toString());
-                            ShPref.put(R.string.song_position_in_array, i);
-                            context.stopService(new Intent(context, PlaySongService.class));
+                            PlaySongService.currentPlayedSong = allSongsList.get(i);
                             context.startService(new Intent(context, PlaySongService.class));
                             return;
                         }
@@ -202,12 +197,7 @@ public class RecyclerAdapterArtists extends RecyclerView.Adapter<RecyclerAdapter
                     for (int i = 0; i < allSongsList.size(); i++){
                         if(allSongsList.get(i).getArtist().equals(artistsList.get(p))){
                             Context context = Contextor.getInstance().getContext();
-                            ShPref.put(R.string.song_path_for_service, allSongsList.get(i).getUri().toString());
-                            ShPref.put(R.string.song_name_for_service, allSongsList.get(i).getName());
-                            ShPref.put(R.string.song_artist_for_service, allSongsList.get(i).getArtist());
-                            ShPref.put(R.string.song_thumb_for_service, allSongsList.get(i).getImage().toString());
-                            ShPref.put(R.string.song_position_in_array, i);
-                            context.stopService(new Intent(context, PlaySongService.class));
+                            PlaySongService.currentPlayedSong = allSongsList.get(i);
                             context.startService(new Intent(context, PlaySongService.class));
                             return;
                         }

@@ -23,6 +23,7 @@ import com.example.user.musicdownloader.R;
 import com.example.user.musicdownloader.activities.MainActivity;
 import com.example.user.musicdownloader.adapters.RecyclerAdapterSearch;
 import com.example.user.musicdownloader.data.SearchedSong;
+import com.example.user.musicdownloader.data.Song;
 import com.example.user.musicdownloader.tools.SearchHelper;
 
 import org.greenrobot.eventbus.EventBus;
@@ -34,7 +35,7 @@ import java.util.ArrayList;
 
 public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearchFinishListener {
 
-    private static ArrayList<SearchedSong> searchResultsSongs;
+    private static ArrayList<Song> searchResultsSongs;
     private RecyclerView mRecyclerView;
     private View mProgressBar;
     private View textViewNoResult;;
@@ -136,7 +137,7 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
     }
 
     @Override
-    public void onSuccess(ArrayList<SearchedSong> songs) {
+    public void onSuccess(ArrayList<Song> songs) {
         FragmentSearchTab.searchResultsSongs = songs;
         setRecyclerView();
     }
