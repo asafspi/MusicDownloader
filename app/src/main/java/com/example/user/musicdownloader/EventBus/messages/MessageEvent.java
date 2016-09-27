@@ -18,8 +18,6 @@ public class MessageEvent {
         START_SONG,
         FROM_RUN,
         SONG_END,
-        NEXT_SONG,
-        PREVIOUS_SONG,
         FINISH,
     }
 }

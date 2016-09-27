@@ -32,8 +32,8 @@ import java.util.ArrayList;
 
 public class GetMusicData {
     public static ArrayList<Song> songs = new ArrayList<>();
-    public static ArrayList<String> artists = new ArrayList<>();
-    public static ArrayList<String> albums = new ArrayList<>();
+    public static ArrayList<Artist> artists = new ArrayList<>();
+    public static ArrayList<Album> albums = new ArrayList<>();
     public static ArrayList<Song> downloads = new ArrayList<>();
 
     public static void getAllSongs(final ContentResolver cr, final String appName) {
@@ -62,7 +62,7 @@ public class GetMusicData {
                             long albumId = cur.getLong(cur.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
                             Long id = cur.getLong(cur.getColumnIndex(MediaStore.Audio.Media._ID));
                             Uri songUri = Uri.withAppendedPath(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id.toString());
-                            String artist = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                            String artistName = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.ARTIST));
 
                             Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
                             Uri uriToImage = ContentUris.withAppendedId(sArtworkUri, albumId);
@@ -70,15 +70,12 @@ public class GetMusicData {
                             //String fileSize = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.SIZE));
                             File file = new File(String.valueOf(uriOfSong));
                             int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
-                            if (!artists.contains(artist) && file_size > 0 && !artist.equals(appName)) {
-                                artists.add(artist);
-                            }
-                            if (!albums.contains(album) && file_size > 0) {
-                                albums.add(album);
-                            }
+
                             if (!name.toLowerCase().contains("notification") && !name.toLowerCase().contains("ringtone") && file_size > 0) {
-                                Song song = new Song(songUri, name, artist, album, null, uriOfSong, uriToImage);
+                                Song song = new Song(songUri, name, artistName, album, uriOfSong, uriToImage);
                                 songs.add(song);
+                                addSongToArtisList(song);
+                                addSongToAlbumList(song);
                                 if (String.valueOf(uriOfSong).contains(fileDownloads.getPath())){
                                     downloads.add(song);
                                 }
@@ -92,6 +89,36 @@ public class GetMusicData {
                 EventBus.getDefault().post(new MessageFromBackPressed(MessageFromBackPressed.FROM_THREAD));
             }
         }).start();
+    }
+
+    private static void addSongToArtisList(Song song){
+        boolean artFound = false;
+        for (Artist art : artists){
+            if (art.getArtistName().equals(song.getArtist())){
+                art.getArtistSongs().add(song);
+                artFound = true;
+                break;
+            }
+        }
+        if (!artFound){
+            Artist artist = new Artist(song);
+            artists.add(artist);
+        }
+    }
+
+    private static void addSongToAlbumList(Song song){
+        boolean albumFound = false;
+        for (Album album : albums){
+            if (album.getAlbumName().equals(song.getAlbum())){
+                album.getAlbumSongs().add(song);
+                albumFound = true;
+                break;
+            }
+        }
+        if (!albumFound){
+            Album album = new Album(song);
+            albums.add(album);
+        }
     }
 
 

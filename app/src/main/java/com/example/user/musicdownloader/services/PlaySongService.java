@@ -20,7 +20,6 @@ import com.example.user.musicdownloader.EventBus.messages.EventForSearchRecycler
 import com.example.user.musicdownloader.EventBus.messages.MessageEvent;
 import com.example.user.musicdownloader.R;
 import com.example.user.musicdownloader.activities.MainActivity;
-import com.example.user.musicdownloader.data.GetMusicData;
 import com.example.user.musicdownloader.data.Song;
 import com.example.user.musicdownloader.tools.ShPref;
 
@@ -29,13 +28,14 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 
 import static com.example.user.musicdownloader.EventBus.EventToService.KILL_NOTIFICATION;
-import static com.example.user.musicdownloader.data.GetMusicData.songs;
 
 public class PlaySongService extends Service implements MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnSeekCompleteListener {
-    private static final String TAG = null;
+    public static final String EXTRA_ADDED_TO_QUEUE = "extraQueue";
+
     private static final int MAIN_REQUEST_ID = 999;
     private static final int NOTIFICATION_ID = 1213;
     public static boolean repeatSong;
@@ -47,12 +47,11 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
     private PhoneStateListener phoneStateListener;
     private Handler handler;
 
-    public IBinder onBind(Intent arg0) {
-        return null;
-    }
+    public static ArrayList<Song> currentArraySong;
     public static CLIENT client;
     public static Song currentPlayedSong;
     public static int totalSongDuration, currentTimeValue;
+    private static boolean addedToQueue;
 
     @Override
     public void onCreate() {
@@ -71,7 +70,15 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
 
 
     public int onStartCommand(Intent intent, int flags, int startId) {
-        setPlayer();
+        addedToQueue = intent.getBooleanExtra(EXTRA_ADDED_TO_QUEUE, false);
+        if (addedToQueue){
+            if (!player.isPlaying()){
+                songEnded();
+            }
+        } else {
+            setPlayer();
+        }
+
         return Service.START_NOT_STICKY;
     }
 
@@ -116,7 +123,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
         if (client == CLIENT.WEB){
 //            stopSelf();
         }
-        if (repeatSong) {
+        else if (repeatSong) {
             player.seekTo(0);
             player.start();
         } else {
@@ -181,7 +188,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
                songEnded();
                 break;
             case 3: //PREVIOUS_BUTTON
-                position = GetMusicData.getSongPosition(currentPlayedSong) - 1;
+                position = currentArraySong.indexOf(currentPlayedSong) - 1;
                 playSongInPosition(position);
                 break;
             case 4: // From seek bar
@@ -196,21 +203,34 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
 
     private void songEnded(){
         int position;
-        if (shuffle) {
-            position = new Random().nextInt(GetMusicData.songs.size());
+        if (addedToQueue){
+            position = 0;
+            addedToQueue = false;
+        }
+        else if (shuffle) {
+            position = new Random().nextInt(currentArraySong.size());
         } else {
-            position = GetMusicData.getSongPosition(currentPlayedSong) + 1;
+            int index = currentArraySong.indexOf(currentPlayedSong);
+            if (index != -1){
+                position = ++index;
+            } else {
+                position = index;
+            }
         }
         playSongInPosition(position);
     }
 
     private void playSongInPosition(int position) {
-        if (position > 0 && position < songs.size() ) {
-            currentPlayedSong = songs.get(position);
+        if (position >= 0 && position < currentArraySong.size() ) {
+            currentPlayedSong = currentArraySong.get(position);
             setPlayer();
         } else {
+            if (player.isPlaying()){
+                EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.CHANGE_BTN_TO_PAUSE));
+            } else {
+                EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.CHANGE_BTN_TO_PLAY));
+            }
             player.seekTo(0);
-            EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.CHANGE_BTN_TO_PLAY));
 //            stopSelf();
         }
     }
@@ -289,7 +309,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
     public static class NextButtonListener extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            EventBus.getDefault().post(new EventToService(EventToService.NEXT_BUTTON, 0));
+            EventBus.getDefault().post(new EventToService(EventToService.NEXT_BUTTON));
             Log.d("zaq", "from notification");
 
         }
@@ -298,7 +318,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
     public static class PreviewsButtonListener extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            EventBus.getDefault().post(new EventToService(EventToService.PREVIOUS_BUTTON, 0));
+            EventBus.getDefault().post(new EventToService(EventToService.PREVIOUS_BUTTON));
             Log.d("zaq", "from notification");
         }
     }
@@ -306,7 +326,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
     public static class PlayPauseButtonListener extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            EventBus.getDefault().post(new EventToService(EventToService.PLAY_BUTTON, 0));
+            EventBus.getDefault().post(new EventToService(EventToService.PLAY_BUTTON));
             Log.d("zaq", "from notification");
         }
     }
@@ -314,7 +334,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
     public static class PauseButtonListener extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            EventBus.getDefault().post(new EventToService(EventToService.PLAY_BUTTON, 0));
+            EventBus.getDefault().post(new EventToService(EventToService.PLAY_BUTTON));
             Log.d("zaq", "from notification");
         }
     }
@@ -322,7 +342,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
     public static class ExitButtonListener extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            EventBus.getDefault().post(new EventToService(KILL_NOTIFICATION, 0));
+            EventBus.getDefault().post(new EventToService(KILL_NOTIFICATION));
             EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.FINISH));
             Log.d("zaq", "from notification exit");
         }
@@ -362,4 +382,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
         WEB
     }
 
+    public IBinder onBind(Intent arg0) {
+        return null;
+    }
 }

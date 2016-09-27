@@ -11,9 +11,10 @@ public class Artist {
     private String artistName;
     private ArrayList<Song> artistSongs;
 
-    public Artist(String artistName, ArrayList<Song> artistSongs) {
-        this.artistName = artistName;
-        this.artistSongs = artistSongs;
+    public Artist(Song song) {
+        this.artistName = song.getArtist();
+        this.artistSongs = new ArrayList<>();
+        this.artistSongs.add(song);
     }
 
     public String getArtistName() {
@@ -22,5 +23,9 @@ public class Artist {
 
     public ArrayList<Song> getArtistSongs() {
         return artistSongs;
+    }
+
+    public String getNumberOfSongs() {
+        return Integer.toString(artistSongs.size()) + " Songs";
     }
 }

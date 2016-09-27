@@ -1,6 +1,5 @@
 package com.example.user.musicdownloader.adapters;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.PopupMenu;
@@ -32,20 +31,10 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
 
     private static final int VIEW_TYPE_SEARCH_ONLINE = 0;
     private static final int VIEW_TYPE_REGULAR = 1;
+    private final PlaySongService.CLIENT client;
 
     private final ArrayList<Song> songsList;
-    private final boolean SHOW_SEARCH_ROW;
-    public static final int TYPE_ALL_SONGS = 1;
     private String songQuery;
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
-
-
-    private String quryPlaceHolder;
-
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -65,7 +54,7 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
     public RecyclerAdapterSongs(ArrayList<Song> songs, String query) {
         this.songsList = songs;
         this.songQuery = query;
-        this.SHOW_SEARCH_ROW = (query != null);
+        this.client = (query != null) ? PlaySongService.CLIENT.SONGS : PlaySongService.CLIENT.WEB;
     }
 
     @Override
@@ -74,7 +63,7 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
             holder.textViewQuery.setText(String.format(placeHolder, songQuery));
             return;
         }
-        if (SHOW_SEARCH_ROW) {
+        if (client == PlaySongService.CLIENT.SONGS) {
             position--;
         }
         holder.title.setText(songsList.get(position).getName());
@@ -89,7 +78,8 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
         Context context = Contextor.getInstance().getContext();
         Intent intent = new Intent(context, PlaySongService.class);
         PlaySongService.currentPlayedSong = songsList.get(p);
-        PlaySongService.client = PlaySongService.CLIENT.SONGS;
+        PlaySongService.currentArraySong = songsList;
+        PlaySongService.client = client;
         context.startService(intent);
     }
 
@@ -126,14 +116,14 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
             }
             switch (view.getId()) {
                 case R.id.threeDotsItem:
-                    if (SHOW_SEARCH_ROW) {
+                    if (client == PlaySongService.CLIENT.SONGS) {
                         showPopupMenu(view, getAdapterPosition()-1);
                     }else {
                         showPopupMenu(view, getAdapterPosition());
                     }
                     break;
                 default:
-                    if (SHOW_SEARCH_ROW) {
+                    if (client == PlaySongService.CLIENT.SONGS) {
                         playSong(getAdapterPosition() - 1);
                     }else {
                         playSong(getAdapterPosition());
@@ -178,12 +168,12 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
     @Override
     public int getItemCount() {
         int size = songsList.size();
-        return SHOW_SEARCH_ROW ? ++size : size;
+        return client == PlaySongService.CLIENT.SONGS ? ++size : size;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (SHOW_SEARCH_ROW && position == 0) {
+        if (client == PlaySongService.CLIENT.SONGS && position == 0) {
             return VIEW_TYPE_SEARCH_ONLINE;
         }
         return VIEW_TYPE_REGULAR;

@@ -93,6 +93,7 @@ public class RecyclerAdapterSearch extends RecyclerView.Adapter<RecyclerAdapterS
                 downloadFile(view.getContext(), song.getUri().toString(), song.getName() + ".mp3");
             } else if (view.equals(btnPlay)){
                 rowProgressBar.setVisibility(View.VISIBLE);
+                PlaySongService.currentArraySong= songs;
                 PlaySongService.currentPlayedSong = song;
                 PlaySongService.client = PlaySongService.CLIENT.WEB;
                 itemView.getContext().startService(new Intent(itemView.getContext(), PlaySongService.class));

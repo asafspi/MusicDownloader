@@ -12,10 +12,11 @@ import android.view.ViewGroup;
 import com.example.user.musicdownloader.EventBus.messages.MessageFromBackPressed;
 import com.example.user.musicdownloader.EventBus.messages.MessageSearch;
 import com.example.user.musicdownloader.R;
-import com.example.user.musicdownloader.activities.MainActivity;
+import com.example.user.musicdownloader.adapters.RecyclerAdapterAlbums;
+import com.example.user.musicdownloader.adapters.RecyclerAdapterArtists;
 import com.example.user.musicdownloader.adapters.RecyclerAdapterSongs;
-import com.example.user.musicdownloader.adapters.RecyclerAdapterSubCategorization;
-import com.example.user.musicdownloader.data.GetMusicData;
+import com.example.user.musicdownloader.data.Album;
+import com.example.user.musicdownloader.data.Artist;
 import com.example.user.musicdownloader.data.Song;
 
 import org.greenrobot.eventbus.EventBus;
@@ -97,12 +98,12 @@ public class fragmentSongPlayer extends Fragment  {
 
     private void setRecyclerAlbums() {
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        mRecyclerView.setAdapter(new RecyclerAdapterSubCategorization(GetMusicData.albums, RecyclerAdapterSubCategorization.TYPE_ALBUM,  weak));
+        mRecyclerView.setAdapter(new RecyclerAdapterAlbums(weak));
     }
 
     private void setRecyclerArtist() {
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
-        mRecyclerView.setAdapter(new RecyclerAdapterSubCategorization(GetMusicData.artists, RecyclerAdapterSubCategorization.TYPE_ARTIST,  weak));
+        mRecyclerView.setAdapter(new RecyclerAdapterArtists(weak));
     }
 
     private void setRecyclerSongs(ArrayList<Song> songs, String query){
@@ -111,28 +112,14 @@ public class fragmentSongPlayer extends Fragment  {
 
     }
 
-    public void filterSongList(String title, int opt) {
+    public void filterArtistList(Artist artist) {
         showFiltered = true;
-        switch (opt) {
-            case MainActivity.FROM_ADAPTER_ARTIST: //From adapter artist
-                ArrayList<Song> artistSongs = new ArrayList<>();
-                for (int i = 0; i < GetMusicData.songs.size(); i++) {
-                    if (GetMusicData.songs.get(i).getArtist().equals(title)) {
-                        artistSongs.add(GetMusicData.songs.get(i));
-                    }
-                }
-                setRecyclerSongs(artistSongs, null);
-                break;
-            case MainActivity.FROM_ADAPTER_ALBUM: //From adapter album
-                ArrayList<Song> albumSongs = new ArrayList<>();
-                for (int i = 0; i < GetMusicData.songs.size(); i++) {
-                    if (GetMusicData.songs.get(i).getAlbum().equals(title)) {
-                        albumSongs.add(GetMusicData.songs.get(i));
-                    }
-                }
-                setRecyclerSongs(albumSongs, null);
-                break;
-        }
+        setRecyclerSongs(artist.getArtistSongs(), null);
+    }
+
+    public void filterAlbumList(Album album) {
+        showFiltered = true;
+        setRecyclerSongs(album.getAlbumSongs(), null);
     }
 
     // This method will be called when a MessageEvent is posted (in the UI thread for Toast)

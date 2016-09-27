@@ -17,4 +17,8 @@ public class EventToService {
         this.action = action;
         this.seekTo = seekTo;
     }
+
+    public EventToService(int action) {
+        this.action = action;
+    }
 }

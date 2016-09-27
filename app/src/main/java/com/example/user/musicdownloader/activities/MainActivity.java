@@ -46,13 +46,11 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-import static com.example.user.musicdownloader.data.GetMusicData.songs;
 import static com.example.user.musicdownloader.services.PlaySongService.currentPlayedSong;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener, SearchView.OnQueryTextListener, ViewPager.OnPageChangeListener {
@@ -155,12 +153,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mainSeekBar.setProgress(0);
                 //mainSeekBar.setProgress(event.currentDuration);
                 break;
-            case NEXT_SONG:
-                changeSong(1);
-                break;
-            case PREVIOUS_SONG:
-                changeSong(-1);
-                break;
+
             case FINISH:
                 finish();
                 break;
@@ -249,13 +242,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 songNameTextView.setSelected(true);
                 songNameTextView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                 songNameTextView.setSingleLine(true);
-                EventBus.getDefault().post(new EventToService(EventToService.PLAY_BUTTON, 0));
+                EventBus.getDefault().post(new EventToService(EventToService.PLAY_BUTTON));
                 break;
             case R.id.nextButtonImageView:
-                changeSong(1);
+                EventBus.getDefault().post(new EventToService(EventToService.NEXT_BUTTON));
                 break;
             case R.id.previuseImageView:
-                changeSong(-1);
+                EventBus.getDefault().post(new EventToService(EventToService.PREVIOUS_BUTTON));
                 break;
             case R.id.searchView:
                 Log.d("zaq", "From search button");
@@ -280,11 +273,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void changeSong(int offset) {
-        int position = GetMusicData.getSongPosition(currentPlayedSong) + offset;
-        currentPlayedSong = songs.get(position);
-        startService(new Intent(this, PlaySongService.class));
-    }
 
     private static void initializeRemoteControlRegistrationMethods() {
         try {
@@ -303,53 +291,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } catch (NoSuchMethodException nsme) {
       /* failure, still using the legacy behavior, but this app    */
       /* is future-proof!                                          */
-        }
-    }
-
-
-    private void registerRemoteControl() {
-        try {
-            if (mRegisterMediaButtonEventReceiver == null) {
-                return;
-            }
-            mRegisterMediaButtonEventReceiver.invoke(mAudioManager,
-                    mRemoteControlResponder);
-        } catch (InvocationTargetException ite) {
-            /* unpack original exception when possible */
-            Throwable cause = ite.getCause();
-            if (cause instanceof RuntimeException) {
-                throw (RuntimeException) cause;
-            } else if (cause instanceof Error) {
-                throw (Error) cause;
-            } else {
-                /* unexpected checked exception; wrap and re-throw */
-                throw new RuntimeException(ite);
-            }
-        } catch (IllegalAccessException ie) {
-            Log.e("zaq", "unexpected " + ie);
-        }
-    }
-
-    private void unregisterRemoteControl() {
-        try {
-            if (mUnregisterMediaButtonEventReceiver == null) {
-                return;
-            }
-            mUnregisterMediaButtonEventReceiver.invoke(mAudioManager,
-                    mRemoteControlResponder);
-        } catch (InvocationTargetException ite) {
-            /* unpack original exception when possible */
-            Throwable cause = ite.getCause();
-            if (cause instanceof RuntimeException) {
-                throw (RuntimeException) cause;
-            } else if (cause instanceof Error) {
-                throw (Error) cause;
-            } else {
-                /* unexpected checked exception; wrap and re-throw */
-                throw new RuntimeException(ite);
-            }
-        } catch (IllegalAccessException ie) {
-            System.err.println("unexpected " + ie);
         }
     }
 
