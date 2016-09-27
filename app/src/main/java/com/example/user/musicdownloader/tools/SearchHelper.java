@@ -141,6 +141,9 @@ public class SearchHelper {
                             }
                             i++;
                         }
+                        if (songLink == null){
+                            continue;
+                        }
                         Song song = new Song(songLink, songLabel, songArtist, songAlbum);
                         songs.add(song);
                     }
