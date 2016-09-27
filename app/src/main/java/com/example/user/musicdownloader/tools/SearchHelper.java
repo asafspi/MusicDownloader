@@ -3,7 +3,7 @@ package com.example.user.musicdownloader.tools;
 import android.os.Handler;
 import android.util.Log;
 
-import com.example.user.musicdownloader.data.SearchedSong;
+import com.example.user.musicdownloader.data.Song;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -28,11 +28,11 @@ public class SearchHelper {
     private static String currentQueried;
 
 
-    public static ArrayList<SearchedSong> searchWeb(String query){
+    public static ArrayList<Song> searchWeb(String query){
         try {
             Element connectionElement = Jsoup.connect(URL_PREFIX + query + URL_SUFFIX).timeout(8000).ignoreHttpErrors(true).get().body();
 
-            final ArrayList<SearchedSong> songs = new ArrayList<>();
+            final ArrayList<Song> songs = new ArrayList<>();
             String songLink = null;
             String songLabel = null;
             String songArtist = null;
@@ -64,7 +64,7 @@ public class SearchHelper {
                     }
                     i++;
                 }
-                SearchedSong song = new SearchedSong(songLink, songLabel, songArtist, songAlbum);
+                Song song = new Song(songLink, songLabel, songArtist, songAlbum);
                 songs.add(song);
             }
             return songs;
@@ -90,7 +90,7 @@ public class SearchHelper {
 
         Log.d("TAG", "searchWeb: " + query);
         last = current;
-        final ArrayList<SearchedSong> songs = new ArrayList<>();
+        final ArrayList<Song> songs = new ArrayList<>();
 
         new Thread(new Runnable() {
             @Override
@@ -141,7 +141,7 @@ public class SearchHelper {
                             }
                             i++;
                         }
-                        SearchedSong song = new SearchedSong(songLink, songLabel, songArtist, songAlbum);
+                        Song song = new Song(songLink, songLabel, songArtist, songAlbum);
                         songs.add(song);
                     }
                     handler.post(new Runnable() {
@@ -187,7 +187,7 @@ public class SearchHelper {
 
     public interface OnSearchFinishListener {
         void onStartSearch(String query);
-        void onSuccess(ArrayList<SearchedSong> songs);
+        void onSuccess(ArrayList<Song> songs);
         void onFailure();
     }
 }

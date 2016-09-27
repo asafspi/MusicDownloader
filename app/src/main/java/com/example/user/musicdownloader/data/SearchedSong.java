@@ -10,12 +10,12 @@ public class SearchedSong {
     private String songArtist;
     private String songAlbum;
 
-    public SearchedSong(String songLink, String songLabel, String songArtist, String songAlbum) {
+   /* public SearchedSong(String songLink, String songLabel, String songArtist, String songAlbum) {
         this.songLink = songLink;
         this.songLabel = songLabel;
         this.songArtist = songArtist;
         this.songAlbum = songAlbum;
-    }
+    }*/
 
     public String getSongLink() {
         return songLink;

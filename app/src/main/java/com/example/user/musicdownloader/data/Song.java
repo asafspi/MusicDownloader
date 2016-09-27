@@ -20,6 +20,13 @@ public class Song implements Serializable {
         this.image = image;
     }
 
+    public Song(String songLink, String songLabel, String songArtist, String songAlbum) {
+        this.uri = Uri.parse(songLink);
+        this.name = songLabel;
+        this.artist = songArtist;
+        this.album = songAlbum;
+    }
+
     public String getName() {
         return name;
     }

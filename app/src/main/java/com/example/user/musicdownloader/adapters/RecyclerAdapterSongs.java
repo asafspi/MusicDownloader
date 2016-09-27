@@ -88,14 +88,8 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
 
     private void playSong(int p) {
         Context context = Contextor.getInstance().getContext();
-        ShPref.put(R.string.song_path_for_service, songsList.get(p).getUri().toString());
-        ShPref.put(R.string.song_name_for_service, songsList.get(p).getName());
-        ShPref.put(R.string.song_artist_for_service, songsList.get(p).getArtist());
-        ShPref.put(R.string.song_thumb_for_service, songsList.get(p).getImage().toString());
-        ShPref.put(R.string.song_position_in_array, p);
         Intent intent = new Intent(context, PlaySongService.class);
         PlaySongService.currentPlayedSong = songsList.get(p);
-        context.stopService(new Intent(context, PlaySongService.class));
         context.startService(intent);
     }
 
