@@ -65,7 +65,6 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
         player.setLooping(false); // Set looping
         player.setVolume(100, 100);
         Log.d("TAG", "PlaySongService created");
-
     }
 
 
