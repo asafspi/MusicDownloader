@@ -10,6 +10,9 @@ public class Song implements Serializable {
     private Uri image;
     private Uri songUri;
 
+
+    private boolean loadedToPlayer;
+
     public Song(Uri songUri, String name, String artist, String album, String playlist, Uri uri, Uri image ) {
         this.songUri = songUri;
         this.name = name;
@@ -77,5 +80,13 @@ public class Song implements Serializable {
 
     public Uri getSongUri() {
         return songUri;
+    }
+
+    public boolean isLoadedToPlayer() {
+        return loadedToPlayer;
+    }
+
+    public void setLoadedToPlayer(boolean loadedToPlayer) {
+        this.loadedToPlayer = loadedToPlayer;
     }
 }

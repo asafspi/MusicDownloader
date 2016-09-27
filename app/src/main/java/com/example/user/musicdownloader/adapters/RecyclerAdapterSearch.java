@@ -37,8 +37,14 @@ public class RecyclerAdapterSearch extends RecyclerView.Adapter<RecyclerAdapterS
 
     public RecyclerAdapterSearch(ArrayList<Song> songs) {
         this.songs = songs;
+        EventBus.getDefault().register(this);
     }
 
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        EventBus.getDefault().unregister(this);
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -51,6 +57,7 @@ public class RecyclerAdapterSearch extends RecyclerView.Adapter<RecyclerAdapterS
         Song song = songs.get(position);
         holder.textLabel.setText(song.getName());
         holder.textAlbum.setText(song.getAlbum());
+        holder.rowProgressBar.setVisibility(song.isLoadedToPlayer() ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -70,7 +77,6 @@ public class RecyclerAdapterSearch extends RecyclerView.Adapter<RecyclerAdapterS
         ViewHolder(View itemView) {
 
             super(itemView);
-            EventBus.getDefault().register(this);
             textLabel = (TextView)itemView.findViewById(R.id.text_label);
             textAlbum = (TextView)itemView.findViewById(R.id.text_album);
             btnPlay = itemView.findViewById(R.id.play_btn);
@@ -89,12 +95,14 @@ public class RecyclerAdapterSearch extends RecyclerView.Adapter<RecyclerAdapterS
                 rowProgressBar.setVisibility(View.VISIBLE);
                 PlaySongService.currentPlayedSong = song;
                 itemView.getContext().startService(new Intent(itemView.getContext(), PlaySongService.class));
+                song.setLoadedToPlayer(true);
             }
         }
-        @Subscribe(threadMode = ThreadMode.MAIN)
-        public void onMessageEvent(EventForSearchRecyclerView event) {
-            rowProgressBar.setVisibility(View.GONE);
-        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(EventForSearchRecyclerView event) {
+        notifyDataSetChanged();
     }
 
     private void downloadFile(Context context, String url, String fileName) {
