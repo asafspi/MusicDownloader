@@ -128,31 +128,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
     }
 
 
-    private void registerReceiver() {
 
-        phoneStateListener = new PhoneStateListener() {
-            @Override
-            public void onCallStateChanged(int state, String incomingNumber) {
-                if (state == TelephonyManager.CALL_STATE_RINGING) {
-                    //Incoming call: Pause music
-                    player.pause();
-                } else if (state == TelephonyManager.CALL_STATE_IDLE) {
-                    //Not in call: Play music
-                    //player.start();
-                    //EventBus.getDefault().post(new MessageEvent("changePlayPauseButtonToPause", 0, 0, null, null, null));
-                } else if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
-                    //A call is dialing, active or on hold
-                    player.pause();
-                }
-                super.onCallStateChanged(state, incomingNumber);
-            }
-        };
-        TelephonyManager mgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-        if (mgr != null) {
-            mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
-        }
-
-    }
 
 
     @Override
@@ -353,6 +329,32 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
             EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.FINISH));
             Log.d("zaq", "from notification exit");
         }
+    }
+
+    private void registerReceiver() {
+
+        phoneStateListener = new PhoneStateListener() {
+            @Override
+            public void onCallStateChanged(int state, String incomingNumber) {
+                if (state == TelephonyManager.CALL_STATE_RINGING) {
+                    //Incoming call: Pause music
+                    player.pause();
+                } else if (state == TelephonyManager.CALL_STATE_IDLE) {
+                    //Not in call: Play music
+                    //player.start();
+                    //EventBus.getDefault().post(new MessageEvent("changePlayPauseButtonToPause", 0, 0, null, null, null));
+                } else if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
+                    //A call is dialing, active or on hold
+                    player.pause();
+                }
+                super.onCallStateChanged(state, incomingNumber);
+            }
+        };
+        TelephonyManager mgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+        if (mgr != null) {
+            mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+        }
+
     }
 
 }
