@@ -9,20 +9,6 @@
     android:orientation="vertical"
     tools:background="@color/colorPrimaryDark">
 
-    <TextView
-        android:id="@+id/cellArtist_AlbumEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cellSongTextView"
-        android:layout_marginLeft="15dp"
-        android:textStyle="bold"
-        android:layout_marginTop="5dp"
-        android:layout_toRightOf="@+id/cellImageView"
-        android:textSize="10sp"
-        tools:text="Artist"
-        android:layout_toLeftOf="@+id/threeDotsItem"
-        android:layout_toStartOf="@+id/threeDotsItem" />
-
     <ImageView
         android:id="@+id/cellImageView"
         android:layout_width="45dp"
@@ -33,21 +19,6 @@
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:background="@drawable/musicnote_icon" />
-
-    <TextView
-        android:id="@+id/cellSongTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:textStyle="bold"
-        android:layout_alignLeft="@+id/cellArtist_AlbumEditText"
-        android:layout_alignStart="@+id/cellArtist_AlbumEditText"
-        android:layout_alignTop="@+id/cellImageView"
-        android:layout_marginTop="5dp"
-        android:textSize="15sp"
-        tools:text="Title"
-        android:layout_toStartOf="@+id/threeDotsItem"
-        android:layout_toLeftOf="@+id/threeDotsItem" />
 
     <ImageView
         android:id="@+id/threeDotsItem"
@@ -69,4 +40,29 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/cellArtist_AlbumEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:textSize="12sp"
+        tools:text="Artist"
+        android:layout_alignBottom="@+id/cellImageView"
+        android:layout_toLeftOf="@+id/threeDotsItem"
+        android:layout_toStartOf="@+id/threeDotsItem" />
+
+    <TextView
+        android:id="@+id/cellSongTextView"
+        android:layout_width="wrap_content"
+        android:textColor="@android:color/black"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        tools:text="Title"
+        android:layout_alignTop="@+id/cellImageView"
+        android:layout_toLeftOf="@+id/threeDotsItem"
+        android:layout_toStartOf="@+id/threeDotsItem" />
 </RelativeLayout>
