@@ -15,13 +15,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
-import com.example.user.musicdownloader.R;
 import com.example.user.musicdownloader.activities.MainActivity;
-import com.example.user.musicdownloader.data.GetMusicData;
 import com.example.user.musicdownloader.data.Song;
-import com.example.user.musicdownloader.services.PlaySongService;
-
-import static com.example.user.musicdownloader.data.GetMusicData.songs;
 
 /**
  * Created by User on 9/11/2016.
@@ -29,11 +24,6 @@ import static com.example.user.musicdownloader.data.GetMusicData.songs;
 
 public class Utils {
 
-
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
 
     public static boolean isNetworkAvailable(ConnectivityManager connectivityManager) {
         try {
@@ -54,44 +44,6 @@ public class Utils {
         }
     }
 
-    public static void changeSong(int i){
-            Context context = Contextor.getInstance().getContext();
-            int position = 2;
-            switch (i) {
-                case 1:
-                    position = GetMusicData.getSongPosition(PlaySongService.currentPlayedSong) + 1;
-                    break;
-                case -1:
-                    position = GetMusicData.getSongPosition(PlaySongService.currentPlayedSong) - 1;
-                    break;
-            }
-            PlaySongService.currentPlayedSong = songs.get(position);
-            context.startService(new Intent(context, PlaySongService.class));
-
-    }
-
-    public static void playFromInternet(String name, String artist, String path){
-        Context context = Contextor.getInstance().getContext();
-        ShPref.put(R.string.song_path_for_service, path);
-        ShPref.put(R.string.song_name_for_service, name);
-        ShPref.put(R.string.song_artist_for_service, artist);
-        context.stopService(new Intent(context, PlaySongService.class));
-        context.startService(new Intent(context, PlaySongService.class));
-    }
-
-    public static void verifyStoragePermissions(Activity activity) {
-        // Check if we have write permission
-        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            // We don't have permission so prompt the user
-            ActivityCompat.requestPermissions(
-                    activity,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE
-            );
-        }
-    }
 
     public static void setSongAsRingtone(Context context, Song song){
         boolean permission;

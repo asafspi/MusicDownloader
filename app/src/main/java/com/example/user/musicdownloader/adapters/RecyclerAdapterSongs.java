@@ -17,7 +17,6 @@ import com.example.user.musicdownloader.R;
 import com.example.user.musicdownloader.data.Song;
 import com.example.user.musicdownloader.services.PlaySongService;
 import com.example.user.musicdownloader.tools.Contextor;
-import com.example.user.musicdownloader.tools.ShPref;
 import com.example.user.musicdownloader.tools.Utils;
 import com.squareup.picasso.Picasso;
 
@@ -90,6 +89,7 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
         Context context = Contextor.getInstance().getContext();
         Intent intent = new Intent(context, PlaySongService.class);
         PlaySongService.currentPlayedSong = songsList.get(p);
+        PlaySongService.client = PlaySongService.CLIENT.SONGS;
         context.startService(intent);
     }
 

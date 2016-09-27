@@ -3,6 +3,7 @@ package com.example.user.musicdownloader.adapters;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -26,74 +27,86 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class RecyclerAdapterArtists extends RecyclerView.Adapter<RecyclerAdapterArtists.ViewHolder> {
+import static com.example.user.musicdownloader.data.GetMusicData.songs;
 
-    private final ArrayList<String> artistsList;
-    private final ArrayList<Song> allSongsList = GetMusicData.songs;
-    private final int itemType;
+public class RecyclerAdapterSubCategorization extends RecyclerView.Adapter<RecyclerAdapterSubCategorization.ViewHolder> {
+
+    private final ArrayList<String> labels;
+    private final int adapterType;
+    private HashMap<String, Object> map;
     private WeakReference<fragmentSongPlayer> week;
     public static final int TYPE_ARTIST = 1;
     public static final int TYPE_ALBUM = 2;
 
+
+    public RecyclerAdapterSubCategorization(ArrayList<String> labels, int type, WeakReference<fragmentSongPlayer> weak) {
+        this.labels = labels;
+        this.adapterType = type;
+        this.week = weak;
+        map = new HashMap<>();
+        if (type == TYPE_ARTIST) {
+            for (String string : labels) {
+                map.put(string, GetMusicData.getNumberOfSongsFromArtist(string) + " Songs");
+            }
+        } else {
+            for (String string : labels) {
+                map.put(string, getAlbumForString(string));
+            }
+        }
+    }
+
     @Override
-    public RecyclerAdapterArtists.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        switch (itemType) {
+    public RecyclerAdapterSubCategorization.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        switch (adapterType) {
             case TYPE_ARTIST:
                 View v1 = LayoutInflater.from(parent.getContext()).
                         inflate(R.layout.item_cell_artist, parent, false);
-                return new RecyclerAdapterArtists.ViewHolder(v1);
+                return new RecyclerAdapterSubCategorization.ViewHolder(v1);
             case TYPE_ALBUM:
                 View v2 = LayoutInflater.from(parent.getContext()).
                         inflate(R.layout.item_cell_album, parent, false);
-                return new RecyclerAdapterArtists.ViewHolder(v2);
+                return new RecyclerAdapterSubCategorization.ViewHolder(v2);
             default:
                 View v10 = LayoutInflater.from(parent.getContext()).
                         inflate(R.layout.item_cell_album, parent, false);
-                return new RecyclerAdapterArtists.ViewHolder(v10);
+                return new RecyclerAdapterSubCategorization.ViewHolder(v10);
         }
     }
 
-    public RecyclerAdapterArtists(ArrayList<String> artists, int itemType,WeakReference<fragmentSongPlayer> weak) {
-        this.artistsList = artists;
-        this.itemType = itemType;
-        this.week = weak;
-    }
 
     @Override
-    public void onBindViewHolder(final RecyclerAdapterArtists.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final RecyclerAdapterSubCategorization.ViewHolder holder, final int position) {
         final int p = holder.getAdapterPosition();
-        switch (itemType) {
+        switch (adapterType) {
             case TYPE_ARTIST:
-                holder.artistTextView.setText(artistsList.get(p));
-                holder.numberOfSongsTextView.setText(GetMusicData.getNumberOfSongsFromArtist(artistsList.get(p)) + " Songs");
+                String artist = labels.get(p);
+                holder.artistTextView.setText(artist);
+                holder.numberOfSongsTextView.setText((String) map.get(artist));
                 break;
             case TYPE_ALBUM:
-                holder.title.setText(artistsList.get(p));
-                for(int i = 0; i <allSongsList.size(); i++ ){
-                    if(allSongsList.get(i).getAlbum().equals(artistsList.get(p))){
-                        Picasso.with(holder.itemView.getContext()).load(allSongsList.get(i).getImage()).into(holder.albumImageView);
-                        holder.artistTextView.setText(allSongsList.get(i).getArtist());
-                        break;
-                    }
-                }
+                String album = labels.get(p);
+                holder.title.setText(album);
+                Picasso.with(holder.itemView.getContext()).load( ((Album)map.get(album)).image).into(holder.albumImageView);
+                holder.artistTextView.setText(((Album)map.get(album)).artist);
                 break;
         }
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView title, artistTextView, numberOfSongsTextView;
         private ImageView albumImageView, dots;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             artistTextView = (TextView) itemView.findViewById(R.id.cellArtist_ArtistEditText);
             dots = (ImageView) itemView.findViewById(R.id.threeDotsItem);
             itemView.setOnClickListener(this);
             dots.setOnClickListener(this);
-            switch (itemType){
+            switch (adapterType) {
                 case TYPE_ALBUM:
                     title = (TextView) itemView.findViewById(R.id.cellArtist_AlbumEditText);
                     albumImageView = (ImageView) itemView.findViewById(R.id.cellAlbumImageView);
@@ -108,26 +121,26 @@ public class RecyclerAdapterArtists extends RecyclerView.Adapter<RecyclerAdapter
 
         @Override
         public void onClick(View view) {
-            switch (view.getId()){
+            switch (view.getId()) {
                 case R.id.threeDotsItem:
-                    showPopupMenu(dots, getAdapterPosition());
+                    showPopupMenu(dots);
                     break;
                 default:
                     fragmentSongPlayer fragment = week.get();
                     if (fragment != null) {
-                        switch (itemType) {
+                        switch (adapterType) {
                             case TYPE_ARTIST:
-                                fragment.filterSongList(artistsList.get(getAdapterPosition()), MainActivity.FROM_ADAPTER_ARTIST);
+                                fragment.filterSongList(labels.get(getAdapterPosition()), MainActivity.FROM_ADAPTER_ARTIST);
                                 break;
                             case TYPE_ALBUM:
-                                fragment.filterSongList(artistsList.get(getAdapterPosition()), MainActivity.FROM_ADAPTER_ALBUM);
+                                fragment.filterSongList(labels.get(getAdapterPosition()), MainActivity.FROM_ADAPTER_ALBUM);
                                 break;
                         }
                     }
             }
         }
 
-        private void showPopupMenu(ImageView dots, int adapterPosition) {
+        private void showPopupMenu(ImageView dots) {
 
             PopupMenu popupMenu = new PopupMenu(dots.getContext(), dots);
             popupMenu.getMenuInflater().inflate(R.menu.pop_up_menu_artist, popupMenu.getMenu());
@@ -158,15 +171,15 @@ public class RecyclerAdapterArtists extends RecyclerView.Adapter<RecyclerAdapter
             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    switch (which){
+                    switch (which) {
                         case DialogInterface.BUTTON_POSITIVE:
-                            for (int i = 0; i < GetMusicData.songs.size(); i++) {
-                                if (GetMusicData.songs.get(i).getArtist().equals(artistsList.get(getAdapterPosition()))) {
-                                    File k = new File(String.valueOf(GetMusicData.songs.get(i).getUri()));
+                            for (int i = 0; i < songs.size(); i++) {
+                                if (songs.get(i).getArtist().equals(labels.get(getAdapterPosition()))) {
+                                    File k = new File(String.valueOf(songs.get(i).getUri()));
                                     boolean b = k.delete();
                                 }
                             }
-                            artistsList.remove(getAdapterPosition());
+                            labels.remove(getAdapterPosition());
                             notifyDataSetChanged();
                             break;
 
@@ -182,22 +195,24 @@ public class RecyclerAdapterArtists extends RecyclerView.Adapter<RecyclerAdapter
         }
 
         private void playAlbum(int p) {
-            switch (itemType){
+            switch (adapterType) {
                 case TYPE_ALBUM:
-                    for (int i = 0; i < allSongsList.size(); i++){
-                        if(allSongsList.get(i).getAlbum().equals(artistsList.get(p))){
+                    for (int i = 0; i < songs.size(); i++) {
+                        if (songs.get(i).getAlbum().equals(labels.get(p))) {
                             Context context = Contextor.getInstance().getContext();
-                            PlaySongService.currentPlayedSong = allSongsList.get(i);
+                            PlaySongService.currentPlayedSong = songs.get(i);
+                            PlaySongService.client = PlaySongService.CLIENT.ALBUMS;
                             context.startService(new Intent(context, PlaySongService.class));
                             return;
                         }
                     }
                     break;
                 case TYPE_ARTIST:
-                    for (int i = 0; i < allSongsList.size(); i++){
-                        if(allSongsList.get(i).getArtist().equals(artistsList.get(p))){
+                    for (int i = 0; i < songs.size(); i++) {
+                        if (songs.get(i).getArtist().equals(labels.get(p))) {
                             Context context = Contextor.getInstance().getContext();
-                            PlaySongService.currentPlayedSong = allSongsList.get(i);
+                            PlaySongService.currentPlayedSong = songs.get(i);
+                            PlaySongService.client = PlaySongService.CLIENT.ARTIST;
                             context.startService(new Intent(context, PlaySongService.class));
                             return;
                         }
@@ -208,26 +223,26 @@ public class RecyclerAdapterArtists extends RecyclerView.Adapter<RecyclerAdapter
 
 
         private void playNext(int p) {
-            switch (itemType){
+            switch (adapterType) {
                 case TYPE_ALBUM:
-                    for (int i = 0; i < allSongsList.size(); i++){
-                        if(allSongsList.get(i).getAlbum().equals(artistsList.get(p))){
-                            ShPref.put(R.string.song_path_for_service, allSongsList.get(i).getUri().toString());
-                            ShPref.put(R.string.song_name_for_service, allSongsList.get(i).getName());
-                            ShPref.put(R.string.song_artist_for_service, allSongsList.get(i).getArtist());
-                            ShPref.put(R.string.song_thumb_for_service, allSongsList.get(i).getImage().toString());
+                    for (int i = 0; i < songs.size(); i++) {
+                        if (songs.get(i).getAlbum().equals(labels.get(p))) {
+                            ShPref.put(R.string.song_path_for_service, songs.get(i).getUri().toString());
+                            ShPref.put(R.string.song_name_for_service, songs.get(i).getName());
+                            ShPref.put(R.string.song_artist_for_service, songs.get(i).getArtist());
+                            ShPref.put(R.string.song_thumb_for_service, songs.get(i).getImage().toString());
                             ShPref.put(R.string.song_position_in_array, i);
                             return;
                         }
                     }
                     break;
                 case TYPE_ARTIST:
-                    for (int i = 0; i < allSongsList.size(); i++){
-                        if(allSongsList.get(i).getArtist().equals(artistsList.get(p))){
-                            ShPref.put(R.string.song_path_for_service, allSongsList.get(i).getUri().toString());
-                            ShPref.put(R.string.song_name_for_service, allSongsList.get(i).getName());
-                            ShPref.put(R.string.song_artist_for_service, allSongsList.get(i).getArtist());
-                            ShPref.put(R.string.song_thumb_for_service, allSongsList.get(i).getImage().toString());
+                    for (int i = 0; i < songs.size(); i++) {
+                        if (songs.get(i).getArtist().equals(labels.get(p))) {
+                            ShPref.put(R.string.song_path_for_service, songs.get(i).getUri().toString());
+                            ShPref.put(R.string.song_name_for_service, songs.get(i).getName());
+                            ShPref.put(R.string.song_artist_for_service, songs.get(i).getArtist());
+                            ShPref.put(R.string.song_thumb_for_service, songs.get(i).getImage().toString());
                             ShPref.put(R.string.song_position_in_array, i);
                             return;
                         }
@@ -236,9 +251,31 @@ public class RecyclerAdapterArtists extends RecyclerView.Adapter<RecyclerAdapter
             }
         }
     }
+
     @Override
     public int getItemCount() {
-        return artistsList.size();
+        return labels.size();
+    }
+
+    private Album getAlbumForString(String string) {
+        for (Song song : songs) {
+            if (song.getAlbum().equals(string)) {
+                return new Album(song.getImage(), song.getArtist());
+            }
+        }
+        return null;
+    }
+
+    private class Album{
+
+
+        Uri image;
+        String artist;
+
+        public Album(Uri image, String artist) {
+            this.image = image;
+            this.artist = artist;
+        }
     }
 }
 

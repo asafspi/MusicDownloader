@@ -13,8 +13,8 @@ import com.example.user.musicdownloader.EventBus.messages.MessageFromBackPressed
 import com.example.user.musicdownloader.EventBus.messages.MessageSearch;
 import com.example.user.musicdownloader.R;
 import com.example.user.musicdownloader.activities.MainActivity;
-import com.example.user.musicdownloader.adapters.RecyclerAdapterArtists;
 import com.example.user.musicdownloader.adapters.RecyclerAdapterSongs;
+import com.example.user.musicdownloader.adapters.RecyclerAdapterSubCategorization;
 import com.example.user.musicdownloader.data.GetMusicData;
 import com.example.user.musicdownloader.data.Song;
 
@@ -97,12 +97,12 @@ public class fragmentSongPlayer extends Fragment  {
 
     private void setRecyclerAlbums() {
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        mRecyclerView.setAdapter(new RecyclerAdapterArtists(GetMusicData.albums, RecyclerAdapterArtists.TYPE_ALBUM,  weak));
+        mRecyclerView.setAdapter(new RecyclerAdapterSubCategorization(GetMusicData.albums, RecyclerAdapterSubCategorization.TYPE_ALBUM,  weak));
     }
 
     private void setRecyclerArtist() {
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
-        mRecyclerView.setAdapter(new RecyclerAdapterArtists(GetMusicData.artists, RecyclerAdapterArtists.TYPE_ARTIST,  weak));
+        mRecyclerView.setAdapter(new RecyclerAdapterSubCategorization(GetMusicData.artists, RecyclerAdapterSubCategorization.TYPE_ARTIST,  weak));
     }
 
     private void setRecyclerSongs(ArrayList<Song> songs, String query){

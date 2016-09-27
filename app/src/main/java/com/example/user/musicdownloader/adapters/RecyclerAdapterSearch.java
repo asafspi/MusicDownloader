@@ -94,6 +94,7 @@ public class RecyclerAdapterSearch extends RecyclerView.Adapter<RecyclerAdapterS
             } else if (view.equals(btnPlay)){
                 rowProgressBar.setVisibility(View.VISIBLE);
                 PlaySongService.currentPlayedSong = song;
+                PlaySongService.client = PlaySongService.CLIENT.WEB;
                 itemView.getContext().startService(new Intent(itemView.getContext(), PlaySongService.class));
                 song.setLoadedToPlayer(true);
             }

@@ -179,7 +179,19 @@ public class GetMusicData {
         return counterToString;
     }
 
+    public static int getNumberOfSongsForArtist(String artist) {
+        int counter = 0;
+        for (int i = 0; i < songs.size(); i++) {
+            if (songs.get(i).getArtist().equals(artist)) {
+                counter++;
+            }
+        }
+        return counter;
+    }
+
     public static int getSongPosition(Song song) {
         return songs.indexOf(song);
     }
+
+
 }

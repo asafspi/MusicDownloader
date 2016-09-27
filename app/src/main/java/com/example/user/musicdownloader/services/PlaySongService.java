@@ -46,12 +46,11 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
     private NotificationManager manager;
     private PhoneStateListener phoneStateListener;
     private Handler handler;
-    private boolean songFromSearch;
 
     public IBinder onBind(Intent arg0) {
         return null;
     }
-
+    public static CLIENT client;
     public static Song currentPlayedSong;
     public static int totalSongDuration, currentTimeValue;
 
@@ -84,10 +83,10 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
         try {
             player.reset();
             player.setDataSource(this, currentPlayedSong.getUri());
+            player.prepareAsync();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        player.prepareAsync();
 
     }
 
@@ -100,8 +99,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
         EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.START_SONG));
         addNotification(NOTIFICATION_ID);
         handler.post(updateUi);
-        if (currentPlayedSong.isLoadedToPlayer()){//this is song from search internet results
-            songFromSearch = true;
+        if (client == CLIENT.WEB){//this is song from search internet results
             currentPlayedSong.setLoadedToPlayer(false);
             EventBus.getDefault().post(new EventForSearchRecyclerView());
 
@@ -115,8 +113,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
-        if (songFromSearch){
-            songFromSearch = false;
+        if (client == CLIENT.WEB){
 //            stopSelf();
         }
         if (repeatSong) {
@@ -355,6 +352,14 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
             mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
         }
 
+    }
+
+    public enum CLIENT{
+        SONGS,
+        ALBUMS,
+        ARTIST,
+        DOWNLOAD,
+        WEB
     }
 
 }
