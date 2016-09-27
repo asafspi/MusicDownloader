@@ -6,12 +6,4 @@ package com.example.user.musicdownloader.EventBus.messages;
 
 public class EventForSearchRecyclerView {
 
-
-    public final int message;
-
-
-    public EventForSearchRecyclerView(int message) {
-        this.message = message;
-
-    }
 }

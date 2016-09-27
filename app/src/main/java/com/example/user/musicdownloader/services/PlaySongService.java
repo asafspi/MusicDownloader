@@ -16,6 +16,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.example.user.musicdownloader.EventBus.EventToService;
+import com.example.user.musicdownloader.EventBus.messages.EventForSearchRecyclerView;
 import com.example.user.musicdownloader.EventBus.messages.MessageEvent;
 import com.example.user.musicdownloader.R;
 import com.example.user.musicdownloader.activities.MainActivity;
@@ -45,6 +46,8 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
     private NotificationManager manager;
     private PhoneStateListener phoneStateListener;
     private Handler handler;
+    private boolean songFromSearch;
+
     public IBinder onBind(Intent arg0) {
         return null;
     }
@@ -97,6 +100,12 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
         EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.START_SONG));
         addNotification(NOTIFICATION_ID);
         handler.post(updateUi);
+        if (currentPlayedSong.isLoadedToPlayer()){//this is song from search internet results
+            songFromSearch = true;
+            currentPlayedSong.setLoadedToPlayer(false);
+            EventBus.getDefault().post(new EventForSearchRecyclerView());
+
+        }
     }
 
     @Override
@@ -106,6 +115,10 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
+        if (songFromSearch){
+            songFromSearch = false;
+//            stopSelf();
+        }
         if (repeatSong) {
             player.seekTo(0);
             player.start();
@@ -210,20 +223,22 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
 
     private void songEnded(){
         int position;
-        if (!shuffle) {
-            position = GetMusicData.getSongPosition(currentPlayedSong) + 1;
-        } else {
+        if (shuffle) {
             position = new Random().nextInt(GetMusicData.songs.size());
+        } else {
+            position = GetMusicData.getSongPosition(currentPlayedSong) + 1;
         }
         playSongInPosition(position);
     }
 
     private void playSongInPosition(int position) {
-        if (position >= 0 && position < songs.size() ) {
+        if (position > 0 && position < songs.size() ) {
             currentPlayedSong = songs.get(position);
             setPlayer();
         } else {
-            stopSelf();
+            player.seekTo(0);
+            EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.CHANGE_BTN_TO_PLAY));
+//            stopSelf();
         }
     }
 
@@ -335,6 +350,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
         @Override
         public void onReceive(Context context, Intent intent) {
             EventBus.getDefault().post(new EventToService(KILL_NOTIFICATION, 0));
+            EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.FINISH));
             Log.d("zaq", "from notification exit");
         }
     }

@@ -159,7 +159,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 min = (int) ((timeInSeconds / 60)) % 60;
                 mainSeekBar.setProgress(PlaySongService.currentTimeValue);
                 if (sec < 10) {
-//                    EventBus.getDefault().post(new EventForSearchRecyclerView(0));//todo WTF?????
                     runningTime.setText(String.valueOf(min + ":" + "0" + sec));
                 } else {
                     runningTime.setText(String.valueOf(min + ":" + sec));

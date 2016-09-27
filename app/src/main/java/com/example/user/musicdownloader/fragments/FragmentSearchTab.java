@@ -22,7 +22,6 @@ import com.example.user.musicdownloader.EventBus.messages.MessageSearchOnline;
 import com.example.user.musicdownloader.R;
 import com.example.user.musicdownloader.activities.MainActivity;
 import com.example.user.musicdownloader.adapters.RecyclerAdapterSearch;
-import com.example.user.musicdownloader.data.SearchedSong;
 import com.example.user.musicdownloader.data.Song;
 import com.example.user.musicdownloader.tools.SearchHelper;
 
