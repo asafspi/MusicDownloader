@@ -53,6 +53,7 @@ import java.util.ArrayList;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import static com.example.user.musicdownloader.data.GetMusicData.songs;
+import static com.example.user.musicdownloader.services.PlaySongService.currentPlayedSong;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener, SearchView.OnQueryTextListener, ViewPager.OnPageChangeListener {
 
@@ -131,19 +132,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onMessageEvent(MessageEvent event) {
         long timeInSeconds;
         int sec, min;
-        switch (event.message) {
-            case "start song":
+        switch (event.getEvent()) {
+            case START_SONG:
                 mainSeekBar.setProgress(0);
-                mainSeekBar.setMax(event.songDuration);
-                songNameTextView.setText(event.songName);
+                mainSeekBar.setMax(PlaySongService.totalSongDuration);
+                songNameTextView.setText(currentPlayedSong.getName());
                 ShPref.put(getString(R.string.song_name_for_service), songNameTextView.getText().toString());
-                artistNameTextView.setText(event.songArtist + " -");
+                artistNameTextView.setText(currentPlayedSong.getArtist() + " -");
                 ShPref.put(R.string.song_artist_for_service, artistNameTextView.getText().toString());
                 songNameTextView.setSelected(true);
                 songNameTextView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                 songNameTextView.setSingleLine(true);
 
-                timeInSeconds = event.songDuration / 1000;
+                timeInSeconds = PlaySongService.totalSongDuration / 1000;
                 sec = (int) (timeInSeconds % 60);
                 min = (int) ((timeInSeconds / 60)) % 60;
                 if (sec < 10) {
@@ -152,11 +153,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     songDuration.setText(String.valueOf(min + ":" + sec));
                 }
                 break;
-            case "from run":
-                timeInSeconds = event.currentDuration / 1000;
+            case FROM_RUN:
+                timeInSeconds = PlaySongService.currentTimeValue / 1000;
                 sec = (int) (timeInSeconds % 60);
                 min = (int) ((timeInSeconds / 60)) % 60;
-                mainSeekBar.setProgress(event.currentDuration);
+                mainSeekBar.setProgress(PlaySongService.currentTimeValue);
                 if (sec < 10) {
 //                    EventBus.getDefault().post(new EventForSearchRecyclerView(0));//todo WTF?????
                     runningTime.setText(String.valueOf(min + ":" + "0" + sec));
@@ -164,23 +165,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     runningTime.setText(String.valueOf(min + ":" + sec));
                 }
                 break;
-            case "song ends":
+            case SONG_END:
                 mainSeekBar.setProgress(0);
                 //mainSeekBar.setProgress(event.currentDuration);
                 break;
-            case "nextSong":
-                Utils.changeSong(1);
+            case NEXT_SONG:
+                changeSong(1);
                 break;
-            case "previousSong":
-                Utils.changeSong(-1);
+            case PREVIOUS_SONG:
+                changeSong(-1);
                 break;
-            case "finish":
+            case FINISH:
                 finish();
                 break;
-            case "changePlayPauseButtonToPause":
+            case CHANGE_BTN_TO_PAUSE:
                 playPause.setImageResource(R.drawable.pause_icon);
                 break;
-            case "changePlayPauseButtonToPlay":
+            case CHANGE_BTN_TO_PLAY:
                 playPause.setImageResource(R.drawable.play_icon);
                 break;
         }
@@ -234,24 +235,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void changeSong(int i) {
-        int position = 2;
-        switch (i) {
-            case 1:
-                position = GetMusicData.getSongPosition(PlaySongService.songName) + 1;
-                break;
-            case -1:
-                position = GetMusicData.getSongPosition(PlaySongService.songName) - 1;
-                break;
-        }
-        ShPref.put(R.string.song_path_for_service, songs.get(position).getUri().toString());
-        ShPref.put(R.string.song_name_for_service, songs.get(position).getName());
-        ShPref.put(R.string.song_artist_for_service, songs.get(position).getArtist());
-        ShPref.put(R.string.song_thumb_for_service, songs.get(position).getImage().toString());
-        stopService(new Intent(this, PlaySongService.class));
-        startService(new Intent(this, PlaySongService.class));
-    }
-
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -289,6 +272,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
         }
+    }
+
+    private void changeSong(int offset) {
+        int position = GetMusicData.getSongPosition(currentPlayedSong) + offset;
+        currentPlayedSong = songs.get(position);
+        startService(new Intent(this, PlaySongService.class));
     }
 
     private static void initializeRemoteControlRegistrationMethods() {

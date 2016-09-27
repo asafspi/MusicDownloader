@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.example.user.musicdownloader.EventBus.messages.MessageSearchOnline;
 import com.example.user.musicdownloader.R;
-import com.example.user.musicdownloader.data.GetMusicData;
 import com.example.user.musicdownloader.data.Song;
 import com.example.user.musicdownloader.services.PlaySongService;
 import com.example.user.musicdownloader.tools.Contextor;
@@ -94,8 +93,10 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
         ShPref.put(R.string.song_artist_for_service, songsList.get(p).getArtist());
         ShPref.put(R.string.song_thumb_for_service, songsList.get(p).getImage().toString());
         ShPref.put(R.string.song_position_in_array, p);
+        Intent intent = new Intent(context, PlaySongService.class);
+        PlaySongService.currentPlayedSong = songsList.get(p);
         context.stopService(new Intent(context, PlaySongService.class));
-        context.startService(new Intent(context, PlaySongService.class));
+        context.startService(intent);
     }
 
 

@@ -40,10 +40,10 @@ public class Utils {
             int position = 2;
             switch (i) {
                 case 1:
-                    position = GetMusicData.getSongPosition(PlaySongService.songName) + 1;
+                    position = GetMusicData.getSongPosition(PlaySongService.currentPlayedSong) + 1;
                     break;
                 case -1:
-                    position = GetMusicData.getSongPosition(PlaySongService.songName) - 1;
+                    position = GetMusicData.getSongPosition(PlaySongService.currentPlayedSong) - 1;
                     break;
             }
             ShPref.put(R.string.song_path_for_service, songs.get(position).getUri().toString());

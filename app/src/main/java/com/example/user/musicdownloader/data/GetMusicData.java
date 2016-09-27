@@ -178,4 +178,8 @@ public class GetMusicData {
         counterToString = String.valueOf(counter);
         return counterToString;
     }
+
+    public static int getSongPosition(Song song) {
+        return songs.indexOf(song);
+    }
 }
