@@ -25,6 +25,7 @@
         android:layout_marginLeft="12dp"
         android:layout_marginStart="9dp"
         android:layout_marginTop="2dp"
+        android:textColor="@android:color/black"
         android:layout_toEndOf="@+id/imageView3"
         android:layout_toRightOf="@+id/imageView3"
         android:textSize="18sp"
@@ -48,6 +49,8 @@
         android:textSize="13dp"
         tools:text="number of songs"
         android:layout_below="@+id/cellArtist_ArtistEditText"
+        android:textColor="@android:color/black"
+
         android:layout_alignLeft="@+id/cellArtist_ArtistEditText"
         android:layout_alignStart="@+id/cellArtist_ArtistEditText" />
 
