@@ -28,7 +28,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.musicdownloader.EventBus.EventToService;
-import com.example.user.musicdownloader.EventBus.messages.EventForSearchRecyclerView;
 import com.example.user.musicdownloader.EventBus.messages.MessageEvent;
 import com.example.user.musicdownloader.EventBus.messages.MessageFromBackPressed;
 import com.example.user.musicdownloader.EventBus.messages.MessageSearch;
@@ -159,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 min = (int) ((timeInSeconds / 60)) % 60;
                 mainSeekBar.setProgress(event.currentDuration);
                 if (sec < 10) {
-                    EventBus.getDefault().post(new EventForSearchRecyclerView(0));
+//                    EventBus.getDefault().post(new EventForSearchRecyclerView(0));//todo WTF?????
                     runningTime.setText(String.valueOf(min + ":" + "0" + sec));
                 } else {
                     runningTime.setText(String.valueOf(min + ":" + sec));

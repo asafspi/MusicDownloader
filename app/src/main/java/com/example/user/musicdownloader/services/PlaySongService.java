@@ -61,7 +61,6 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
         Uri songUri = Uri.parse(songPath);
         EventBus.getDefault().post(new MessageEvent("changePlayPauseButtonToPlay", 0, 0, null, null, null));
 
-//        player = MediaPlayer.create(this, songUri);
         player = new MediaPlayer();
         player.setOnCompletionListener(this);
         player.setOnPreparedListener(this);
@@ -69,6 +68,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
         player.setLooping(false); // Set looping
         player.setVolume(100, 100);
         setPlayer(songUri);
+        Log.d("TAG", "PlaySongService created");
 
     }
 
@@ -77,12 +77,44 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
             player.stop();
         }
         try {
+            player.reset();
             player.setDataSource(this, songUri);
         } catch (IOException e) {
             e.printStackTrace();
         }
         player.prepareAsync();
+
     }
+
+    @Override
+    public void onPrepared(MediaPlayer mediaPlayer) {
+        player.start();
+        String songArtist = ShPref.getString(R.string.song_artist_for_service, "");
+        String songImage = ShPref.getString(R.string.song_thumb_for_service, "");
+        String songPath = ShPref.getString(R.string.song_path_for_service, "");
+        EventBus.getDefault().post(new MessageEvent("changePlayPauseButtonToPause", 0, 0, null, null, null));
+        ShPref.put(getString(R.string.current_song_duratoin), player.getDuration());
+        EventBus.getDefault().post(new MessageEvent("start song", player.getDuration(), 0, songName, songArtist, songPath));
+        addNotification(NOTIFICATION_ID);
+        handler.post(updateUi);
+    }
+
+    @Override
+    public void onSeekComplete(MediaPlayer mediaPlayer) {
+        handler.post(updateUi);
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mediaPlayer) {
+        if (!repeatSong) {
+            EventBus.getDefault().post(new EventToService(EventToService.NEXT_BUTTON, 0));
+            addNotification(NOTIFICATION_ID);
+        } else {
+            player.seekTo(0);
+            player.start();
+        }
+    }
+
 
     private void registerReceiver() {
 
@@ -117,6 +149,9 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        Log.d("TAG", "PlaySongService destroyed");
+
         handler.removeCallbacks(updateUi);
         if (null != player) {
             player.stop();
@@ -160,58 +195,38 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
                 }
                 break;
             case 2: // NEXT_BUTTON
-                if (null != player) {
-                    player.stop();
-                    EventBus.getDefault().post(new MessageEvent("changePlayPauseButtonToPlay", 0, 0, null, null, null));
-                }
                 if (!shuffle) {
                     position = GetMusicData.getSongPosition(ShPref.getString(R.string.song_name_for_service, "")) + 1;
                 } else {
                     position = new Random().nextInt(GetMusicData.songs.size());
                 }
-
-                setPlayer(songs.get(position).getUri());
-                EventBus.getDefault().post(new MessageEvent("start song", player.getDuration(), 0, GetMusicData.songs.get(position).getName(), GetMusicData.songs.get(position).getArtist(), GetMusicData.songs.get(position).getUri().toString()));
-                ShPref.put(R.string.song_path_for_service, songs.get(position).getUri().toString());
-                ShPref.put(R.string.song_name_for_service, songs.get(position).getName());
-                ShPref.put(R.string.song_artist_for_service, songs.get(position).getArtist());
-                ShPref.put(R.string.song_thumb_for_service, songs.get(position).getImage().toString());
-                addNotification(NOTIFICATION_ID);
+                playSongInPosition(position);
                 break;
             case 3: //PREVIOUS_BUTTON
-                if (null != player) {
-                    player.stop();
-                }
                 position = GetMusicData.getSongPosition(ShPref.getString(R.string.song_name_for_service, "")) - 1;
-                setPlayer(songs.get(position).getUri());
-                EventBus.getDefault().post(new MessageEvent("start song", player.getDuration(), 0, GetMusicData.songs.get(position).getName(), GetMusicData.songs.get(position).getArtist(), GetMusicData.songs.get(position).getUri().toString()));
-                ShPref.put(R.string.song_path_for_service, songs.get(position).getUri().toString());
-                ShPref.put(R.string.song_name_for_service, songs.get(position).getName());
-                ShPref.put(R.string.song_artist_for_service, songs.get(position).getArtist());
-                ShPref.put(R.string.song_thumb_for_service, songs.get(position).getImage().toString());
-                addNotification(NOTIFICATION_ID);
+                playSongInPosition(position);
                 break;
             case 4: // From seek bar
                 player.seekTo(event.seekTo);
+                break;
             case 5:
                 manager.cancel(NOTIFICATION_ID);
                 break;
         }
     }
 
-    @Override
-    public void onCompletion(MediaPlayer mediaPlayer) {
-        if (!repeatSong) {
-            EventBus.getDefault().post(new EventToService(EventToService.NEXT_BUTTON, 0));
-            addNotification(NOTIFICATION_ID);
-        } else {
-            player.seekTo(0);
-            player.start();
-        }
+    private void playSongInPosition(int position) {
+        setPlayer(songs.get(position).getUri());
+        songName = songs.get(position).getUri().toString();
+        ShPref.put(R.string.song_path_for_service, songs.get(position).getUri().toString());
+        ShPref.put(R.string.song_name_for_service, songs.get(position).getName());
+        ShPref.put(R.string.song_artist_for_service, songs.get(position).getArtist());
+        ShPref.put(R.string.song_thumb_for_service, songs.get(position).getImage().toString());
     }
 
+
     private void addNotification(int id) {
-        songName = ShPref.getString(R.string.song_name_for_service, "");
+//        songName = ShPref.getString(R.string.song_name_for_service, "");
         builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(android.R.drawable.ic_media_play).setOngoing(true) // Again,
                 .setContentTitle("Title").setContentText("Text")
@@ -279,25 +294,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
         contentViewSmall.setOnClickPendingIntent(R.id.x_notification, pendingExitIntent);
     }
 
-    @Override
-    public void onPrepared(MediaPlayer mediaPlayer) {
-        if (null != player) {
-            player.start();
-            String songArtist = ShPref.getString(R.string.song_artist_for_service, "");
-            String songImage = ShPref.getString(R.string.song_thumb_for_service, "");
-            String songPath = ShPref.getString(R.string.song_path_for_service, "");
-            EventBus.getDefault().post(new MessageEvent("changePlayPauseButtonToPause", 0, 0, null, null, null));
-            ShPref.put(getString(R.string.current_song_duratoin), player.getDuration());
-            EventBus.getDefault().post(new MessageEvent("start song", player.getDuration(), 0, songName, songArtist, songPath));
-            addNotification(NOTIFICATION_ID);
-            handler.post(updateUi);
-        }
-    }
 
-    @Override
-    public void onSeekComplete(MediaPlayer mediaPlayer) {
-        handler.post(updateUi);
-    }
 
     public static class NextButtonListener extends BroadcastReceiver {
         @Override
