@@ -76,7 +76,7 @@ public class GetMusicData {
                                 songs.add(song);
                                 addSongToArtisList(song);
                                 addSongToAlbumList(song);
-                                if (String.valueOf(uriOfSong).contains(fileDownloads.getPath())){
+                                if (String.valueOf(uriOfSong).contains(fileDownloads.getPath()) && file_size > 0){
                                     downloads.add(song);
                                 }
                             }
