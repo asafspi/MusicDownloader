@@ -71,8 +71,8 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
 
     public int onStartCommand(Intent intent, int flags, int startId) {
         addedToQueue = intent.getBooleanExtra(EXTRA_ADDED_TO_QUEUE, false);
-        if (addedToQueue){
-            if (!player.isPlaying()){
+        if (addedToQueue) {
+            if (!player.isPlaying()) {
                 songEnded();
             }
         } else {
@@ -82,9 +82,9 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
         return Service.START_NOT_STICKY;
     }
 
-    private void setPlayer(){
+    private void setPlayer() {
         EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.CHANGE_BTN_TO_PLAY));
-        if (player.isPlaying()){
+        if (player.isPlaying()) {
             player.stop();
         }
         try {
@@ -106,7 +106,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
         EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.START_SONG));
         addNotification(NOTIFICATION_ID);
         handler.post(updateUi);
-        if (client == CLIENT.WEB){//this is song from search internet results
+        if (client == CLIENT.WEB) {//this is song from search internet results
             currentPlayedSong.setLoadedToPlayer(false);
             EventBus.getDefault().post(new EventForSearchRecyclerView());
 
@@ -120,19 +120,15 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
-        if (client == CLIENT.WEB){
+        if (client == CLIENT.WEB) {
 //            stopSelf();
-        }
-        else if (repeatSong) {
+        } else if (repeatSong) {
             player.seekTo(0);
             player.start();
         } else {
             songEnded();
         }
     }
-
-
-
 
 
     @Override
@@ -185,7 +181,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
                 }
                 break;
             case 2: // NEXT_BUTTON
-               songEnded();
+                songEnded();
                 break;
             case 3: //PREVIOUS_BUTTON
                 position = currentArraySong.indexOf(currentPlayedSong) - 1;
@@ -201,17 +197,16 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
         }
     }
 
-    private void songEnded(){
+    private void songEnded() {
         int position;
-        if (addedToQueue){
+        if (addedToQueue) {
             position = 0;
             addedToQueue = false;
-        }
-        else if (shuffle) {
+        } else if (shuffle) {
             position = new Random().nextInt(currentArraySong.size());
         } else {
             int index = currentArraySong.indexOf(currentPlayedSong);
-            if (index != -1){
+            if (index != -1) {
                 position = ++index;
             } else {
                 position = index;
@@ -221,11 +216,11 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
     }
 
     private void playSongInPosition(int position) {
-        if (position >= 0 && position < currentArraySong.size() ) {
+        if (position >= 0 && position < currentArraySong.size()) {
             currentPlayedSong = currentArraySong.get(position);
             setPlayer();
         } else {
-            if (player.isPlaying()){
+            if (player.isPlaying()) {
                 EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.CHANGE_BTN_TO_PAUSE));
             } else {
                 EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.CHANGE_BTN_TO_PLAY));
@@ -238,9 +233,8 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
 
     private void addNotification(int id) {
 
-
         builder = new NotificationCompat.Builder(this)
-        .setSmallIcon(R.drawable.mp3_icon_notif).setOngoing(true) // Again,
+                .setSmallIcon(R.drawable.mp3_icon_notif).setOngoing(true) // Again,
                 .setContentTitle("Title").setContentText("Text")
                 .setPriority(NotificationCompat.PRIORITY_MAX);
 
@@ -252,7 +246,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
         contentViewSmall = new RemoteViews(getPackageName(), R.layout.custom_notification_small);
         contentViewBig = new RemoteViews(getPackageName(), R.layout.custom_notification);
         builder.setCustomContentView(contentViewSmall);
-        if (null!= player && player.isPlaying()) {
+        if (null != player && player.isPlaying()) {
             contentViewSmall.setImageViewResource(R.id.playNotificationImage, android.R.drawable.ic_media_pause);
         } else {
             contentViewSmall.setImageViewResource(R.id.playNotificationImage, R.drawable.play_notification);
@@ -305,7 +299,6 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
         contentViewBig.setOnClickPendingIntent(R.id.x_notification, pendingExitIntent);
         contentViewSmall.setOnClickPendingIntent(R.id.x_notification, pendingExitIntent);
     }
-
 
 
     public static class NextButtonListener extends BroadcastReceiver {
@@ -376,7 +369,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
 
     }
 
-    public enum CLIENT{
+    public enum CLIENT {
         SONGS,
         ALBUMS,
         ARTIST,

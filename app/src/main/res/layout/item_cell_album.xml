@@ -10,31 +10,31 @@
     android:layout_marginRight="5dp">
 
     <ImageView
+        android:id="@+id/imageView"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        app:srcCompat="@drawable/album_logo"
-        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/imageView" />
+        android:layout_centerVertical="true"
+        app:srcCompat="@drawable/album_logo" />
 
     <ImageView
         android:id="@+id/cellAlbumImageView"
         android:layout_width="190dp"
         android:layout_height="190dp"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
 
     <View
+        android:id="@+id/blackView"
         android:layout_width="150dp"
         android:layout_height="45dp"
-        android:id="@+id/blackView"
-        android:layout_marginBottom="10dp"
         android:layout_alignBottom="@+id/cellAlbumImageView"
         android:layout_alignEnd="@+id/cellAlbumImageView"
         android:layout_alignLeft="@+id/cellAlbumImageView"
         android:layout_alignRight="@+id/cellAlbumImageView"
         android:layout_alignStart="@+id/cellAlbumImageView"
+        android:layout_marginBottom="10dp"
         android:alpha="0.4"
         android:background="@android:color/black" />
 
@@ -42,42 +42,44 @@
         android:id="@+id/cellArtist_ArtistEditText"
         android:layout_width="140dp"
         android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:textColor="@android:color/white"
-        android:textSize="12sp"
-        android:layout_marginLeft="5dp"
-        tools:text="TextView"
-        android:layout_marginBottom="13dp"
         android:layout_alignBottom="@+id/cellAlbumImageView"
         android:layout_alignLeft="@+id/cellAlbumImageView"
         android:layout_alignStart="@+id/cellAlbumImageView"
+        android:layout_marginBottom="13dp"
+        android:layout_marginLeft="5dp"
         android:layout_toLeftOf="@+id/threeDotsItem"
-        android:layout_toStartOf="@+id/threeDotsItem" />
+        android:layout_toStartOf="@+id/threeDotsItem"
+        android:fontFamily="sans-serif-condensed"
+        android:maxLines="1"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        tools:text="TextView" />
 
     <TextView
         android:id="@+id/cellArtist_AlbumEditText"
         android:layout_width="140dp"
         android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:textColor="@android:color/white"
-        android:textSize="17sp"
-        tools:text="Artist"
         android:layout_above="@+id/cellArtist_ArtistEditText"
         android:layout_alignLeft="@+id/cellArtist_ArtistEditText"
         android:layout_alignStart="@+id/cellArtist_ArtistEditText"
         android:layout_toLeftOf="@+id/threeDotsItem"
-        android:layout_toStartOf="@+id/threeDotsItem" />
+        android:layout_toStartOf="@+id/threeDotsItem"
+        android:fontFamily="sans-serif-condensed"
+        android:maxLines="1"
+        android:textColor="@android:color/white"
+        android:textSize="17sp"
+        tools:text="Artist" />
 
     <ImageView
+        android:id="@+id/threeDotsItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/dots_icon"
-        android:id="@+id/threeDotsItem"
-        android:padding="10dp"
         android:layout_alignBottom="@id/blackView"
         android:layout_alignRight="@id/blackView"
         android:layout_marginBottom="7dp"
-        android:layout_marginRight="5dp"/>
+        android:layout_marginRight="5dp"
+        android:padding="10dp"
+        app:srcCompat="@drawable/dots_icon" />
 
 
 </RelativeLayout>

@@ -25,34 +25,36 @@
         android:layout_marginLeft="12dp"
         android:layout_marginStart="9dp"
         android:layout_marginTop="2dp"
-        android:textColor="@android:color/black"
         android:layout_toEndOf="@+id/imageView3"
         android:layout_toRightOf="@+id/imageView3"
+        android:fontFamily="sans-serif-condensed"
+        android:textColor="@android:color/black"
         android:textSize="18sp"
         tools:text="Artist name" />
 
 
     <!--<TextView-->
-        <!--android:id="@+id/cellArtist_numberOfAlbumsEditText"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignLeft="@+id/cellArtist_ArtistEditText"-->
-        <!--android:layout_alignStart="@+id/cellArtist_ArtistEditText"-->
-        <!--android:layout_below="@+id/cellArtist_ArtistEditText"-->
-        <!--tools:text="numbers of albums" />-->
+    <!--android:id="@+id/cellArtist_numberOfAlbumsEditText"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignLeft="@+id/cellArtist_ArtistEditText"-->
+    <!--android:layout_alignStart="@+id/cellArtist_ArtistEditText"-->
+    <!--android:layout_below="@+id/cellArtist_ArtistEditText"-->
+    <!--tools:text="numbers of albums" />-->
 
     <TextView
         android:id="@+id/cellArtist_numberOfSongsEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/cellArtist_ArtistEditText"
 
-        android:textSize="13dp"
-        tools:text="number of songs"
+        android:layout_alignStart="@+id/cellArtist_ArtistEditText"
         android:layout_below="@+id/cellArtist_ArtistEditText"
+        android:fontFamily="sans-serif-condensed"
         android:textColor="@android:color/black"
 
-        android:layout_alignLeft="@+id/cellArtist_ArtistEditText"
-        android:layout_alignStart="@+id/cellArtist_ArtistEditText" />
+        android:textSize="13dp"
+        tools:text="number of songs" />
 
     <ImageView
         android:id="@+id/threeDotsItem"
@@ -61,10 +63,10 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:padding="10dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="10dp"
-        app:srcCompat="@drawable/dots_icon"
-        android:paddingRight="12dp" />
+        android:padding="10dp"
+        android:paddingRight="12dp"
+        app:srcCompat="@drawable/dots_icon" />
 
 </RelativeLayout>
