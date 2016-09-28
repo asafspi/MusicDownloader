@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.user.musicdownloader.EventBus.messages.MessageSearchOnline;
 import com.example.user.musicdownloader.R;
+import com.example.user.musicdownloader.activities.MainActivity;
 import com.example.user.musicdownloader.data.Song;
 import com.example.user.musicdownloader.services.PlaySongService;
 import com.example.user.musicdownloader.tools.Contextor;
@@ -54,7 +55,7 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
     public RecyclerAdapterSongs(ArrayList<Song> songs, String query) {
         this.songsList = songs;
         this.songQuery = query;
-        this.client = (query != null) ? PlaySongService.CLIENT.SONGS : PlaySongService.CLIENT.WEB;
+        this.client = PlaySongService.CLIENT.SONGS;
     }
 
     @Override
@@ -63,7 +64,7 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
             holder.textViewQuery.setText(String.format(placeHolder, songQuery));
             return;
         }
-        if (client == PlaySongService.CLIENT.SONGS) {
+        if (isNeedToShowSearchRow()) {
             position--;
         }
         holder.title.setText(songsList.get(position).getName());
@@ -116,14 +117,14 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
             }
             switch (view.getId()) {
                 case R.id.threeDotsItem:
-                    if (client == PlaySongService.CLIENT.SONGS) {
+                    if (isNeedToShowSearchRow()) {
                         showPopupMenu(view, getAdapterPosition()-1);
                     }else {
                         showPopupMenu(view, getAdapterPosition());
                     }
                     break;
                 default:
-                    if (client == PlaySongService.CLIENT.SONGS) {
+                    if (isNeedToShowSearchRow()) {
                         playSong(getAdapterPosition() - 1);
                     }else {
                         playSong(getAdapterPosition());
@@ -168,14 +169,18 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
     @Override
     public int getItemCount() {
         int size = songsList.size();
-        return client == PlaySongService.CLIENT.SONGS ? ++size : size;
+        return  (isNeedToShowSearchRow()) ? ++size : size;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (client == PlaySongService.CLIENT.SONGS && position == 0) {
+        if (isNeedToShowSearchRow() && position == 0) {
             return VIEW_TYPE_SEARCH_ONLINE;
         }
         return VIEW_TYPE_REGULAR;
+    }
+
+    private boolean isNeedToShowSearchRow(){
+        return client == PlaySongService.CLIENT.SONGS && MainActivity.query != null && MainActivity.query.length() > 0;
     }
 }

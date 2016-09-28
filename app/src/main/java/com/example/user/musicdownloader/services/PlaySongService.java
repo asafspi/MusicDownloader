@@ -121,6 +121,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
         if (client == CLIENT.WEB) {
+            player.seekTo(0);
 //            stopSelf();
         } else if (repeatSong) {
             player.seekTo(0);
