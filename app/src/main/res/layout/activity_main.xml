@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/main_content"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@drawable/background"
-              android:fitsSystemWindows="true"
-              android:orientation="vertical"
-              tools:context="com.example.user.musicdownloader.activities.MainActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context="com.example.user.musicdownloader.activities.MainActivity">
 
 
     <android.support.v7.widget.Toolbar
@@ -44,27 +44,25 @@
                 android:text="MUSIC PLAYER"
                 android:textColor="@android:color/white"
                 android:textSize="23sp"
-                tools:ignore="MissingPrefix"/>
+                tools:ignore="MissingPrefix" />
 
             <View
                 android:id="@+id/search_fake_space"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <android.support.v7.widget.SearchView
                 android:id="@+id/searchView"
                 android:layout_width="wrap_content"
-                android:maxWidth="190dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="8dp"
+                android:maxWidth="190dp"
                 app:iconifiedByDefault="true"
                 app:queryHint="Search"
                 app:searchHintIcon="@null"
-                app:searchIcon="@drawable/search_icon"/>
-
-
+                app:searchIcon="@drawable/search_icon" />
         </LinearLayout>
 
 
@@ -78,14 +76,14 @@
         app:tabIndicatorColor="@android:color/white"
         app:tabMode="scrollable"
         app:tabSelectedTextColor="@android:color/white"
-        app:tabTextColor="@android:color/white"/>
+        app:tabTextColor="@android:color/white" />
 
 
     <android.support.v4.view.ViewPager
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
     <FrameLayout
         android:id="@+id/frame_layout_search_fragment"
@@ -127,7 +125,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:background="@android:color/transparent"
-                app:srcCompat="@drawable/play_icon"/>
+                app:srcCompat="@drawable/play_icon" />
 
             <ImageButton
                 android:id="@+id/previuseImageView"
@@ -138,7 +136,7 @@
                 android:layout_toLeftOf="@+id/playPauseButtonImageButton"
                 android:layout_toStartOf="@+id/playPauseButtonImageButton"
                 android:background="@android:color/transparent"
-                app:srcCompat="@drawable/reward_icon"/>
+                app:srcCompat="@drawable/reward_icon" />
 
             <ImageButton
                 android:id="@+id/nextButtonImageView"
@@ -149,7 +147,7 @@
                 android:layout_toEndOf="@+id/playPauseButtonImageButton"
                 android:layout_toRightOf="@+id/playPauseButtonImageButton"
                 android:background="@android:color/transparent"
-                app:srcCompat="@drawable/forward_icon"/>
+                app:srcCompat="@drawable/forward_icon" />
 
             <ImageButton
                 android:id="@+id/shuffleButton"
@@ -161,7 +159,7 @@
                 android:layout_marginLeft="20dp"
                 android:background="@android:color/transparent"
                 app:srcCompat="@drawable/shuffle_icon"
-                tools:ignore="RtlHardcoded"/>
+                tools:ignore="RtlHardcoded" />
 
             <ImageButton
                 android:id="@+id/repeatButton"
@@ -173,7 +171,7 @@
                 android:layout_marginRight="20dp"
                 android:background="@android:color/transparent"
                 app:srcCompat="@drawable/repeat_icon"
-                tools:ignore="RtlHardcoded"/>
+                tools:ignore="RtlHardcoded" />
         </RelativeLayout>
 
         <LinearLayout
@@ -182,31 +180,31 @@
             android:orientation="horizontal">
 
             <TextView
-                android:fontFamily="sans-serif-condensed"
-
                 android:id="@+id/artistNameTextView"
+
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_weight="1"
+                android:fontFamily="sans-serif-condensed"
                 android:maxLines="1"
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
-                tools:text="Artist"/>
+                tools:text="Artist" />
 
             <TextView
-                android:fontFamily="sans-serif-condensed"
                 android:id="@+id/songNameTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_weight="1"
+                android:fontFamily="sans-serif-condensed"
                 android:maxLines="1"
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
-                tools:text="Title"/>
+                tools:text="Title" />
 
         </LinearLayout>
 
@@ -225,16 +223,15 @@
                 android:id="@+id/runningTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0:00"
                 android:fontFamily="sans-serif-condensed"
+                android:text="0:00"
 
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white" />
 
             <SeekBar
                 android:id="@+id/seekBar"
                 style="@style/Widget.AppCompat.SeekBar"
                 android:layout_width="wrap_content"
-                android:padding="10dp"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="5dp"
@@ -243,8 +240,9 @@
                 android:layout_toRightOf="@+id/runningTime"
                 android:layout_toStartOf="@+id/totalTime"
                 android:max="10"
+                android:padding="10dp"
                 android:progress="0"
-                android:thumb="@drawable/greendot_bottomplaytab"/>
+                android:thumb="@drawable/greendot_bottomplaytab" />
 
             <TextView
                 android:id="@+id/totalTime"
@@ -253,9 +251,9 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:text="0:00"
                 android:fontFamily="sans-serif-condensed"
-                android:textColor="@android:color/white"/>
+                android:text="0:00"
+                android:textColor="@android:color/white" />
         </RelativeLayout>
 
 
