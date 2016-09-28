@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private AudioManager mAudioManager;
     private ComponentName mRemoteControlResponder;
     public static Song requestedBTSong;
+    private ImageButton repeatButton, shuffleButton;
 
 
 
@@ -194,9 +195,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         priviesSong.setOnClickListener(this);
         playPause = (ImageButton) findViewById(R.id.playPauseButtonImageButton);
         playPause.setOnClickListener(this);
-        ImageButton shuffleButton = (ImageButton) findViewById(R.id.shuffleButton);
+        shuffleButton = (ImageButton) findViewById(R.id.shuffleButton);
         shuffleButton.setOnClickListener(this);
-        ImageButton repeatButton = (ImageButton) findViewById(R.id.repeatButton);
+        repeatButton = (ImageButton) findViewById(R.id.repeatButton);
         repeatButton.setOnClickListener(this);
         //thumbSongImageView = (ImageView) findViewById(R.id.playerImageView);
         mainSeekBar = (SeekBar) findViewById(R.id.seekBar);
@@ -256,18 +257,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.shuffleButton:
                 PlaySongService.shuffle = !PlaySongService.shuffle;
                 if(PlaySongService.shuffle){
+                    shuffleButton.setImageResource(R.drawable.shuffle_pressed_icon);
                     Toast.makeText(this, "Shuffle mode is on", Toast.LENGTH_SHORT).show();
                 }else {
+                    shuffleButton.setImageResource(R.drawable.shuffle_icon);
                     Toast.makeText(this, "Shuffle mode is off", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.repeatButton:
                 PlaySongService.repeatSong = !PlaySongService.repeatSong;
                 if(PlaySongService.repeatSong){
+                    repeatButton.setImageResource(R.drawable.repeat_pressed_icon);
                     Toast.makeText(this, "Repeat mode is on", Toast.LENGTH_SHORT).show();
                 }else {
+                    repeatButton.setImageResource(R.drawable.repeat_icon);
                     Toast.makeText(this, "Repeat mode is off", Toast.LENGTH_SHORT).show();
-
                 }
                 break;
         }

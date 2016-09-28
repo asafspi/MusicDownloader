@@ -237,8 +237,10 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
 
 
     private void addNotification(int id) {
+
+
         builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(android.R.drawable.ic_media_play).setOngoing(true) // Again,
+        .setSmallIcon(R.drawable.mp3_icon_notif).setOngoing(true) // Again,
                 .setContentTitle("Title").setContentText("Text")
                 .setPriority(NotificationCompat.PRIORITY_MAX);
 
