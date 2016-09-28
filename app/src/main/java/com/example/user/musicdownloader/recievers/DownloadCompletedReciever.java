@@ -27,17 +27,18 @@ public class DownloadCompletedReciever extends BroadcastReceiver {
         String action = intent.getAction();
         if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
             Long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
+
+            Log.d("TAG", "downloadId: " + downloadId);
             if (downloadId == downId) {
-                Log.d("TAG", "reciever got the doownload complete");
                 File file = new File(Environment.DIRECTORY_MUSIC + File.separator + context.getString(R.string.app_name), pathId);
+                Log.d("TAG", "reciever download complete, file;" + file.getAbsolutePath());
+
                 MediaScannerConnection.scanFile(context.getApplicationContext(), new String[]{
                                 file.getAbsolutePath()},
                         null, new MediaScannerConnection.OnScanCompletedListener() {
                             public void onScanCompleted(String path, Uri uri) {
-                                if (uri != null) {
-                                    Log.d("TAG", "onScanCompleted: " + uri.toString());
-                                    GetMusicData.getAllSongs(context.getContentResolver(), context.getString(R.string.app_name));
-                                }
+                                Log.d("TAG", "onScanCompleted, Uri: " + uri + " , path: " + path);
+                                GetMusicData.getAllSongs(context.getContentResolver(), context.getString(R.string.app_name));
                             }
 
                         });

@@ -113,8 +113,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        MusicPlayerPagerAdapter mSectionsPagerAdapter = new MusicPlayerPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.container);
+
+        MusicPlayerPagerAdapter mSectionsPagerAdapter = new MusicPlayerPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.addOnPageChangeListener(this);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -345,17 +346,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onNewIntent(intent);
     }
 
-/*
-    public void showMenu(View view) {
-        PopupMenu popupMenu;
-        popupMenu = new PopupMenu(this, view);
-        popupMenu.setOnMenuItemClickListener(this);
-        MenuInflater inflater = popupMenu.getMenuInflater();
-        inflater.inflate(R.menu.menu_main, popupMenu.getMenu());
-        popupMenu.show();
-
-    }
-*/
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
@@ -370,6 +360,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        EventBus.getDefault().post(new MessageSearchOnline(query));
         return true;
     }
 
@@ -381,9 +372,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         MainActivity.query = query;
 
-        if (mViewPager.getCurrentItem() == 4){
-                EventBus.getDefault().post(new MessageSearchOnline(query));
-        } else {
+        if (mViewPager.getCurrentItem() != 4){
             ArrayList<Song> querySongs = new ArrayList<>();
             @SuppressWarnings("unchecked")
             ArrayList<Song> songs = (ArrayList<Song>) GetMusicData.songs.clone();
@@ -454,5 +443,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mViewPager.setCurrentItem(4);
     }
 
-
+    // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageFromBackPressed event) {
+        switch (event.getAction()) {
+            case MessageFromBackPressed.FROM_THREAD:  //
+                MusicPlayerPagerAdapter mSectionsPagerAdapter = new MusicPlayerPagerAdapter(getSupportFragmentManager());
+                mViewPager.setAdapter(null);
+                mViewPager.setAdapter(mSectionsPagerAdapter);
+                break;
+        }
+    }
 }

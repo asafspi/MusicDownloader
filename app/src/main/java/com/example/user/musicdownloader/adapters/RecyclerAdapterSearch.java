@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,8 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import static com.example.user.musicdownloader.activities.MainActivity.downId;
 
 public class RecyclerAdapterSearch extends RecyclerView.Adapter<RecyclerAdapterSearch.ViewHolder> {
 
@@ -119,15 +122,16 @@ public class RecyclerAdapterSearch extends RecyclerView.Adapter<RecyclerAdapterS
             request.setDestinationInExternalPublicDir(Environment.DIRECTORY_MUSIC + File.separator + context.getString(R.string.app_name), fileName);
             request.allowScanningByMediaScanner();
             DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-            MainActivity.downId =  manager.enqueue(request);
+            downId =  manager.enqueue(request);
             MainActivity.pathId = fileName;
+            Log.d("TAG", "downId: " + Long.toString(downId));
             Toast.makeText(context, "Download in progress", Toast.LENGTH_SHORT).show();
 
         } else {
             Toast.makeText(context, "You need to allow writing to memory", Toast.LENGTH_SHORT).show();
             ActivityCompat.requestPermissions((Activity)context, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     PermissionsActivity.REQUEST_CODE_PERMISSION_WRITE_SETTINGS);
-            MainActivity.downId = -1;
+            downId = -1;
         }
     }
 }

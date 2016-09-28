@@ -1,22 +1,17 @@
 package com.example.user.musicdownloader.fragments;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.TextSwitcher;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
+import android.widget.Toast;
 
 import com.example.user.musicdownloader.EventBus.messages.MessageFromBackPressed;
 import com.example.user.musicdownloader.EventBus.messages.MessageSearchOnline;
@@ -40,7 +35,6 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
     private RecyclerView mRecyclerView;
     private View mProgressBar;
     private TextView textViewNoResult;;
-    private TextSwitcher textSwitcher;
     private Handler handler;
     private ConnectivityManager connectivityManager;
 
@@ -68,23 +62,6 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
         mRecyclerView.setHasFixedSize(true);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        textSwitcher = (TextSwitcher)rootView.findViewById(R.id.text_switcher);
-        // Set the ViewFactory of the TextSwitcher that will create TextView object when asked
-        textSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
-            public View makeView() {
-                TextView myText = new TextView(getContext());
-                myText.setGravity(Gravity.CENTER);
-                myText.setTextColor(Color.WHITE);
-                myText.setTextSize(30);
-                return myText;
-            }
-        });
-        // Declare the in and out animations and initialize them
-        Animation in = AnimationUtils.loadAnimation(getContext(), R.anim.slide_in_left);
-//        Animation out = AnimationUtils.loadAnimation(getContext(), android.R.anim.slide_out_right);
-        // set the animation type of textSwitcher
-        textSwitcher.setInAnimation(in);
-//        textSwitcher.setOutAnimation(out);
         setRecyclerView();
         return rootView;
     }
@@ -98,7 +75,6 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
     private void setRecyclerView(){
         if (!Utils.isNetworkAvailable(getContext())){
             mProgressBar.setVisibility(View.GONE);
-            textSwitcher.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.GONE);
             textViewNoResult.setVisibility(View.VISIBLE);
             textViewNoResult.setText(getString(R.string.no_internet));
@@ -106,7 +82,6 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
         else if (MainActivity.query != null){
             if (searchResultsSongs != null && searchResultsSongs.size() > 0){
                 mProgressBar.setVisibility(View.GONE);
-                textSwitcher.setVisibility(View.GONE);
 
                 mRecyclerView.setAdapter(new RecyclerAdapterSearch(searchResultsSongs));
                 textViewNoResult.setVisibility(View.GONE);
@@ -117,7 +92,6 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
         } else {
             searchResultsSongs = null;
             mProgressBar.setVisibility(View.GONE);
-            textSwitcher.setVisibility(View.GONE);
             mRecyclerView.setAdapter(new RecyclerAdapterSearch(searchResultsSongs));
             textViewNoResult.setVisibility(View.VISIBLE);
             textViewNoResult.setText(getString(R.string.no_result));
@@ -139,8 +113,6 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
 
     @Override
     public void onStartSearch(String query) {
-        textSwitcher.setText("Searching " + "\"" + query + "\"");
-        textSwitcher.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.VISIBLE);
         textViewNoResult.setVisibility(View.GONE);
         searchResultsSongs = null;
@@ -156,7 +128,9 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
 
     @Override
     public void onFailure() {
-
+        FragmentSearchTab.searchResultsSongs = null;
+        Toast.makeText(getActivity(), getText(R.string.search_failure), Toast.LENGTH_SHORT).show();
+        setRecyclerView();
     }
 
 

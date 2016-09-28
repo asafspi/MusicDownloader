@@ -137,16 +137,15 @@ public class fragmentSongPlayer extends Fragment  {
                     getActivity().finish();
                 }
                 break;
-            case MessageFromBackPressed.FROM_THREAD:  //
-                setRecycler();
-                break;
         }
     }
 
     // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageSearch event) {
-        setRecyclerSongs(event.getQuerySongs(), event.getQuery());
+        if (this.position == 0) {
+            setRecyclerSongs(event.getQuerySongs(), event.getQuery());
+        }
     }
 
 }

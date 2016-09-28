@@ -78,20 +78,8 @@ public class SearchHelper {
         if (query == null || query.equals(currentQueried)){
             return;
         }
-        long current = System.currentTimeMillis();
-        if (current - last < 1000){
-            Log.d("TAG", "searchWeb:current - last < 1000)");
-            OnSearchFinishListener onSearchFinishListener = listener.get();
-            if (onSearchFinishListener != null) {
-                handler.postDelayed(new runQueryRunable(handler, onSearchFinishListener), current - last);
-            }
-            return;
-        }
-
         Log.d("TAG", "searchWeb: " + query);
-        last = current;
         final ArrayList<Song> songs = new ArrayList<>();
-
         new Thread(new Runnable() {
             @Override
             public void run() {
