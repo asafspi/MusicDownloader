@@ -248,7 +248,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
         contentViewBig = new RemoteViews(getPackageName(), R.layout.custom_notification);
         builder.setCustomContentView(contentViewSmall);
         if (null != player && player.isPlaying()) {
-            contentViewSmall.setImageViewResource(R.id.playNotificationImage, android.R.drawable.ic_media_pause);
+            contentViewSmall.setImageViewResource(R.id.playNotificationImage, R.drawable.pause_notification);
         } else {
             contentViewSmall.setImageViewResource(R.id.playNotificationImage, R.drawable.play_notification);
         }
