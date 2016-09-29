@@ -43,6 +43,7 @@ public class GetMusicData {
                     songs.clear();
                     artists.clear();
                     albums.clear();
+                    downloads.clear();
                 }
 
                 Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -121,69 +122,6 @@ public class GetMusicData {
         }
     }
 
-
-    public static void getDataFromJson(String shortVideoId) {
-
-        //String stringUrl = "http://www.youtubeinmp3.com/fetch/?format=JSON&video=" + editText.getText();
-        String stringUrl = "http://www.youtubeinmp3.com/fetch/?format=JSON&video=" + "https://www.youtube.com/watch?v=" + shortVideoId;
-        Log.d("zaq Url for json ", stringUrl);
-        StringBuilder url = new StringBuilder(stringUrl);
-        HttpURLConnection connection = null;
-        InputStream in = null;
-        JSONObject jsonObject;
-        try {
-            connection = (HttpURLConnection) new URL(url.toString()).openConnection();
-            in = connection.getInputStream();
-            BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-            String read = br.readLine();
-            jsonObject = new JSONObject(read);
-            String link = jsonObject.getString("link");
-            String title = jsonObject.getString("title");
-            Log.d("ZAQ", link);
-            //download(link);
-            downloadFile(title, link);
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-        } catch (NullPointerException | SecurityException | OutOfMemoryError e) {
-            //ExceptionHandler.handleException(e);
-            // Asaf sometimes SecurityException occurs, check it on Fabric
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    public static void downloadFile(final String title, final String url) {
-        final Context context = Contextor.getInstance().getContext();
-        Log.d("zaq URL to download ", url);
-        final DownloadManager.Request request;
-        request = new DownloadManager.Request(Uri.parse(url));
-        request.setDescription("Downloading...");
-        request.setTitle(title);
-        // in order for this if to run, you must use the android 3.2 to compile your app
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            request.allowScanningByMediaScanner();
-            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        }
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_MUSIC + File.separator + context.getString(R.string.app_name), title + ".mp3");
-        // get download service and enqueue file
-        DownloadManager manager;
-        manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-        manager.enqueue(request);
-        Toast.makeText(context, "Download started", Toast.LENGTH_SHORT).show();
-        File file = new File(Environment.getExternalStorageDirectory() + "/Music Download/", title + ".mp3");
-        boolean b = file.exists();
-        int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
-        Log.d("ZAQ file size === ", b + " " + String.valueOf(file_size));
-    }
 
     public static int getSongPosition(String currentSong) {
 
