@@ -82,7 +82,7 @@ public class fragmentSongPlayer extends Fragment  {
     private void setRecycler(){
         switch (position) {
             case TAB_SONGS:
-                setRecyclerSongs(songs, null);
+                setRecyclerSongs(songs);
                 break;
             case TAB_ARTIST:
                 setRecyclerArtist();
@@ -91,7 +91,7 @@ public class fragmentSongPlayer extends Fragment  {
                 setRecyclerAlbums();
                 break;
             case TAB_DOWNLOADS:
-                setRecyclerSongs(downloads, null);
+                setRecyclerSongs(downloads);
                 break;
         }
     }
@@ -106,20 +106,20 @@ public class fragmentSongPlayer extends Fragment  {
         mRecyclerView.setAdapter(new RecyclerAdapterArtists(weak));
     }
 
-    private void setRecyclerSongs(ArrayList<Song> songs, String query){
+    private void setRecyclerSongs(ArrayList<Song> songs){
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRecyclerView.setAdapter(new RecyclerAdapterSongs(songs, query));
+        mRecyclerView.setAdapter(new RecyclerAdapterSongs(songs));
 
     }
 
     public void filterArtistList(Artist artist) {
         showFiltered = true;
-        setRecyclerSongs(artist.getArtistSongs(), null);
+        setRecyclerSongs(artist.getArtistSongs());
     }
 
     public void filterAlbumList(Album album) {
         showFiltered = true;
-        setRecyclerSongs(album.getAlbumSongs(), null);
+        setRecyclerSongs(album.getAlbumSongs());
     }
 
     // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
@@ -144,7 +144,7 @@ public class fragmentSongPlayer extends Fragment  {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageSearch event) {
         if (this.position == 0) {
-            setRecyclerSongs(event.getQuerySongs(), event.getQuery());
+            setRecyclerSongs(event.getQuerySongs());
         }
     }
 
