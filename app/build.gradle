@@ -4,7 +4,7 @@ android {
     compileSdkVersion 24
     buildToolsVersion "24.0.1"
     defaultConfig {
-        applicationId "com.example.user.musicdownloader"
+        applicationId "com.musicplayer.freedownload"
         minSdkVersion 16
         targetSdkVersion 24
         versionCode 1
@@ -53,4 +53,5 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') {
         transitive = true;
     }
+    compile files('libs/StartAppInApp-3.5.1.jar')
 }

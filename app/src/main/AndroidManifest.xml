@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.user.musicdownloader">
+    package="com.musicplayer.freedownload">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -23,7 +24,7 @@
 
 
         <activity
-            android:name=".activities.MainActivity"
+            android:name="com.musicplayer.freedownload.activities.MainActivity"
             android:label="@string/title_activity_main2"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustNothing"
@@ -35,14 +36,14 @@
         </activity>
 
         <service
-            android:name=".services.PlaySongService"
+            android:name="com.musicplayer.freedownload.services.PlaySongService"
             android:stopWithTask="false" />
 
-        <receiver android:name=".services.PlaySongService$NextButtonListener" />
-        <receiver android:name=".services.PlaySongService$PreviewsButtonListener" />
-        <receiver android:name=".services.PlaySongService$PlayPauseButtonListener" />
-        <receiver android:name=".services.PlaySongService$ExitButtonListener" />
-        <receiver android:name=".services.PlaySongService$PauseButtonListener" />
+        <receiver android:name="com.musicplayer.freedownload.services.PlaySongService$NextButtonListener" />
+        <receiver android:name="com.musicplayer.freedownload.services.PlaySongService$PreviewsButtonListener" />
+        <receiver android:name="com.musicplayer.freedownload.services.PlaySongService$PlayPauseButtonListener" />
+        <receiver android:name="com.musicplayer.freedownload.services.PlaySongService$ExitButtonListener" />
+        <receiver android:name="com.musicplayer.freedownload.services.PlaySongService$PauseButtonListener" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
@@ -61,6 +62,19 @@
         </receiver>
 
         <activity android:name=".activities.PermissionsActivity"/>
+
+        <!--Start App-->
+
+        <activity android:name="com.startapp.android.publish.list3d.List3DActivity"
+            android:theme="@android:style/Theme" />
+
+        <activity android:name="com.startapp.android.publish.OverlayActivity"
+            android:theme="@android:style/Theme.Translucent"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+
+        <activity android:name="com.startapp.android.publish.FullScreenActivity"
+            android:theme="@android:style/Theme"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
     </application>
 
 </manifest>
