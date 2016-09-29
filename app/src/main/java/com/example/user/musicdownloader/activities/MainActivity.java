@@ -135,11 +135,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int sec, min;
         switch (event.getEvent()) {
             case START_SONG:
-                setSongUi();
+                setSongUi(event.isPlaying());
                 break;
             case FROM_RUN:
                 if (!songPlaySet){
-                    setSongUi();
+                    setSongUi(event.isPlaying());
                 }
                 timeInSeconds = PlaySongService.currentTimeValue / 1000;
                 sec = (int) (timeInSeconds % 60);
@@ -153,23 +153,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case SONG_END:
                 mainSeekBar.setProgress(0);
-                //mainSeekBar.setProgress(event.currentDuration);
+                playPause.setImageResource(R.drawable.pause_icon);
                 break;
 
             case FINISH:
                 finish();
                 break;
-            case CHANGE_BTN_TO_PAUSE:
-                playPause.setImageResource(R.drawable.pause_icon);
-                break;
-            case CHANGE_BTN_TO_PLAY:
-                playPause.setImageResource(R.drawable.play_icon);
-                break;
         }
     }
 
-    private void setSongUi() {
+    private void setSongUi(boolean isPlaying) {
         songPlaySet = true;
+        playPause.setImageResource(isPlaying ? R.drawable.pause_icon : R.drawable.play_icon);
         mainSeekBar.setMax(PlaySongService.totalSongDuration);
         songNameTextView.setText(currentPlayedSong.getName());
         artistNameTextView.setText(currentPlayedSong.getArtist() + " -");

@@ -83,7 +83,6 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
     }
 
     private void setPlayer() {
-        EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.CHANGE_BTN_TO_PLAY));
         if (player.isPlaying()) {
             player.stop();
         }
@@ -101,9 +100,9 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
     public void onPrepared(MediaPlayer mediaPlayer) {
         player.start();
         totalSongDuration = player.getDuration();
-        EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.CHANGE_BTN_TO_PAUSE));
+        EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.CHANGE_BTN_TO_PAUSE, player.isPlaying()));
         ShPref.put(getString(R.string.current_song_duratoin), player.getDuration());
-        EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.START_SONG));
+        EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.START_SONG, true));
         addNotification(NOTIFICATION_ID);
         handler.post(updateUi);
         if (client == CLIENT.WEB) {//this is song from search internet results
@@ -142,7 +141,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
         if (null != player) {
             player.stop();
             player.release();
-            EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.CHANGE_BTN_TO_PLAY));
+            EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.SONG_END, false));
         }
         EventBus.getDefault().unregister(this);
 
@@ -159,7 +158,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
         public void run() {
             if (player.isPlaying()) {
                 currentTimeValue = player.getCurrentPosition();
-                EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.FROM_RUN));
+                EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.FROM_RUN, player.isPlaying()));
                 handler.postDelayed(this, 100);
             }
         }
@@ -177,7 +176,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
                 } else {
                     player.start();
                     handler.post(updateUi);
-                    EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.CHANGE_BTN_TO_PAUSE));
+                    EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.CHANGE_BTN_TO_PAUSE, player.isPlaying()));
                     addNotification(NOTIFICATION_ID);
                 }
                 break;
@@ -221,11 +220,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
             currentPlayedSong = currentArraySong.get(position);
             setPlayer();
         } else {
-            if (player.isPlaying()) {
-                EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.CHANGE_BTN_TO_PAUSE));
-            } else {
-                EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.CHANGE_BTN_TO_PLAY));
-            }
+            EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.SONG_END, false));
             player.seekTo(0);
 //            stopSelf();
         }
