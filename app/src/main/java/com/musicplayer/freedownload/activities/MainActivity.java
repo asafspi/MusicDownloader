@@ -88,9 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         StartAppSDK.init(this, startAppId, true);
-        StartAppAd.disableSplash();
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
-
         String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
         if (PermissionChecker.isPermissionsGranted(permissions)) {
             GetMusicData.getAllSongs(getContentResolver(), getString(R.string.app_name));
