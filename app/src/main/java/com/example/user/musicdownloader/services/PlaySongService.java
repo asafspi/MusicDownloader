@@ -52,6 +52,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
     public static Song currentPlayedSong;
     public static int totalSongDuration, currentTimeValue;
     private static boolean addedToQueue;
+    private boolean isPreparing;
 
     @Override
     public void onCreate() {
@@ -83,6 +84,9 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
     }
 
     private void setPlayer() {
+        if (isPreparing){//we can't prepare while prepare different song
+            return;
+        }
         if (player.isPlaying()) {
             player.stop();
         }
@@ -90,6 +94,7 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
             player.reset();
             player.setDataSource(this, currentPlayedSong.getUri());
             player.prepareAsync();
+            isPreparing = true;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -98,9 +103,9 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
+        isPreparing = false;
         player.start();
         totalSongDuration = player.getDuration();
-        EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.CHANGE_BTN_TO_PAUSE, player.isPlaying()));
         ShPref.put(getString(R.string.current_song_duratoin), player.getDuration());
         EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.START_SONG, true));
         addNotification(NOTIFICATION_ID);
@@ -170,13 +175,13 @@ public class PlaySongService extends Service implements MediaPlayer.OnCompletion
         int position;
         switch (event.action) {
             case 1:// PLAY
+                EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.PLAY_BTN_CLICKED, !player.isPlaying()));
                 if (player.isPlaying()) {
                     player.pause();
                     addNotification(NOTIFICATION_ID);
                 } else {
                     player.start();
                     handler.post(updateUi);
-                    EventBus.getDefault().post(new MessageEvent(MessageEvent.EVENT.CHANGE_BTN_TO_PAUSE, player.isPlaying()));
                     addNotification(NOTIFICATION_ID);
                 }
                 break;

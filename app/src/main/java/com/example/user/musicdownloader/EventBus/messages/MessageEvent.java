@@ -23,10 +23,9 @@ public class MessageEvent {
     }
 
     public enum EVENT{
-        CHANGE_BTN_TO_PAUSE,
         START_SONG,
         FROM_RUN,
         SONG_END,
-        FINISH,
+        FINISH, PLAY_BTN_CLICKED,
     }
 }

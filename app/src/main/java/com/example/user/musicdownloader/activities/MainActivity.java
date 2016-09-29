@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static String query;
     public static long downId;
     public static String pathId;
+    public static Song requestedBTSong;
 
     public ViewPager mViewPager;
     private ImageButton playPause;
@@ -70,10 +71,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private SearchView searchView;
     private AudioManager mAudioManager;
     private ComponentName mRemoteControlResponder;
-    public static Song requestedBTSong;
     private ImageButton repeatButton, shuffleButton;
 
-
+    private String placeHolderSongName;
 
     //http://android-developers.blogspot.co.il/2010/06/allowing-applications-to-play-nicer.html
     private static Method mRegisterMediaButtonEventReceiver;
@@ -129,62 +129,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initializeRemoteControlRegistrationMethods();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(MessageEvent event) {
-        long timeInSeconds;
-        int sec, min;
-        switch (event.getEvent()) {
-            case START_SONG:
-                setSongUi(event.isPlaying());
-                break;
-            case FROM_RUN:
-                if (!songPlaySet){
-                    setSongUi(event.isPlaying());
-                }
-                timeInSeconds = PlaySongService.currentTimeValue / 1000;
-                sec = (int) (timeInSeconds % 60);
-                min = (int) ((timeInSeconds / 60)) % 60;
-                mainSeekBar.setProgress(PlaySongService.currentTimeValue);
-                if (sec < 10) {
-                    runningTime.setText(String.valueOf(min + ":" + "0" + sec));
-                } else {
-                    runningTime.setText(String.valueOf(min + ":" + sec));
-                }
-                break;
-            case SONG_END:
-                mainSeekBar.setProgress(0);
-                playPause.setImageResource(R.drawable.pause_icon);
-                break;
-
-            case FINISH:
-                finish();
-                break;
-        }
-    }
-
-    private void setSongUi(boolean isPlaying) {
-        songPlaySet = true;
-        playPause.setImageResource(isPlaying ? R.drawable.pause_icon : R.drawable.play_icon);
-        mainSeekBar.setMax(PlaySongService.totalSongDuration);
-        songNameTextView.setText(currentPlayedSong.getName());
-        artistNameTextView.setText(currentPlayedSong.getArtist() + " -");
-        songNameTextView.setSelected(true);
-        songNameTextView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-        songNameTextView.setSingleLine(true);
-        int sec, min;
-        long timeInSeconds;
-        timeInSeconds = PlaySongService.totalSongDuration / 1000;
-        sec = (int) (timeInSeconds % 60);
-        min = (int) ((timeInSeconds / 60)) % 60;
-        if (sec < 10) {
-            songDuration.setText(String.valueOf(min + ":" + "0" + sec));
-        } else {
-            songDuration.setText(String.valueOf(min + ":" + sec));
-        }
-    }
-
-
     private void setVies() {
+        placeHolderSongName = getString(R.string.place_holder_current_time);
         ImageButton nextSong = (ImageButton) findViewById(R.id.nextButtonImageView);
         nextSong.setOnClickListener(this);
         ImageButton priviesSong = (ImageButton) findViewById(R.id.previuseImageView);
@@ -219,6 +165,65 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageEvent event) {
+        long timeInSeconds;
+        int sec, min;
+        switch (event.getEvent()) {
+            case START_SONG:
+                setSongUi(event.isPlaying());
+                break;
+            case FROM_RUN:
+                if (!songPlaySet){
+                    setSongUi(event.isPlaying());
+                }
+                timeInSeconds = PlaySongService.currentTimeValue / 1000;
+                sec = (int) (timeInSeconds % 60);
+                min = (int) ((timeInSeconds / 60)) % 60;
+                mainSeekBar.setProgress(PlaySongService.currentTimeValue);
+                if (sec < 10) {
+                    runningTime.setText(String.valueOf(min + ":" + "0" + sec));
+                } else {
+                    runningTime.setText(String.valueOf(min + ":" + sec));
+                }
+                break;
+            case SONG_END:
+                mainSeekBar.setProgress(0);
+                playPause.setImageResource(R.drawable.pause_icon);
+                break;
+            case PLAY_BTN_CLICKED:
+                playPause.setImageResource(event.isPlaying() ? R.drawable.pause_icon : R.drawable.play_icon);
+                break;
+            case FINISH:
+                finish();
+                break;
+        }
+    }
+
+    private void setSongUi(boolean isPlaying) {
+        songPlaySet = true;
+        playPause.setImageResource(isPlaying ? R.drawable.pause_icon : R.drawable.play_icon);
+        mainSeekBar.setMax(PlaySongService.totalSongDuration);
+        songNameTextView.setText(currentPlayedSong.getName());
+        artistNameTextView.setText(String.format(placeHolderSongName, currentPlayedSong.getArtist()));
+        songNameTextView.setSelected(true);
+        songNameTextView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+        songNameTextView.setSingleLine(true);
+        int sec, min;
+        long timeInSeconds;
+        timeInSeconds = PlaySongService.totalSongDuration / 1000;
+        sec = (int) (timeInSeconds % 60);
+        min = (int) ((timeInSeconds / 60)) % 60;
+        if (sec < 10) {
+            songDuration.setText(String.valueOf(min + ":" + "0" + sec));
+        } else {
+            songDuration.setText(String.valueOf(min + ":" + sec));
+        }
+    }
+
+
+
 
     @Override
     public void onResume() {
