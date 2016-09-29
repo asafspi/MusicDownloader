@@ -16,6 +16,7 @@
 #   public *;
 #}
 
+# Event Bus
 -keepattributes *Annotation*
 -keepclassmembers class ** {
     @org.greenrobot.eventbus.Subscribe <methods>;
@@ -27,5 +28,11 @@
     <init>(java.lang.Throwable);
 }
 
+# fabric
 -keep class com.crashlytics.** { *; }
 -dontwarn com.crashlytics.**
+
+# Picaso
+-dontwarn com.squareup.okhttp.**
+
+
