@@ -48,7 +48,7 @@
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="d5b726713bba81f15f5b663ce4a0b5a51c678b76" />
+            android:value="c1607b48235a75cdb9f16e980f194525d503962c" />
 
         <receiver android:name=".recievers.RemoteControlReceiver">
              <intent-filter>

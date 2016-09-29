@@ -21,6 +21,9 @@ public class MyApplication extends Application {
         Fabric.with(this, new Crashlytics());
         new FlurryAgent.Builder()
                 .withLogEnabled(false)
+                .withContinueSessionMillis(5000L)
+                .withCaptureUncaughtExceptions(false)
+                .withPulseEnabled(true)
                 .build(this, FLURRY_API_KEY);
     }
 }
