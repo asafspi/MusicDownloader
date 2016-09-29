@@ -52,9 +52,9 @@ public class RecyclerAdapterSongs extends RecyclerView.Adapter<RecyclerAdapterSo
                 inflate(layout, parent, false), viewType);
     }
 
-    public RecyclerAdapterSongs(ArrayList<Song> songs, String query) {
+    public RecyclerAdapterSongs(ArrayList<Song> songs) {
         this.songsList = songs;
-        this.songQuery = query;
+        this.songQuery = MainActivity.query;
         this.client = PlaySongService.CLIENT.SONGS;
     }
 
