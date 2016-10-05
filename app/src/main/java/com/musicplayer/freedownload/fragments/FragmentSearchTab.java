@@ -79,10 +79,10 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
             textViewNoResult.setVisibility(View.VISIBLE);
             textViewNoResult.setText(getString(R.string.no_internet));
         }
-        else if (MainActivity.query != null){
+        else
+        if (MainActivity.query != null){
             if (searchResultsSongs != null && searchResultsSongs.size() > 0){
                 mProgressBar.setVisibility(View.GONE);
-
                 mRecyclerView.setAdapter(new RecyclerAdapterSearch(searchResultsSongs));
                 textViewNoResult.setVisibility(View.GONE);
             } else {
@@ -94,7 +94,7 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
             mProgressBar.setVisibility(View.GONE);
             mRecyclerView.setAdapter(new RecyclerAdapterSearch(searchResultsSongs));
             textViewNoResult.setVisibility(View.VISIBLE);
-            textViewNoResult.setText(getString(R.string.no_result));
+            textViewNoResult.setText(getString(R.string.no_query));
         }
     }
 
@@ -123,14 +123,25 @@ public class FragmentSearchTab extends Fragment implements SearchHelper.OnSearch
     @Override
     public void onSuccess(ArrayList<Song> songs) {
         FragmentSearchTab.searchResultsSongs = songs;
-        setRecyclerView();
+        setRecyclerWithResult();
     }
 
     @Override
     public void onFailure() {
         FragmentSearchTab.searchResultsSongs = null;
         Toast.makeText(getActivity(), getText(R.string.search_failure), Toast.LENGTH_SHORT).show();
-        setRecyclerView();
+        setRecyclerWithResult();
+    }
+
+    private void setRecyclerWithResult(){
+        mProgressBar.setVisibility(View.GONE);
+        mRecyclerView.setAdapter(new RecyclerAdapterSearch(searchResultsSongs));
+        if (searchResultsSongs != null && searchResultsSongs.size() > 0){
+            textViewNoResult.setVisibility(View.GONE);
+        } else {
+            textViewNoResult.setVisibility(View.VISIBLE);
+            textViewNoResult.setText(getString(R.string.search_no_result));
+        }
     }
 
 

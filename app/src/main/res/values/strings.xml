@@ -40,10 +40,12 @@
     <string name="action_exit">EXIT</string>
     <string name="search_web">Search \"%1$s\" in the web</string>
     <string name="action_search">SEARCH</string>
-    <string name="no_result">Type your search in the search box and hit \"enter\"</string>
+    <string name="no_query">Type your search in the search box and hit \"enter\"</string>
     <string name="add_to_queue">ADD TO QUEUE</string>
     <string name="no_internet">Your device is offline, please check your connectivity</string>
     <string name="search_failure">Search ended with error, please try again!</string>
+
+    <string name="search_no_result">Search ended without results</string>
     <string name="place_holder_current_time">%1$s -</string>
 
 </resources>

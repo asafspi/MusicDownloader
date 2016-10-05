@@ -4,7 +4,7 @@
     android:id="@+id/mainFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.musicplayer.user.musicdownloader.fragments.FragmentSearchTab">
+    tools:context="com.musicplayer.freedownload.fragments.FragmentSearchTab">
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -25,7 +25,7 @@
         android:layout_gravity="left"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
-        android:text="@string/no_result"
+        android:text="@string/no_query"
         android:textSize="22sp"
         android:visibility="gone"/>
 

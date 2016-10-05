@@ -28,7 +28,7 @@ public class SearchHelper {
     private static String currentQueried;
 
 
-    public static ArrayList<Song> searchWeb(String query){
+    public static ArrayList<Song> searchWeb(String query) {
         try {
             Element connectionElement = Jsoup.connect(URL_PREFIX + query + URL_SUFFIX).timeout(8000).ignoreHttpErrors(true).get().body();
 
@@ -37,16 +37,18 @@ public class SearchHelper {
             String songLabel = null;
             String songArtist = null;
             String songAlbum = null;
-            LOOP: for (Element element : connectionElement.getElementsByClass("play_btn")){
+            LOOP:
+            for (Element element : connectionElement.getElementsByClass("play_btn")) {
                 Pattern p = Pattern.compile("#(.*?)#");
                 Matcher matcher = p.matcher(element.attr("onclick"));
                 int i = 0;
                 String s;
-                MATCHER: while (matcher.find()) {
+                MATCHER:
+                while (matcher.find()) {
                     s = matcher.group(1);
-                    switch (i){
+                    switch (i) {
                         case 2:
-                            if (s == null || s.length() < 10){ //link is broken
+                            if (s == null || s.length() < 10) { //link is broken
                                 continue LOOP;
                             }
                             songLink = s;
@@ -54,7 +56,7 @@ public class SearchHelper {
                         case 3:
                             songLabel = s;
                             break;
-                        case 5 :
+                        case 5:
                             songArtist = s;
                             break;
                         case 7:
@@ -74,8 +76,8 @@ public class SearchHelper {
         return null;
     }
 
-    public static void searchWeb(final Handler handler, final WeakReference<OnSearchFinishListener> listener){
-        if (query == null || query.equals(currentQueried)){
+    public static void searchWeb(final Handler handler, final WeakReference<OnSearchFinishListener> listener) {
+        if (query == null || query.equals(currentQueried)) {
             return;
         }
         Log.d("TAG", "searchWeb: " + query);
@@ -102,16 +104,18 @@ public class SearchHelper {
                     String songLabel = null;
                     String songArtist = null;
                     String songAlbum = null;
-                    LOOP: for (Element element : connectionElement.getElementsByClass("play_btn")){
+                    LOOP:
+                    for (Element element : connectionElement.getElementsByClass("play_btn")) {
                         Pattern p = Pattern.compile("#(.*?)#");
                         Matcher matcher = p.matcher(element.attr("onclick"));
                         int i = 0;
                         String s;
-                        MATCHER: while (matcher.find()) {
+                        MATCHER:
+                        while (matcher.find()) {
                             s = matcher.group(1);
-                            switch (i){
+                            switch (i) {
                                 case 2:
-                                    if (s == null || s.length() < 10){ //link is broken
+                                    if (s == null || s.length() < 10) { //link is broken
                                         continue LOOP;
                                     }
                                     songLink = s;
@@ -119,7 +123,7 @@ public class SearchHelper {
                                 case 3:
                                     songLabel = s;
                                     break;
-                                case 5 :
+                                case 5:
                                     songArtist = s;
                                     break;
                                 case 7:
@@ -129,7 +133,7 @@ public class SearchHelper {
                             }
                             i++;
                         }
-                        if (songLink == null){
+                        if (songLink == null) {
                             continue;
                         }
                         Song song = new Song(songLink, songLabel, songArtist, songAlbum);
@@ -150,12 +154,11 @@ public class SearchHelper {
                     OnSearchFinishListener onSearchFinishListener = listener.get();
                     if (onSearchFinishListener != null) {
                         onSearchFinishListener.onFailure();
-
                     }
+                    Log.d("TAG", "No Results");
                 } finally {
                     currentQueried = null;
                 }
-
             }
         }).start();
     }
@@ -178,7 +181,9 @@ public class SearchHelper {
 
     public interface OnSearchFinishListener {
         void onStartSearch(String query);
+
         void onSuccess(ArrayList<Song> songs);
+
         void onFailure();
     }
 }

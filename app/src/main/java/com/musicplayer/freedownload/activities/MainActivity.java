@@ -440,7 +440,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageSearchOnline event) {
-        mViewPager.setCurrentItem(4);
+        if (mViewPager.getCurrentItem() != 4) {
+            mViewPager.setCurrentItem(4);
+            EventBus.getDefault().post(new MessageSearchOnline(query));
+        }
+
     }
 
     // This method will be called when a MessageEvent is posted (in the UI thread for Toast)
