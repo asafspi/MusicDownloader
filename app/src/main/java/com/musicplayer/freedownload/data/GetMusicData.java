@@ -1,8 +1,10 @@
 package com.musicplayer.freedownload.data;
 
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
@@ -10,6 +12,10 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import com.musicplayer.freedownload.EventBus.messages.MessageFromBackPressed;
+import com.musicplayer.freedownload.adapters.RecyclerAdapterSearch;
+import com.musicplayer.freedownload.tools.Contextor;
+import com.musicplayer.freedownload.tools.PermissionChecker;
+import com.startapp.android.publish.StartAppAd;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -75,6 +81,10 @@ public class GetMusicData {
                 }
                 Log.d("zaq", "FromThread");
                 EventBus.getDefault().post(new MessageFromBackPressed(MessageFromBackPressed.FROM_THREAD));
+                String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+                if (PermissionChecker.isPermissionsGranted(permissions)) {
+                    StartAppAd.showAd(Contextor.getInstance().getContext());
+                }
             }
         }).start();
     }

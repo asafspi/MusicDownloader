@@ -39,7 +39,7 @@ import static com.musicplayer.freedownload.activities.MainActivity.downId;
 public class RecyclerAdapterSearch extends RecyclerView.Adapter<RecyclerAdapterSearch.ViewHolder> {
 
     private ArrayList<Song> songs;
-    private static int counter = 0;
+    public static int counter = 0;
 
     public RecyclerAdapterSearch(ArrayList<Song> songs) {
         this.songs = songs;
