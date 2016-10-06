@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
@@ -38,6 +39,7 @@ import com.musicplayer.freedownload.data.GetMusicData;
 import com.musicplayer.freedownload.data.Song;
 import com.musicplayer.freedownload.recievers.RemoteControlReceiver;
 import com.musicplayer.freedownload.services.PlaySongService;
+import com.musicplayer.freedownload.tools.Contextor;
 import com.musicplayer.freedownload.tools.PermissionChecker;
 import com.musicplayer.freedownload.tools.ShPref;
 import com.musicplayer.freedownload.tools.Utils;
@@ -96,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             PermissionsActivity.startActivityForResult(this, PermissionsActivity.REQUEST_CODE_PERMISSION_WRITE_SETTINGS, permissions);
         }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         searchView = (SearchView) findViewById(R.id.searchView);
