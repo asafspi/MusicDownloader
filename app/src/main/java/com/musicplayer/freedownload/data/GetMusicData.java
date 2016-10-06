@@ -81,10 +81,10 @@ public class GetMusicData {
                 }
                 Log.d("zaq", "FromThread");
                 EventBus.getDefault().post(new MessageFromBackPressed(MessageFromBackPressed.FROM_THREAD));
-                String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
-                if (PermissionChecker.isPermissionsGranted(permissions)) {
-                    StartAppAd.showAd(Contextor.getInstance().getContext());
-                }
+//                String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+//                if (PermissionChecker.isPermissionsGranted(permissions)) {
+//                    StartAppAd.showAd(Contextor.getInstance().getContext());
+//                }
             }
         }).start();
     }
