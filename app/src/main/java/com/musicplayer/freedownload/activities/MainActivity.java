@@ -2,6 +2,7 @@ package com.musicplayer.freedownload.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -45,6 +46,9 @@ import com.musicplayer.freedownload.tools.ShPref;
 import com.musicplayer.freedownload.tools.Utils;
 import com.startapp.android.publish.StartAppAd;
 import com.startapp.android.publish.StartAppSDK;
+import com.startapp.android.publish.model.AdPreferences;
+import com.startapp.android.publish.splash.SplashConfig;
+import com.startapp.android.publish.splash.SplashHideListener;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -89,15 +93,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        StartAppSDK.init(this, startAppId, true);
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
-        if (PermissionChecker.isPermissionsGranted(permissions)) {
-            GetMusicData.getAllSongs(getContentResolver(), getString(R.string.app_name));
-            Log.d("zaq", "Permissions granted");
-        } else {
-            PermissionsActivity.startActivityForResult(this, PermissionsActivity.REQUEST_CODE_PERMISSION_WRITE_SETTINGS, permissions);
-        }
+        StartAppSDK.init(this, startAppId, true);
+        StartAppAd.disableSplash();
+        StartAppAd.showSplash(MainActivity.this, null, new SplashConfig(), new AdPreferences(), new SplashHideListener() {
+            @Override
+            public void splashHidden() {
+                Log.d("TAG", "After Splashhhhh");
+                String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+                if (PermissionChecker.isPermissionsGranted(permissions)) {
+                    GetMusicData.getAllSongs(getContentResolver(), getString(R.string.app_name));
+                    Log.d("zaq", "Permissions granted");
+                }else {
+                    PermissionsActivity.startActivityForResult(MainActivity.this, PermissionsActivity.REQUEST_CODE_PERMISSION_WRITE_SETTINGS_FIRST_RUN, permissions);
+                }
+            }
+        });
+//        if (PermissionChecker.isPermissionsGranted(permissions)) {
+//            GetMusicData.getAllSongs(getContentResolver(), getString(R.string.app_name));
+//            Log.d("zaq", "Permissions granted");
+//        } else {
+//            StartAppAd.disableSplash();
+//            PermissionsActivity.startActivityForResult(this, PermissionsActivity.REQUEST_CODE_PERMISSION_WRITE_SETTINGS_FIRST_RUN, permissions);
+//        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -422,22 +440,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CODE_WRITE_BT_SETTINGS_PERMISSION  && Settings.System.canWrite(this)){
-            Log.d("TAG", "CODE_WRITE_BT_SETTINGS_PERMISSION success");
-            if (requestedBTSong != null) {
-                Utils.setSongAsRingtone(this, requestedBTSong);
-            }
+        switch (requestCode){
+            case PermissionsActivity.REQUEST_CODE_PERMISSION_WRITE_SETTINGS_FIRST_RUN:
+                //StartAppAd.showSplash(MainActivity.this, null);
+
+                break;
+            case CODE_WRITE_BT_SETTINGS_PERMISSION:
+                if (Settings.System.canWrite(this) && requestedBTSong != null) {
+                    Utils.setSongAsRingtone(this, requestedBTSong);
+                }
+                break;
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == CODE_WRITE_BT_SETTINGS_PERMISSION && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if (requestedBTSong != null) {
-                Utils.setSongAsRingtone(this, requestedBTSong);
-            }
+        switch (requestCode){
+            case PermissionsActivity.REQUEST_CODE_PERMISSION_WRITE_SETTINGS_FIRST_RUN:
+                StartAppAd.showSplash(MainActivity.this, null);
+                break;
+            case CODE_WRITE_BT_SETTINGS_PERMISSION:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED && requestedBTSong != null) {
+                    Utils.setSongAsRingtone(this, requestedBTSong);
+                }
+                break;
         }
+
     }
 
     // This method will be called when a MessageEvent is posted (in the UI thread for Toast)

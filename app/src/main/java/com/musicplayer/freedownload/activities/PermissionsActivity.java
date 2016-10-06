@@ -33,6 +33,7 @@ public class PermissionsActivity extends AppCompatActivity {
     public static final int REQUEST_CODE_PERMISSION_WRITE_SETTINGS = 3;
     public static final int REQUEST_CODE_PERMISSION_PHONE_LOGS = 4;
     public static final int REQUEST_CODE_PERMISSION_SMS = 5;
+    public static final int REQUEST_CODE_PERMISSION_WRITE_SETTINGS_FIRST_RUN = 6;
     private Dialog dialog;
 
 
